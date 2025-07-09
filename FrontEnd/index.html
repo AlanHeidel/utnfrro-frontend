@@ -15,7 +15,7 @@
 
 <body>
     
-    <video autoplay muted loop id="video-background">
+    <video autoplay muted playsinline loop id="video-background">
         <source src="videos/background.mp4" type="video/mp4" />
     </video>
 
@@ -23,17 +23,31 @@
     <div class="content">
 
         <nav class="navbar">
-            <a href="index.html" class="logo">
-                <img src="images/home-icon.png" alt="Logo del restaurante" />
-            </a>
             <ul>
-                <li><a href="#">Menú</a></li>
-                <li><a href="#">Ofertas</a></li>
-                <li><a href="#">Nosotros</a></li>
+                <a href="index.html" class="logo">
+                    <img src="images/home-icon.png" alt="Logo del restaurante" />
+                </a>
+                <div class="nav-menu">
+                    <label class="bar" for="check">
+                        <input type="checkbox" id="check">
+                            <span class="top"></span>
+                            <span class="middle"></span>
+                            <span class="bottom"></span>
+                    </label>
+                </div>
+
+                <div class="navbar-list">
+                    <li><a href="#">Menú</a></li>
+                    <li><a href="#">Recomendados</a></li>
+                    <li><a href="#">Nosotros</a></li>
+                    <li class="right-align">    
+                        <a class="reserve-button" href="#">
+                            Reservá una mesa
+                        </a>
+                    </li>
+                </div>
+                
             </ul>
-            <a class="order-button" href="#">
-                Ordenar
-            </a>
         </nav>
 
         <main>
@@ -83,9 +97,8 @@
             
         </footer>
     </div>
-        
-    
 
+<script src="js/main.js"></script>
 
 </body>
 </html>
