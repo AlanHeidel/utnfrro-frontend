@@ -318,7 +318,7 @@ main {
 
 .footer {
     display: flex;
-    position: relative;
+    position: absolute;
     bottom: 0;
     flex-direction: row;
     background:#1c1c1c;
@@ -377,6 +377,18 @@ main {
 .footer a:hover {
     color: #ff8800;
     transform: scale(1.07);
+}
+
+.menu-scroll-content {
+    display: flex;
+    position: absolute;
+    top: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 50px 1000px 50px;
+    color: white;
+    background:#1c1c1c;
+    width: 100%;
 }
 
 @media (max-width: 1000px) {
