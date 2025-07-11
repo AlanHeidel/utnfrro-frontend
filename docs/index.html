@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Steak House. Disfruta de una experiencia culinaria única con nuestro menú variado y ambiente acogedor. ¡Ven y ordena ahora!">
-    <title>Steak House</title>
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <link rel="icon" href="favicon.png?v=2" type="image/png" />
+    <meta name="description" content="PASION POR EL ASADO. Disfruta de una experiencia culinaria única con nuestro menú variado y ambiente acogedor. ¡Ven y ordena ahora!">
+    <title>Pasion por el Asado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/png" />
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
 </head>
     <body>
@@ -18,7 +17,7 @@
             <header class="header">
                 <nav class="navbar">
                     <a href="index.html" class="logo">
-                        <img src="images/home-icon.avif" alt="Logo del restaurante" />
+                        <img src="images/home-icon.webp" alt="Logo del restaurante" />
                     </a>
                     <div class="nav-menu">
                         <label class="bar" for="check">
@@ -29,45 +28,65 @@
                         </label>
                     </div>
                     <div class="navbar-list">
-                        <a href="menu.html">Menú</a>
-                        <a href="#">Recomendados</a>
-                        <a href="#aboutus">Nosotros</a>
-                        <div class="right-align">    
-                            <a class="reserve-button" href="#">
-                                Reservá una mesa
-                            </a>
-                        </div>
+                        <a href="menu.html" class="montserrat">MENU</a>
+                        <a href="#" class="montserrat">RECOMENDADOS</a>
+                        <a href="#aboutus" class="montserrat">NOSOTROS</a>   
+                        <a class="reserve-button montserrat" href="#">
+                            RESERVÁ UNA MESA
+                        </a>
+                    </div>
+                    <div class="navbar-list-mobile">
+                        <a href="menu.html" class="montserrat">MENU</a>
+                        <a href="#" class="montserrat">RECOMENDADOS</a>
+                        <a href="#aboutus" class="montserrat">NOSOTROS</a>   
+                        <a class="reserve-button-mobile montserrat" href="#">
+                            RESERVÁ UNA MESA
+                        </a>
                     </div>
                 </nav>
             </header>
             <main>
             <div class="overlay">
-                <h1>Steak House</h1>
-                <h2>Ordená y serás atendido</h2>
-                <button class="order-button">Ordenar</button>
+                <img src="images/image-overlay.webp" alt="Logo del restaurante" />
+                <button class="order-button montserrat">ORDENÁ</button>
             </div>
             <section class="scroll-content">
                 <section id="aboutus" class="aboutus">
-                    <h2 class="aboutus-title" aria-labelledby="aboutus-title">NOSOTROS</h2>
-                    <div class="aboutus-content">
-                        <div class="image-slider" aria-hidden="true" role="presentation">
-                            <img src="images/parrilla-image.avif" class="slide" alt="carne a la parrilla">
-                            <img src="images/parrilla-image-3.avif" class="slide" alt="carne a la parrilla">
-                            <img src="images/parrilla-image-2.avif" class="slide" alt="carne a la parrilla">
+                    <div class="aboutus-section-1" aria-hidden="true" role="presentation">
+                        <h2 class="aboutus-title" aria-labelledby="aboutus-title">
+                            EL ARTE DE LA AUTENTICA PARRILLA ARGENTINA
+                        </h2>
+                        <h3 class="aboutus-description" aria-labelledby="aboutus-description">
+                            Cada corte lleva consigo la esencia del campo, el crujir del fuego y la dedicación de manos expertas.
+                        </h3>
+                    </div>
+                    <div class="aboutus-section-2" aria-hidden="true" role="presentation">
+                        <div class="aboutus-section-2-content">
+                            <h2 class="aboutus-meat" aria-labelledby="aboutus-meat">
+                                LA CARNE
+                            </h2>
+                            <h3 class="aboutus-meat-description" aria-labelledby="aboutus-meat-description">
+                                Nuestra carne se selecciona cuidadosamente, eligiendo cortes de calidad que destacan por su sabor y terneza. Es el proceso que nos permite lograr ese color dorado y ese aroma inconfundible que despierta todos los sentidos.
+                                Cada pieza se cocina al fuego con dedicación, respetando el producto y realzando su esencia. El resultado deja una huella: la de una experiencia hecha con pasión y respeto por la carne.
+                            </h3>
                         </div>
-                        <article class="aboutus-description">
-                            <div class="text-description">
-                                <h3 aria-labelledby="aboutus-description">CARNE & TRADICIÓN</h3>
-                                <p aria-labelledby="text-description">Una experiencia que respeta los sabores del campo argentino, con la elegancia que merecen.</p>
-                                <button class="aboutus-button">Leer más</button>
-                            </div>
-                        </article>
-                        <div class="image-slider" aria-hidden="true" role="presentation">
-                            <img src="images/chef-image.avif" class="slide" alt="cheff">
-                            <img src="images/chef-image-2.avif" class="slide" alt="cheff">
-                            <img src="images/chef-image-3.avif" class="slide" alt="cheff">
+                        <div class="aboutus-section-2-image-slider" aria-hidden="true" role="presentation">
+                            <img src="images/parrilla-image-4.webp" alt="corte de carne">
                         </div>
-                    </div>    
+                    </div>
+                    <div class="aboutus-section-3" aria-hidden="true" role="presentation">
+                        <div class="aboutus-section-3-image-slider">
+                            <img src="images/vinos-image.webp" alt="corte de carne">
+                        </div>
+                        <div class="aboutus-section-3-content">
+                            <h2 class="aboutus-vinos" aria-labelledby="aboutus-vinos">
+                                LOS VINOS
+                            </h2>
+                            <h3 class="aboutus-vinos-description" aria-labelledby="aboutus-vinos-description">
+                                Los vinos también son parte esencial de nuestra propuesta. Cada etiqueta fue cuidadosamente seleccionada para acompañar nuestros platos y realzar la experiencia en cada copa. Desde pequeños productores hasta bodegas reconocidas. Cada vino cuenta una historia, y en cada servicio buscamos que esa historia se comparta, se sienta y se disfrute. Porque un buen vino no solo acompaña: transforma la mesa en un momento inolvidable.
+                            </h3>
+                        </div>
+                    </div>
                 </section>
             </section>
             </main>
