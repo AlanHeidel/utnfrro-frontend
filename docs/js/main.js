@@ -1,4 +1,7 @@
 
+const checkbox = document.getElementById('check');
+const navbarList = document.querySelector('.navbar-list');
+const body = document.body;
 window.addEventListener('scroll', () => {
     const header = document.querySelector('.header');
     if (window.scrollY > 10) {
@@ -7,12 +10,6 @@ window.addEventListener('scroll', () => {
         header.classList.remove('scrolled');
     }
 })
-
-
-const checkbox = document.getElementById('check');
-const navbarList = document.querySelector('.navbar-list');
-const body = document.body;
-
   checkbox.addEventListener('change', () => {
     if (checkbox.checked) {
       navbarList.classList.add('open');

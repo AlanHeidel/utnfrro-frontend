@@ -6,119 +6,102 @@
     <meta name="description" content="Steak House. Disfruta de una experiencia culinaria única con nuestro menú variado y ambiente acogedor. ¡Ven y ordena ahora!">
     <title>Steak House</title>
     <link rel="icon" href="favicon.png?v=2" type="image/png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
 </head>
-
-<body>
-    
-    <video autoplay muted playsinline loop id="video-background" aria-hidden="true" role="presentation">
-        <source src="videos/background.mp4" type="video/mp4" />
-    </video>
-
-    <div class="content">
-
-        <header class="header">
-            <nav class="navbar">
-                <a href="index.html" class="logo">
-                    <img src="images/home-icon.avif" alt="Logo del restaurante" />
-                </a>
-                <div class="nav-menu">
-                    <label class="bar" for="check">
-                        <input type="checkbox" id="check">
-                            <span class="top"></span>
-                            <span class="middle"></span>
-                            <span class="bottom"></span>
-                    </label>
-                </div>
-                <div class="navbar-list">
-                    <a href="menu.html">Menú</a>
-                    <a href="#">Recomendados</a>
-                    <a href="#aboutus">Nosotros</a>
-                    <div class="right-align">    
-                        <a class="reserve-button" href="#">
-                            Reservá una mesa
+    <body>
+        <video autoplay muted playsinline loop id="video-background" aria-hidden="true" role="presentation">
+            <source src="videos/background.mp4" type="video/mp4" />
+        </video>
+        <div class="content">
+            <header class="header">
+                <nav class="navbar">
+                    <a href="index.html" class="logo">
+                        <img src="images/home-icon.avif" alt="Logo del restaurante" />
+                    </a>
+                    <div class="nav-menu">
+                        <label class="bar" for="check">
+                            <input type="checkbox" id="check">
+                                <span class="top"></span>
+                                <span class="middle"></span>
+                                <span class="bottom"></span>
+                        </label>
+                    </div>
+                    <div class="navbar-list">
+                        <a href="menu.html">Menú</a>
+                        <a href="#">Recomendados</a>
+                        <a href="#aboutus">Nosotros</a>
+                        <div class="right-align">    
+                            <a class="reserve-button" href="#">
+                                Reservá una mesa
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <main>
+            <div class="overlay">
+                <h1>Steak House</h1>
+                <h2>Ordená y serás atendido</h2>
+                <button class="order-button">Ordenar</button>
+            </div>
+            <section class="scroll-content">
+                <section id="aboutus" class="aboutus">
+                    <h2 class="aboutus-title" aria-labelledby="aboutus-title">NOSOTROS</h2>
+                    <div class="aboutus-content">
+                        <div class="image-slider" aria-hidden="true" role="presentation">
+                            <img src="images/parrilla-image.avif" class="slide" alt="carne a la parrilla">
+                            <img src="images/parrilla-image-3.avif" class="slide" alt="carne a la parrilla">
+                            <img src="images/parrilla-image-2.avif" class="slide" alt="carne a la parrilla">
+                        </div>
+                        <article class="aboutus-description">
+                            <div class="text-description">
+                                <h3 aria-labelledby="aboutus-description">CARNE & TRADICIÓN</h3>
+                                <p aria-labelledby="text-description">Una experiencia que respeta los sabores del campo argentino, con la elegancia que merecen.</p>
+                                <button class="aboutus-button">Leer más</button>
+                            </div>
+                        </article>
+                        <div class="image-slider" aria-hidden="true" role="presentation">
+                            <img src="images/chef-image.avif" class="slide" alt="cheff">
+                            <img src="images/chef-image-2.avif" class="slide" alt="cheff">
+                            <img src="images/chef-image-3.avif" class="slide" alt="cheff">
+                        </div>
+                    </div>    
+                </section>
+            </section>
+            </main>
+            <footer class="footer">
+                <section class="footer-aboutus">
+                    <h3>Sobre Nosotros</h3>
+                    <a href="#">Restaurantes</a>
+                    <a href="#">Quienes somos</a>
+                    <a href="#">Trabaja con nosotros</a>
+                </section>
+                <section class="footer-help">
+                    <h3 >Ayuda</h3>
+                    <a href="#">Preguntas frecuentes</a>
+                    <a href="#">Ayuda con un pago</a>
+                    <a href="#">Términos y condiciones</a>
+                </section>
+                <section class="footer-contact">
+                    <h3>Contacto</h3>
+                    <p>Encontranos en nuestras redes sociales</p>
+                    <div class="footer-social">
+                        <a href="https://facebook.com/" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://instagram.com/" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://twitter.com/" target="_blank" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://wa.me/123456789" target="_blank" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
-                </div>
-            </nav>
-        </header>
-
-        <main>
-
-        <div class="overlay">
-            <h1>Steak House</h1>
-            <h2>Ordená y serás atendido</h2>
-            <button class="order-button">Ordenar</button>
+                </section>          
+            </footer>
         </div>
-
-        <section class="scroll-content">
-            <section id="aboutus" class="aboutus">
-                <h2 class="aboutus-title" aria-labelledby="aboutus-title">NOSOTROS</h2>
-                <div class="aboutus-content">
-                    <div class="image-slider" aria-hidden="true" role="presentation">
-                        <img src="images/parrilla-image.avif" class="slide" alt="carne a la parrilla">
-                        <img src="images/parrilla-image-3.avif" class="slide" alt="carne a la parrilla">
-                        <img src="images/parrilla-image-2.avif" class="slide" alt="carne a la parrilla">
-                    </div>
-                    <article class="aboutus-description">
-                        <div class="text-description">
-                            <h3 aria-labelledby="aboutus-description">CARNE & TRADICIÓN</h3>
-                            <p aria-labelledby="text-description">Una experiencia que respeta los sabores del campo argentino, con la elegancia que merecen.</p>
-                            <button class="aboutus-button">Leer más</button>
-                        </div>
-                    </article>
-                    <div class="image-slider" aria-hidden="true" role="presentation">
-                        <img src="images/chef-image.avif" class="slide" alt="cheff">
-                        <img src="images/chef-image-2.avif" class="slide" alt="cheff">
-                        <img src="images/chef-image-3.avif" class="slide" alt="cheff">
-                    </div>
-                </div>    
-                
-            </section>
-        </section>
-
-        </main>
-
-        <footer class="footer">
-            <section class="footer-aboutus">
-                <h3>Sobre Nosotros</h3>
-                <a href="#">Restaurantes</a>
-                <a href="#">Quienes somos</a>
-                <a href="#">Trabaja con nosotros</a>
-            </section>
-            <section class="footer-help">
-                <h3 >Ayuda</h3>
-                <a href="#">Preguntas frecuentes</a>
-                <a href="#">Ayuda con un pago</a>
-                <a href="#">Términos y condiciones</a>
-            </section>
-            <section class="footer-contact">
-                <h3>Contacto</h3>
-                <p>Encontranos en nuestras redes sociales</p>
-                <div class="footer-social">
-                    <a href="https://facebook.com/" target="_blank" aria-label="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="https://instagram.com/" target="_blank" aria-label="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://twitter.com/" target="_blank" aria-label="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="https://wa.me/123456789" target="_blank" aria-label="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                </div>
-            </section>
-            
-        </footer>
-    </div>
-
-<script src="js/main.js"></script>
-
-</body>
+    <script src="js/main.js"></script>
+    </body>
 </html>

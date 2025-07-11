@@ -5,11 +5,9 @@
   box-sizing: border-box;
   font-family: sans-serif;
 }
-
 html {
     scroll-behavior: smooth;
 }
-
 #video-background {
     position: fixed;
     top: 0;
@@ -19,7 +17,6 @@ html {
     object-fit: cover;
     z-index: -1;
 }
-
 @keyframes slideDown {
   0% {
     transform: translateY(-50px);
@@ -30,7 +27,6 @@ html {
     opacity: 1;
   }
 }
-
 .content {
     position: relative;
     z-index: 1;
@@ -38,11 +34,9 @@ html {
     display: flex;
     flex-direction: column;
 }
-
 .nav-menu {
     display: none
 }
-
 .header {
     position: fixed;
     top: 0;
@@ -54,8 +48,6 @@ html {
     opacity: 0;
     z-index: 100;
 }
-
-
 .navbar {
     display: flex;
     align-items: center;
@@ -66,14 +58,12 @@ html {
     padding: 0;
     gap: 40px;
 }
-
 .navbar-list {
     display: flex;
     flex: 1;
     align-items: center;
     gap: 20px;
 }
-
 .navbar-list a:not(.reserve-button){
     padding: 15px 15px;
     color: white;
@@ -81,12 +71,10 @@ html {
     text-decoration: none;
     transition: color 0.3s ease, font-size 0.3s ease;
 }
-
 .navbar-list a:not(.reserve-button):hover {
     color: #ff8800;
     font-size: 1.05rem;
 }
-
 .header .reserve-button {
     display: inline-block;
     margin-left: auto; 
@@ -95,19 +83,15 @@ html {
     margin-left: auto;
     white-space: nowrap;
 }
-
 .header.scrolled {
     background-color: rgba(77, 77, 77, 0.1); 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(5px);               
     -webkit-backdrop-filter: blur(5px); 
 }
-
 .right-align {
     margin-left: auto; 
 }
-
-
 .logo img {
     margin: 0;
     padding: 0;
@@ -115,11 +99,9 @@ html {
     height: auto;
     transition: transform 0.3s ease;
 }
-
 .logo img:hover {
     transform: scale(1.05);
 }
-
 .order-button, .reserve-button {
     background-color: #ff8800;
     color: black;
@@ -130,13 +112,10 @@ html {
     font-weight: 600;
     text-decoration: none;
 }
-
-
 .order-button:hover, .reserve-button:hover {
     background-color: #ffb733;
     transform: scale(1.05);
 }
-
 main {
     display: flex;
     justify-content: center;
@@ -145,7 +124,6 @@ main {
     color: white;
     text-align: center;
 }
-
 @keyframes fadeIn {
     to {
         filter: blur(0);
@@ -153,21 +131,6 @@ main {
         transform: translateY(0);
     }
 }
-/* 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-} */
-
 .overlay {
     position: absolute;
     top: 0;
@@ -184,7 +147,6 @@ main {
     opacity: 0;
     animation: fadeIn 0.6s ease forwards;
 }   
-
 .overlay h1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-optical-sizing: auto;
@@ -192,13 +154,11 @@ main {
     font-size: 3.5rem;
     font-style: italic;
 }
-
 .overlay h2 {
     margin-top: 10px;
     font-size: 1.4rem;
     font-weight: 300;
 }
-
 .overlay button.order-button {
     margin-top: 5px;
     border: none;
@@ -209,7 +169,6 @@ main {
     width: 450px;  
     
 }
-
 .scroll-content {
     display: flex;
     flex-direction: column;
@@ -222,18 +181,15 @@ main {
     width: 100%;
     box-shadow: 0 12px 48px rgba(0,0,0,0.35);
 }
-
 .aboutus {
     text-align: center;
 }
-
 .aboutus .aboutus-title {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     letter-spacing: 5px;
     font-weight: 250;
     font-size: 2rem;
 }
-
 .aboutus-content {
     display: flex;
     align-items: center;
@@ -243,7 +199,6 @@ main {
     width: 100%;
     max-width: 1000px;
 }
-
 .aboutus-description {
     flex: 1;
     height: 400px;
@@ -256,7 +211,6 @@ main {
     justify-content: center;
     transition: scale 0.3s ease;
 }
-
 .text-description {
     display: flex;
     flex-direction: column;
@@ -264,20 +218,17 @@ main {
     justify-content: center;
     gap: 50px;
 }
-
 .text-description h3 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     letter-spacing: 5px;
     font-weight: 250;
     font-size: 1.3rem;
 }
-
 .text-description p {
     font-size: 1.1rem;
     line-height: 1.8;
     color: #ccc;
 }
-
 .aboutus-button {
     background-color: #222222;
     color: rgb(224, 224, 224);
@@ -289,16 +240,13 @@ main {
     font-weight: 600;
     text-decoration: none;
 }
-
 .aboutus-description:hover {
     cursor: pointer;
     scale: 1.05;
 }
-
 .aboutus-button:hover {
     background-color: #dd9f2c;
 }
-
 .image-slider {
     display: flex;
     overflow: hidden;
@@ -308,33 +256,25 @@ main {
     object-fit: cover;
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
 }
-
 @keyframes slide {
     0%   { transform: translateX(0); }
     20%  { transform: translateX(0); }
-
     25%  { transform: translateX(-300px); }
     45%  { transform: translateX(-300px); }
-
     50%  { transform: translateX(-600px); }
     70%  { transform: translateX(-600px); }
-
     75%  { transform: translateX(-300px); }
     95%  { transform: translateX(-300px); }
-
     100%  { transform: translateX(0); }   
 }
-
 .image-slider .slide {
   object-fit: cover;
   animation: slide 20s infinite;
   transition: transform 0.3s ease;
 }
-
 #aboutus {
   scroll-margin-top: 142px;
 }
-
 .menu-content {
     display: flex;
     flex-direction: column;
@@ -347,7 +287,6 @@ main {
     width: 100%;
     box-shadow: 0 12px 48px rgba(0,0,0,0.35);
 }
-
 .footer {
     display: flex;
     position: absolute;
@@ -364,23 +303,19 @@ main {
     box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
-
 .footer h3 {
     margin: 50px 0 20px 0;
     font-size: 1.5rem;
 }
-
 .footer a, .footer p {
     margin: 10px 0;
     font-size: 1rem;
     color: rgb(170, 170, 170);
     transition: color 0.3s ease, transform 0.3s ease;
 }
-
 .footer-aboutus {
     margin-bottom: 50px;
 }
-
 .footer-social {
     display: flex;
     text-align: center;
@@ -389,15 +324,12 @@ main {
     gap: 20px;
     
 }
-
 .footer-aboutus a,
 .footer-help a,
 .footer-contact a {
     display: block;
     text-decoration: none;
 }
-
-
 .footer-social a {
     color: rgb(170, 170, 170);
     margin: 0;
@@ -405,12 +337,10 @@ main {
     padding: 5px 10px;
     transition: color 0.3s ease, transform 0.3s ease;
 }
-
 .footer a:hover {
     color: #ff8800;
     transform: scale(1.07);
 }
-
 .menu-scroll-content {
     display: flex;
     position: absolute;
@@ -422,25 +352,20 @@ main {
     background:#1c1c1c;
     width: 100%;
 }
-
 @media (max-width: 1000px) {
     .aboutus-content {
         flex-direction: column;
     }
-
     .aboutus-description {
         width: 300px;
     }
 }
-
-@media (max-width: 800px) {
-    
+@media (max-width: 800px) {  
     input[type = "checkbox"] {
         -webkit-appearance: none;
         display: none;
         visibility: hidden;
     }
-
     .bar {
         display: block;
         position: relative;
@@ -449,7 +374,6 @@ main {
         height: 40px;
         z-index: 1000;
     }
-
     .bar span {
         position: absolute;
         width: 45px;
@@ -460,26 +384,21 @@ main {
         transition: 0.3s ease;
         left: 0;
     }
-
     .bar span.top {
         top: 0;
     }
-
     .bar span.middle {
         top: 17px;
     }
-
     .bar span.bottom {
         bottom: 0;
     }
-
     input[type]:checked ~ span.top {
         transform: rotate(45deg);
         transform-origin: top left;
         width: 48px;
         left: 5px;
     }
-
     input[type]:checked ~ span.bottom {
         transform: rotate(-45deg);
         transform-origin: top left;
@@ -487,12 +406,10 @@ main {
         bottom: -1px;
         box-shadow: 0 0 10px #495057;
     }
-
     input[type]:checked ~ span.middle {
         transform: translateX(-20px);
         opacity: 0;
     }
-
     .navbar-list{
         position: absolute;
         top: 5rem;
@@ -511,11 +428,9 @@ main {
         z-index: 999;
         transition: transform 0.2s ease;
     } 
-
     .navbar-list li {
         width: 100%; 
     }
-
     .navbar-list a {
         display: block;
         width: 100%;
@@ -523,37 +438,29 @@ main {
         text-align: left;
         text-decoration: none;
 }
-
-    .navbar-list.open {
-        
+    .navbar-list.open {      
         transform: translateX(0);
         box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.63);
     }
-
     body.no-scroll {
         overflow: hidden;
     }
-
     .navbar-list li {
         width: 200px;           
     }
-
     .right-align {
         margin-left: 0;
         order: -1;
     }
-
     .nav-menu {
         display: flex;
         align-items: center;
         justify-content: center;
         margin-left: auto;
     } 
-
     .menu-button {;
         font-size: 1.5rem;
-    }
-    
+    }    
     .footer {
         flex-direction: column;
         align-items: center;
@@ -561,15 +468,12 @@ main {
         text-align: center;
         gap: 0px;
     }
-
     .footer section, .footer-aboutus {
         margin-bottom: 0px;
     }
-
     .footer h3 {
         margin: 30px 0px 10px 0px;
     }
-
   .footer-social {
         justify-content: center;
         margin-bottom: 30px;
