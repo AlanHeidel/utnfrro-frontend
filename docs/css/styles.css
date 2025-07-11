@@ -43,7 +43,7 @@ html {
     display: none
 }
 
-.navbar {
+.header {
     position: fixed;
     top: 0;
     padding: 10px 20px 10px 10px;
@@ -56,7 +56,7 @@ html {
 }
 
 
-.navbar ul {
+.navbar {
     display: flex;
     align-items: center;
     flex: 1;
@@ -74,7 +74,7 @@ html {
     gap: 20px;
 }
 
-.navbar-list li a:not(.reserve-button){
+.navbar-list a:not(.reserve-button){
     padding: 15px 15px;
     color: white;
     font-size: .90rem;
@@ -82,12 +82,13 @@ html {
     transition: color 0.3s ease, font-size 0.3s ease;
 }
 
-.navbar-list li:not(.right-align) a:hover {
+.navbar-list a:not(.reserve-button):hover {
     color: #ff8800;
     font-size: 1.05rem;
 }
 
-.navbar .reserve-button {
+.header .reserve-button {
+    display: inline-block;
     margin-left: auto; 
     color: black;
     font-size: 0.95rem;
@@ -95,7 +96,7 @@ html {
     white-space: nowrap;
 }
 
-.navbar.scrolled {
+.header.scrolled {
     background-color: rgba(77, 77, 77, 0.1); 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(5px);               
@@ -136,9 +137,7 @@ html {
     transform: scale(1.05);
 }
 
-
 main {
-    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -154,11 +153,31 @@ main {
         transform: translateY(0);
     }
 }
+/* 
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+} */
 
 .overlay {
     position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 5px;
     transform: translateY(20px);
     filter: blur(10px);
@@ -187,7 +206,7 @@ main {
     align-self: center;        
     min-width: 320px;        
     max-width: 90vw;         
-    width: 100%;  
+    width: 450px;  
     
 }
 
@@ -196,6 +215,7 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 100vh;
     padding: 50px 50px 500px 50px;
     color: white;
     background:#1c1c1c;
@@ -315,6 +335,18 @@ main {
   scroll-margin-top: 142px;
 }
 
+.menu-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin-bottom: 1000px;
+    color: white;
+    background:#1c1c1c;
+    width: 100%;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.35);
+}
 
 .footer {
     display: flex;
