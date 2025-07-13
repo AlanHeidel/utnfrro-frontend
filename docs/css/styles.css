@@ -7,6 +7,9 @@
 }
 html {
     scroll-behavior: smooth;
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
 }
 #video-background {
     position: fixed;
@@ -38,7 +41,7 @@ html {
 .content {
     position: relative;
     z-index: 1;
-    min-height: 100vh;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -91,7 +94,7 @@ html {
     color: white;
 }
 .navbar-list.scrolled {
-    transform: translateY(-55px);
+    transform: translateY(-31px);
 }
 .header.scrolled {
     background-color: rgba(39, 39, 39, 0.432); 
@@ -103,38 +106,44 @@ html {
     transition: transform 0.3s ease;
 }
 .logo.scrolled {
-    transform: translateY(-55px) scale(0.55);
+    transform: translateY(-31px) scale(0.55);
 }
 .logo img {
     margin: 0;
     padding: 0;
-    width: 200px;
-    height: auto;
+    width: 110px;
+    height: 109.2px;
     transition: transform 0.3s ease;
 }
 .logo img:hover {
     transform: scale(1.05);
 }
 .order-button{
-    font-weight: 800;
+    font-weight: 700;
+    letter-spacing: 1px;
     text-align: center;
     border: none;
     font-size: 1.1rem;
     align-self: center;        
-    min-width: 320px;        
-    max-width: 90vw;   
+    width: 375px;           
+}
+.order-button{
+    border: 3px solid rgb(219, 219, 219);
+    border-radius: 5px;
+}
+.reserve-button{
+    border: 2px solid rgb(219, 219, 219);
+    border-radius: 2px;
 }
 .order-button, .reserve-button {
     background-color:transparent;
-    border: 2px solid rgb(219, 219, 219);
     color:white;
     padding: 7px 15px;
-    border-radius: 2px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;     
     text-decoration: none;
 }
-.order-button:hover, .reserve-button:hover {
+.order-button:hover, .reserve-button:hover, .aboutus-button:hover {
     background-color:black;
     transform: scale(1.05);
 }
@@ -170,7 +179,8 @@ main {
     animation: fadeIn 0.6s ease forwards;
 }   
 .overlay img {
-    height: 550px;
+    width: 450px;
+    margin-bottom: 30px;
 }
 .scroll-content {
     display: flex;
@@ -191,57 +201,116 @@ main {
     align-items: center;
     color: black;
     background: white;
-    width: 100vw;
+    width: 100%;
     padding: 100px 50px;
 }
-.aboutus .aboutus-title, .aboutus-meat, .aboutus-vinos {
+.aboutus .aboutus-title, .aboutus-meat, .aboutus-wines {
     font-family: "Montserrat", sans-serif;
     font-size: 2rem;
     font-weight: 400;
     letter-spacing: 8px;
     font-style: normal;
+    
 }
-.aboutus-description, .aboutus-meat-description, .aboutus-vino-description {
+.aboutus-description, .aboutus-meat-description, .aboutus-wines-description, .aboutus-group-description {
     font-family: "Montserrat", sans-serif;
     font-size: 1.2rem;
     font-weight: 300;
     font-style: normal;
     margin-top: 30px;
 }
-.aboutus-section-2, .aboutus-section-3{
+.aboutus-section-2, .aboutus-section-3 {
     display: flex;
     flex-direction: row;
-    justify-content: center;
     align-items: center;
-    max-width: 100vw;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 .aboutus-section-2-content, .aboutus-section-3-content {
-    display: flex;
     flex: 1;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 0px 50px;
+    min-width: 40vw;
+    padding: 0px 40px;
+    z-index: 5;
+}
+.aboutus-section-2-image, .aboutus-section-3-image {
+    display: flex;
+    height: 100%;
+    max-width: 60vw;
+    overflow: hidden;
+}
+.aboutus-section-2-image-slider {
+    display: flex;
+    width: 180vw;
+    position: relative;
+    animation: slide 20s infinite;
+}
+.aboutus-section-3-image-slider {
+    display: flex;
+    width: 180vw;
+    position: relative;
+    animation: slide 20s 0.3s infinite;
 }
 .aboutus-section-2-image-slider img, .aboutus-section-3-image-slider img  {
-    height: 100vh;
-    max-width: 60vw;
-    object-fit: cover;
-}
-.aboutus-section-2-image-slider, .aboutus-section-3-image-slider {
     display: flex;
+    height: 100%;
+    min-width: 60vw;
+    object-fit: cover;
     overflow: hidden;
+}
+.aboutus-section-4 {
+    display: flex;
     position: relative;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+}
+.aboutus-section-4-image {
+    width: 100%;
+}
+.aboutus-section-4-image img {
+    min-height: 50vh;
+    max-height: 70vh;
+    width: 100%;
+    object-fit: cover;
+} 
+.aboutus-group {
+    position: absolute;
+    opacity: 0;
+}
+.aboutus-button {
+    margin-top: 10px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1px;
+    background-color:transparent;
+    color:white;
+    padding: 7px 15px;
+    cursor: pointer;
+    border: 2px solid rgb(219, 219, 219);
+    border-radius: 2px;
+    transition: background-color 0.3s ease, transform 0.3s ease;     
+    text-decoration: none;
+}
+.aboutus-section-4:hover .aboutus-section-4-image img {
+    filter:brightness(0.7);
+}
+.aboutus-section-4:hover .aboutus-group {
+    opacity: 1;
+    transition: all 0.4s ease;
 }
 @keyframes slide {
     0%   { transform: translateX(0); }
     20%  { transform: translateX(0); }
-    25%  { transform: translateX(-300px); }
-    45%  { transform: translateX(-300px); }
-    50%  { transform: translateX(-600px); }
-    70%  { transform: translateX(-600px); }
-    75%  { transform: translateX(-300px); }
-    95%  { transform: translateX(-300px); }
+    25%  { transform: translateX(-60vw); }
+    45%  { transform: translateX(-60vw); }
+    50%  { transform: translateX(-120vw); }
+    70%  { transform: translateX(-120vw); }
+    75%  { transform: translateX(-60vw); }
+    95%  { transform: translateX(-60vw); }
     100%  { transform: translateX(0); }   
 }
 .image-slider .slide {
@@ -324,7 +393,6 @@ main {
     top: 0;
     align-items: center;
     justify-content: center;
-    padding: 100px 50px 1000px 50px;
     color: white;
     background:#1c1c1c;
     width: 100%;
@@ -336,13 +404,26 @@ main {
     .aboutus-section-3 {
         flex-direction: column;
     }
-    .aboutus-section-2-image-slider img {
+    .aboutus-section-2-image, .aboutus-section-3-image {
         max-width: 100vw;
-        margin: 0 0 20px 0;
     }
-    .aboutus-section-3-image-slider img {
-        max-width: 100vw;
-        margin: 150px 0 20px 0;
+    .aboutus-section-2-content, .aboutus-section-3-content {
+        margin: 50px 0;
+    }
+    .aboutus-section-2-image-slider img, .aboutus-section-3-image-slider img  {
+        height: 100%;
+        min-width: 100vw;
+    }
+    @keyframes slide {
+        0%   { transform: translateX(0); }
+        20%  { transform: translateX(0); }
+        25%  { transform: translateX(-100vw); }
+        45%  { transform: translateX(-100vw); }
+        50%  { transform: translateX(-200vw); }
+        70%  { transform: translateX(-200vw); }
+        75%  { transform: translateX(-100vw); }
+        95%  { transform: translateX(-100vw); }
+        100%  { transform: translateX(0); }   
     }
 }
 @media (max-width: 850px) {  
@@ -364,10 +445,13 @@ main {
         transition: transform 0.3s ease;
     }
     .bar.scrolled {
-        transform: translateY(-56px);
+        transform: translateY(-31px);
     }
     .bar.open:not(.bar.scrolled) {
-        transform: translateY(-56px)
+        transform: translateY(-31px)
+    }
+    .logo.scrolled img {
+        transform: translateX(-20px)
     }
     .bar span {
         position: absolute;
@@ -461,6 +545,14 @@ main {
     .menu-button {;
         font-size: 1.5rem;
     }    
+    .overlay img {
+        max-width: 85vw;
+        width: 450px;
+    }
+    .order-button{
+        width: 375px;
+        max-width: 75vw;
+    }
     .footer {
         flex-direction: column;
         align-items: center;
