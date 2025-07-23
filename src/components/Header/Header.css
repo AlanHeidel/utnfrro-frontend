@@ -87,72 +87,10 @@
     .navbar-list{
         display: none;
     }
-    /* 
-    DEJO DE FUNCIONAR POR SER CHECKBOX - HACER NUEVO BOTON BURGER MENU
-    input[type = "checkbox"] {
-        -webkit-appearance: none;
-        display: none;
-        visibility: hidden;
-    }
-    .bar {
-        display: block;
-        position: relative;
-        cursor: pointer;
-        width: 50px;
-        height: 40px;
-        z-index: 1000;
-        transition: transform 0.3s ease;
-    }
-    .bar.scrolled {
-        transform: translateY(-31px);
-    }
-    .bar.open:not(.bar.scrolled) {
-        transform: translateY(-31px)
-    } 
-    .bar span {
-        position: absolute;
-        width: 45px;
-        height: 7px;
-        background: #f1faee;
-        border-radius: 100px;
-        display: inline-block;
-        transition: 0.3s ease;
-        left: 0;
-    }
-    .bar span.top {
-        top: 0;
-    }
-    .bar span.middle {
-        top: 17px;
-    }
-    .bar span.bottom {
-        bottom: 0;
-    }
-    input[type]:checked ~ span.top {
-        transform: rotate(45deg);
-        transform-origin: top left;
-        width: 48px;
-        left: 5px;
-    }
-    input[type]:checked ~ span.bottom {
-        transform: rotate(-45deg);
-        transform-origin: top left;
-        width: 48px;
-        bottom: -1px;
-        box-shadow: 0 0 10px #495057;
-    }
-    input[type]:checked ~ span.middle {
-        transform: translateX(-20px);
-        opacity: 0;
-    }    
-    */
+    /* BUSCAR OTRA FORMA DE BLOQUEAR EL SCROLL (Header no tiene elemento body)
     body.no-scroll {
         overflow: hidden;
-    }
-    .logo.scrolled img {
-        transform: translateX(-20px)
-    }
-    
+    } */
     .navbar-list-mobile{
         position: fixed;
         top: 0;
@@ -160,7 +98,7 @@
         display: flex;
         flex: 1;
         flex-direction: column;
-        padding: 60px 80px 20px 20px;
+        padding: 80px 80px 20px 20px;
         background: #2b2b2b;
         min-width: 400px;
         height: 100vh;
@@ -169,23 +107,11 @@
         z-index: 999;
         transition: transform 0.2s ease;
     } 
-    .navbar-list-mobile a:not(.reserve-button-mobile) {
+    .navbar-list-mobile a:not(.reserve-button) {
         color: rgb(184, 184, 184);
     }
-    .navbar-list-mobile a:not(.reserve-button-mobile):hover {
+    .navbar-list-mobile a:not(.reserve-button):hover {
         color: white;
-    }
-    .reserve-button-mobile {
-        background-color:transparent;
-        border: 2px solid white;
-        color:white;
-        border-radius: 2px;
-        transition: background-color 0.3s ease, transform 0.3s ease;       
-        text-decoration: none;
-    }
-    .reserve-button-mobile:hover {
-        background-color:black;
-        transform: scale(1.05);
     }
     .navbar-list-mobile a {
         width: 100%;
@@ -194,7 +120,7 @@
         text-decoration: none;
     }
     .navbar-list-mobile.open {      
-        transform: translateX(0);
+        transform: translateX(0%);
         box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.63);
     }
     .nav-menu {
@@ -203,7 +129,7 @@
         justify-content: center;
         margin-left: auto;
     } 
-    .menu-button {
-        font-size: 1.5rem;
-    }    
+    .logo.scrolled {
+        transform: translateX(-20px) translateY(-31px) scale(0.55);
+    }
 }

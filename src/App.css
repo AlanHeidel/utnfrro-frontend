@@ -32,36 +32,6 @@ html {
     display: flex;
     flex-direction: column;
 }
-
-.order-button{
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-align: center;
-    border: none;
-    font-size: 1.1rem;
-    align-self: center;        
-    width: 375px;           
-}
-.order-button{
-    border: 3px solid rgb(219, 219, 219);
-    border-radius: 3px;
-}
-.reserve-button{
-    border: 2px solid rgb(219, 219, 219);
-    border-radius: 2px;
-}
-.order-button, .reserve-button {
-    background-color:transparent;
-    color:white;
-    padding: 7px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;     
-    text-decoration: none;
-}
-.order-button:hover, .reserve-button:hover, .aboutus-button:hover {
-    background-color:black;
-    transform: scale(1.05);
-}
 main {
     display: flex;
     justify-content: center;

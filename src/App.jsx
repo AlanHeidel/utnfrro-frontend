@@ -1,9 +1,9 @@
 import videoBackground from './assets/videos/background.mp4'
 import './App.css'
-import { Header } from './components/Header.jsx'
-import { Overlay } from './components/Overlay.jsx'
-import { AboutUs } from './components/AboutUs.jsx'
-import { Footer } from './components/Footer.jsx'
+import { Header } from './components/Header/Header.jsx'
+import { Overlay } from './components/Content/Overlay.jsx'
+import { AboutUs } from './components/Content/AboutUs.jsx'
+import { Footer } from './components/Footer/Footer.jsx'
 
 export function App() {
   return (

@@ -100,8 +100,12 @@
     cursor: pointer;
     border: 2px solid rgb(219, 219, 219);
     border-radius: 2px;
-    transition: background-color 0.3s ease, transform 0.3s ease;     
+    transition: all 0.3s ease;     
     text-decoration: none;
+}
+.aboutus-button:hover {
+    background-color:black;
+    transform: scale(1.05);
 }
 .aboutus-section-4:hover .aboutus-section-4-image img {
     filter:brightness(0.7);
