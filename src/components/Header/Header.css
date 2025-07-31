@@ -37,6 +37,7 @@
     margin: 0 auto;
     padding: 0;
     gap: 40px;
+    transition: all 0.3s ease;
 }
 .navbar-list {
     display: flex;
@@ -58,9 +59,7 @@
 .navbar-list a:not(.reserve-button):hover {
     color: white;
 }
-.navbar-list.scrolled {
-    transform: translateY(-31px);
-}
+
 .header.scrolled {
     background-color: rgba(39, 39, 39, 0.432); 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
@@ -71,7 +70,10 @@
     transition: transform 0.3s ease;
 }
 .logo.scrolled {
-    transform: translateY(-31px) scale(0.55);
+    transform: scale(0.55);
+}
+.navbar.scrolled {
+    transform: translateY(-31px);
 }
 .logo img {
     margin: 0;
@@ -87,10 +89,6 @@
     .navbar-list{
         display: none;
     }
-    /* BUSCAR OTRA FORMA DE BLOQUEAR EL SCROLL (Header no tiene elemento body)
-    body.no-scroll {
-        overflow: hidden;
-    } */
     .navbar-list-mobile{
         position: fixed;
         top: 0;
@@ -130,6 +128,6 @@
         margin-left: auto;
     } 
     .logo.scrolled {
-        transform: translateX(-20px) translateY(-31px) scale(0.55);
+        transform: translateX(-20px) scale(0.55);
     }
 }

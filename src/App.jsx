@@ -1,27 +1,27 @@
-import videoBackground from './assets/videos/background.mp4'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
-import { Header } from './components/Header/Header.jsx'
-import { Overlay } from './components/Content/Overlay.jsx'
-import { AboutUs } from './components/Content/AboutUs.jsx'
-import { Footer } from './components/Footer/Footer.jsx'
+import { Home } from './pages/Home.jsx';
+import { About } from './pages/About.jsx';
+import { Menu } from './pages/Menu.jsx';
+import { Login } from './pages/Login.jsx';
+import { Admin } from './pages/Admin.jsx';
+import { ProtectedRoute } from './components/Routes/ProtectedRoute.jsx';
 
 export function App() {
+  const isAuthenticated = true; 
   return (
-    <>
-      <video autoPlay muted playsInline loop id="videoBackground" aria-hidden="true" role="presentation">
-            <source src= {videoBackground} type="video/mp4" />
-        </video>
-        <div className='content'>
-          < Header />
-          <main>
-            < Overlay />
-            <section className="scroll-content">
-              < AboutUs />
-            </section>
-            </main>
-            < Footer />
-        </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={ <About /> } />
+        <Route path="/menu" element={ <Menu /> } />
+        <Route path="/login" element={ <Login /> } />
+        <Route path="/admin" element={ <ProtectedRoute isAuthenticated= {isAuthenticated}>
+          <Admin />
+        </ProtectedRoute> } />
+        <Route path="*" element={<div>404 Not Found</div>} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

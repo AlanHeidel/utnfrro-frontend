@@ -19,7 +19,7 @@ export function Header () {
     return (
     <>
         <header className={`header ${scrolled ? 'scrolled' : ''}`}>
-            <nav className="navbar">
+            <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
                 <a href="index.html" className={`logo ${scrolled ? 'scrolled' : ''}`}>
                     <img src="/images/home-icon.png" alt="Logo del restaurante" />
                 </a>
