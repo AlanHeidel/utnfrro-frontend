@@ -1,7 +1,5 @@
 .footer {
     display: flex;
-    position: absolute;
-    bottom: 0;
     flex-direction: row;
     background:#1c1c1c;
     color: white;

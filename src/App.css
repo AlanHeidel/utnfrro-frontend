@@ -4,11 +4,8 @@
   box-sizing: border-box;
   font-family: sans-serif;
 }
-html {
-    scroll-behavior: smooth;
-    height: 100vh;
-    width: 100vw;
-    overflow-x: hidden;
+html, body, #root {
+  height: 100%;
 }
 #videoBackground {
     position: fixed;
@@ -26,13 +23,13 @@ html {
   font-style: normal;
 }
 .content {
-    position: relative;
     z-index: 1;
-    min-height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 }
-main {
+.main-content {
     display: flex;
     justify-content: center;
     align-items: center;

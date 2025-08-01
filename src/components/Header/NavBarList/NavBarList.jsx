@@ -1,13 +1,22 @@
 import './NavBarList.css'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+
 export function NavBarList() {
+    const navigate = useNavigate();
+    const location = useLocation();
     return (
         <>
-            <a href="menu.html" className="montserrat">MENU</a>
-            <a href="#" className="montserrat">RECOMENDADOS</a>
-            <a href="#aboutus" className="montserrat">NOSOTROS</a>   
-            <a className="reserve-button montserrat" href="#">
+            <Link to="/menu" className="montserrat">MENU</Link>
+            <Link to="/" className="montserrat">RECOMENDADOS</Link>
+            <Link to="/" className="montserrat">NOSOTROS</Link>
+            <button
+                className="montserrat reserve-button"
+                onClick={() => {
+                    navigate('/login', { state: { background: location } })
+                }}
+            >
                 RESERVÁ UNA MESA
-            </a>
+            </button>
         </>
     )
 }

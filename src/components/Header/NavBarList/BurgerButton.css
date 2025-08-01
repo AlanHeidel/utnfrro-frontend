@@ -7,7 +7,7 @@
     width: 50px;
     height: 40px;
     justify-content: space-between;
-    z-index: 1000;
+    z-index: 9999;
     transition: all .3s ease;
 }
 .burger-button span {
@@ -35,5 +35,5 @@
     opacity: 0;
 }
 .burger-button.scrolled {
-    transform: translateX(10px);
+    transform: translateY(-31px);
 }

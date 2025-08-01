@@ -1,6 +1,3 @@
-#aboutus {
-  scroll-margin-top: 70px;
-}
 .aboutus-section-1 {
     display: flex;
     flex-direction: column;
@@ -82,6 +79,7 @@
     min-height: 50vh;
     max-height: 70vh;
     width: 100%;
+    height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 } 
