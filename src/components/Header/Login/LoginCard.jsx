@@ -11,12 +11,18 @@ export function LoginCard() {
         }
     }, []);
     return (
-        <div className="modal-backdrop" onClick={() => navigate(-1)}>
+        <div className="modal-backdrop" onClick={() => navigate('/')}>
             <div className="login-card" onClick={(e) => e.stopPropagation()}>
-                <h2>Iniciar sesión</h2>
-                <input placeholder="Usuario" />
-                <input type="password" placeholder="Contraseña" />
-                <button>Entrar</button>
+                <h1 className='title'>Iniciar sesión</h1>
+                <div className='input-box'>
+                    <input placeholder="Usuario" required/>
+                    <i className="fas fa-user"></i>
+                </div>
+                <div className='input-box'>
+                    <input type="password" placeholder="Contraseña" required/>
+                    <i className="fas fa-lock"></i>
+                </div>
+                <button className='button-entrar'>Entrar</button>
             </div>
         </div>
     );

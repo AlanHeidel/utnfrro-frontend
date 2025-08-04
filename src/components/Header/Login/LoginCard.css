@@ -1,7 +1,9 @@
-.modal-backdrop {
+.modal-backdrop:not(.login-card) {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.377);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,9 +11,53 @@
 }
 
 .login-card {
-  background: white;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 40px;
+  justify-content: space-around;
+  background: transparent;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(146, 146, 146, 0.295);
   border-radius: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  min-width: 300px;
+  min-width: 500px;
+  min-height: 500px;
+  box-shadow: #3f3f3f 0px 10px 10px -5px;
+}
+.input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  width: 100%;
+}
+.input-box input {
+  box-shadow: #3f3f3f 0px 10px 10px -5px;
+  width: 100%;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  padding: 15px 20px;
+  font-size: 16px;
+}
+.input-box i {
+  position: absolute;
+  display: flex;
+  right: 20px;
+  color: #333;
+}
+.title {
+  font-size: 36px;
+  color: #fff;
+  text-align: center;
+}
+.button-entrar{
+  height: 45px;
+  width: 100%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 40px;
+  color: #333;
 }
