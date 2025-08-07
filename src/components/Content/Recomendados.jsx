@@ -1,4 +1,5 @@
 import './Recomendados.css';
+import { GridRecomendados } from './GridRecomendados/GridRecomendados.jsx';
 
 export function Recomendados() {
     return (
@@ -9,6 +10,7 @@ export function Recomendados() {
                         PLATOS RECOMENDADOS
                     </h2>
                 </div>
+                <GridRecomendados />
             </section>
         </>
     )

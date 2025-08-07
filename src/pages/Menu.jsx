@@ -1,8 +1,21 @@
+import { ProductCard } from '../components/Content/ProductCard/ProductCard.jsx';
+import './Menu.css';
 
 export function Menu() {
-    return (
+  return (
     <>
-      <h1>MENU PAGE</h1>
+      <div className='card-container'>
+        < ProductCard />
+        < ProductCard />
+        < ProductCard />
+        < ProductCard />
+        < ProductCard />
+        < ProductCard />
+        < ProductCard />
+        < ProductCard />
+        < ProductCard />
+        < ProductCard />
+      </div>
     </>
-    )
+  )
 }

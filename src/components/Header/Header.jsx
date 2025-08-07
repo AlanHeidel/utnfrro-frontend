@@ -55,7 +55,6 @@ export function Header() {
                         < NavBarList />
                     </div>
                 </nav>
-                
             </header>
         </>
     )

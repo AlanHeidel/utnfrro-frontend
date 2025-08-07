@@ -1,9 +1,7 @@
 .footer {
     display: flex;
-    flex-direction: row;
-    background:#1c1c1c;
+    background: #1c1c1c;
     color: white;
-    text-align: left;
     justify-content: center;
     gap: 60px;
     width: 100%;
@@ -12,19 +10,28 @@
     box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
+
+.footer-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 80px;
+    width: 100%;
+    padding: 20px;
+}
+
 .footer h3 {
-    margin: 50px 0 20px 0;
     font-size: 1.5rem;
 }
-.footer a, .footer p {
+
+.footer a,
+.footer p {
     margin: 10px 0;
     font-size: 1rem;
     color: rgb(170, 170, 170);
     transition: color 0.3s ease, transform 0.3s ease;
 }
-.footer-aboutus {
-    margin-bottom: 50px;
-}
+
 .footer-social {
     display: flex;
     text-align: center;
@@ -32,12 +39,29 @@
     align-items: center;
     gap: 20px;
 }
+
 .footer-aboutus a,
 .footer-help a,
 .footer-contact a {
     display: block;
     text-decoration: none;
 }
+
+.footer-contact-icon {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    gap: 10px;
+}
+
+.footer-contact-icon img {
+    height: 30px;
+}
+
+.footer-contact-icon h3 {
+    margin: 0;
+}
+
 .footer-social a {
     color: rgb(170, 170, 170);
     margin: 0;
@@ -45,26 +69,28 @@
     padding: 5px 10px;
     transition: color 0.3s ease, transform 0.3s ease;
 }
+
 .footer a:hover {
-    color: #ff8800;
-    transform: scale(1.07);
+    color: white;
+    transform: translateY(-2px) translateX(-4px);
 }
-@media (max-width: 850px) {  
-    .footer {
+
+@media (max-width: 850px) {
+    .footer-container {
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        gap: 0px;
+        gap: 50px;
     }
-    .footer section, .footer-aboutus {
+
+    .footer section,
+    .footer-aboutus {
         margin-bottom: 0px;
     }
-    .footer h3 {
-        margin: 30px 0px 10px 0px;
-    }
-  .footer-social {
+
+    .footer-contact-icon,
+    .footer-social {
         justify-content: center;
-        margin-bottom: 30px;
     }
 }

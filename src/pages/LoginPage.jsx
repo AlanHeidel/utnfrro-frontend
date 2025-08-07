@@ -1,4 +1,4 @@
-import { LoginCard } from '../components/Header/Login/LoginCard.jsx';
+import { LoginCard } from '../components/Login/LoginCard.jsx';
 
 export function LoginPage() {
   return (
