@@ -1,0 +1,16 @@
+.menu-header {
+  background-color: #1c1c1c;
+  color: white;
+  padding: 180px 50px 50px 50px;
+}
+
+.card-container {
+  display: flex;
+  background-color: #1c1c1c;
+  color: white;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 0px 100px 0px;
+  gap: 20px;
+}

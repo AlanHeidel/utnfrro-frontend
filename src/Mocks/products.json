@@ -1,0 +1,71 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Choripán con chimichurri",
+      "description": "Choripán a la parrilla con chimichurri casero",
+      "price": 12000,
+      "category": "entrada",
+      "thumbnail": "https://locosxlaparrilla.com/wp-content/uploads/2015/02/Receta-recetas-locos-x-la-parrilla-locosxlaparrilla-receta-choripan-chimichurri-choripan-receta-choripan-chimichurri-3.jpg",
+      "images": [
+        "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg",
+        "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Provoleta a la parrilla",
+      "description": "Provoleta con orégano y ají molido, lista para untar",
+      "price": 8000,
+      "category": "entrada",
+      "thumbnail": "https://i0.wp.com/www.brasasysabores.com/wp-content/uploads/2017/11/Provoleta-el-queso-del-asado.jpg    ",
+      "images": [
+        "https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Tira de asado",
+      "description": "Tira de asado jugosa y tierna, ideal para compartir",
+      "price": 25000,
+      "category": "principal",
+      "thumbnail": "https://www.clarin.com/img/2022/03/07/0w2kcAVNO_1200x630__1.jpg",
+      "images": [
+        "https://images.pexels.com/photos/616354/pexels-photo-616354.jpeg"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Vacio con papas",
+      "description": "Vacio a la parrilla acompañado de papas rústicas",
+      "price": 18000,
+      "category": "principal",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGj54OLNQIsgQOBVFWr2M0BGrxRe_6uw6-6A&s",
+      "images": [
+        "https://images.pexels.com/photos/3646009/pexels-photo-3646009.jpeg"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Flan casero",
+      "description": "Clásico flan casero con dulce de leche y crema",
+      "price": 5000,
+      "category": "postre",
+      "thumbnail": "https://labarracarnesyvinos.webered.com/datos/uploads/mod_catalogo/25971/flan-casero-mixto-5ebe8bdc7d661.jpg",
+      "images": [
+        "https://images.pexels.com/photos/3026801/pexels-photo-3026801.jpeg"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Vino tinto, Malbec",
+      "description": "Copa de Malbec argentino, ideal para acompañar carnes",
+      "price": 8000,
+      "category": "bebida",
+      "thumbnail": "https://acdn-us.mitiendanube.com/stores/001/400/953/products/04-05-01-001-77e00720067424610e16136603396013-480-0.jpg",
+      "images": [
+        "https://images.pexels.com/photos/33022/wine-red-wine-vineyard.jpg"
+      ]
+    }
+  ]
+}
