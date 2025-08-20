@@ -1,0 +1,9 @@
+.cart-button {
+  cursor: pointer;
+  fill: rgb(223, 223, 223);
+  transition: all 0.3s ease;
+}
+
+.cart-button:hover {
+  fill: white;
+}

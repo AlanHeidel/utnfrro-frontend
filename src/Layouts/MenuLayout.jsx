@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
-import { Header } from "../components/Header/Header.jsx";
+import { MenuHeader } from "../components/Header/MenuHeader.jsx";
 import { Footer } from "../components/Footer/Footer.jsx";
 
-export function MainLayout() {
+export function MenuLayout() {
   return (
     <div className="content">
-      <Header />
+      <MenuHeader />
       <main>
         <Outlet />
       </main>

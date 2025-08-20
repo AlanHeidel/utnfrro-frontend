@@ -7,6 +7,7 @@ import { Admin } from "./pages/Admin.jsx";
 import { LoginCard } from "./components/Login/LoginCard.jsx";
 import { ProtectedRoute } from "./components/Routes/ProtectedRoute.jsx";
 import { MainLayout } from "./Layouts/MainLayout.jsx";
+import { MenuLayout } from "./Layouts/MenuLayout.jsx";
 import { LoginPage } from "./pages/LoginPage.jsx";
 import { FiltersProvider } from "./context/filters.jsx";
 
@@ -22,19 +23,21 @@ export function App() {
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route
-            path="/menu"
-            element={
-              <FiltersProvider>
-                <Menu />
-              </FiltersProvider>
-            }
-          />
-          <Route
             path="/admin"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <Admin />
               </ProtectedRoute>
+            }
+          />
+        </Route>
+        <Route element={<MenuLayout />}>
+          <Route
+            path="/menu"
+            element={
+              <FiltersProvider>
+                <Menu />
+              </FiltersProvider>
             }
           />
         </Route>

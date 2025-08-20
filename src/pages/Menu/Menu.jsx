@@ -10,7 +10,7 @@ export function Menu() {
 
   return (
     <>
-      <div className="menu-header">
+      <div className="menu">
         <Filters />
       </div>
       <div className="card-container">
