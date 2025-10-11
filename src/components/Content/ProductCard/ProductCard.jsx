@@ -10,7 +10,7 @@ export function ProductCard({ product }) {
           <div className="product-card-content">
             <img src={product.thumbnail} alt="asado image" />
             <div className="add-to-cart-button">
-              <AddToCartButton />
+              <AddToCartButton product={product} />
             </div>
           </div>
         </div>

@@ -22,23 +22,51 @@ export function Filters() {
     }));
   };
 
+  const handleSearchChange = (event) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      searchTerm: event.target.value,
+    }));
+  };
+
   return (
     <section className="filters">
-      <div>
-        <label htmlFor={maxPriceFilterId}> Precio Maximo: </label>
-        <input
-          type="range"
-          id={maxPriceFilterId}
-          min="0"
-          max="50000"
-          onChange={handleChangeMaxPrice}
-          value={filters.maxPrice}
-        />
-        <output>${filters.maxPrice}</output>
+      <div className="filter-group price-filter">
+        <label htmlFor={maxPriceFilterId}>Precio Máximo:</label>
+        <div className="price-slider-container">
+          <input
+            type="range"
+            id={maxPriceFilterId}
+            min="0"
+            max="50000"
+            onChange={handleChangeMaxPrice}
+            value={filters.maxPrice}
+            className="price-slider"
+          />
+          <output className="price-output">${filters.maxPrice}</output>
+        </div>
       </div>
-      <div>
-        <label htmlFor={categoryFilterId}>Categoria</label>
-        <select id={categoryFilterId} onChange={handleChangeCategory}>
+
+      <div className="filter-group">
+        <label htmlFor="search">Buscar</label>
+        <input
+          type="text"
+          id="search"
+          placeholder="Buscar platos..."
+          value={filters.searchTerm || ""}
+          onChange={handleSearchChange}
+          className="search-input"
+        />
+      </div>
+
+      <div className="filter-group">
+        <label htmlFor={categoryFilterId}>Categoría</label>
+        <select
+          id={categoryFilterId}
+          onChange={handleChangeCategory}
+          className="category-select"
+          value={filters.category}
+        >
           <option value="all">Todas</option>
           <option value="entrada">Entradas</option>
           <option value="principal">Plato Principal</option>

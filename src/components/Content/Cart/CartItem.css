@@ -1,0 +1,133 @@
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+
+.cart-item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.cart-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cart-item-name {
+  color: #fff;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cart-item-price {
+  margin: 0;
+  color: #666;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+/* Controles de cantidad */
+.cart-item-quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.quantity-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #333;
+}
+
+.quantity-btn:hover {
+  border-color: #4caf50;
+  color: #4caf50;
+  background: #f0f9f0;
+}
+
+.quantity-btn:active {
+  transform: scale(0.95);
+}
+
+.quantity-decrease:hover {
+  border-color: #ff4444;
+  color: #ff4444;
+  background: #fff0f0;
+}
+
+.cart-item-quantity {
+  font-weight: bold;
+  font-size: 1.1rem;
+  min-width: 30px;
+  text-align: center;
+  color: #666;
+}
+
+.cart-item-subtotal {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #437545;
+  font-weight: bold;
+}
+
+.cart-item-remove {
+  background: #ff4444;
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.cart-item-remove:hover {
+  background: #cc0000;
+  transform: scale(1.1);
+}
+
+.cart-item-remove:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item-image {
+    width: 100%;
+    height: 150px;
+  }
+
+  .cart-item-remove {
+    align-self: flex-end;
+  }
+}

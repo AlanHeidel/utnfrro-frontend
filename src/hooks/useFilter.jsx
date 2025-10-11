@@ -6,10 +6,17 @@ export function useFilter() {
 
   const filterProducts = (products) => {
     return products.filter((product) => {
-      return (
-        product.price <= filters.maxPrice &&
-        (filters.category === "all" || product.category === filters.category)
-      );
+      const matchesPrice = product.price <= filters.maxPrice;
+      const matchesCategory =
+        filters.category === "all" || product.category === filters.category;
+      const matchesSearch =
+        !filters.searchTerm ||
+        product.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        product.description
+          .toLowerCase()
+          .includes(filters.searchTerm.toLowerCase());
+
+      return matchesPrice && matchesCategory && matchesSearch;
     });
   };
   return { filters, filterProducts, setFilters };

@@ -1,9 +1,19 @@
 import "./AddToCartButton.css";
+import { useCart } from "../../../hooks/useCart.jsx";
+import { useToast } from "../../../hooks/useToast.jsx";
 
-export function AddToCartButton() {
+export function AddToCartButton({ product }) {
+  const { addToCart } = useCart();
+  const { showToast } = useToast();
+
+  const handleClick = () => {
+    addToCart(product);
+    showToast(`${product.name} agregado al carrito`, "success");
+  };
+
   return (
     <>
-      <button className="cartBtn">
+      <button className="cartBtn" onClick={handleClick}>
         <svg
           className="cart"
           fill="black"

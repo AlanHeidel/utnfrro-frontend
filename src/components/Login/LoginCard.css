@@ -1,4 +1,4 @@
-.modal-backdrop:not(.login-card) {
+.modal-backdrop {
   position: fixed;
   inset: 0;
   height: 100vh;
@@ -15,7 +15,7 @@
   flex-direction: column;
   padding: 30px 40px;
   justify-content: space-around;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.289);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(146, 146, 146, 0.295);
   border-radius: 1rem;
