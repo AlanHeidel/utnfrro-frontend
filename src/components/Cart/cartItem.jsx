@@ -1,5 +1,5 @@
 import "./CartItem.css";
-import { useCart } from "../../../hooks/useCart.jsx";
+import { useCart } from "../../hooks/useCart.jsx";
 
 export function CartItem({ product }) {
   const { removeFromCart, increaseQuantity, decreaseQuantity } = useCart();

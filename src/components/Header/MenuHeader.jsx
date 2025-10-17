@@ -4,7 +4,7 @@ import { CartButton } from "./NavBarList/CartButton.jsx";
 import { CloseButton } from "./NavBarList/CloseButton.jsx";
 import { Link } from "react-router-dom";
 import { useCart } from "../../hooks/useCart.jsx";
-import { CartItem } from "../Content/Cart/cartItem.jsx";
+import { CartItem } from "../Cart/cartItem.jsx";
 
 export function MenuHeader() {
   const [isOpen, setIsOpen] = useState(false);

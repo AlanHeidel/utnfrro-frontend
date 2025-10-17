@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { Toast } from "../components/Content/Toast/Toast.jsx";
+import { Toast } from "../components/Cart/Toast/Toast.jsx";
 
 export const ToastContext = createContext();
 

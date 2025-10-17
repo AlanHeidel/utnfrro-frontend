@@ -1,4 +1,4 @@
-import { ProductCard } from "../../components/Content/ProductCard/ProductCard.jsx";
+import { ProductCard } from "../../components/Cart/ProductCard/ProductCard.jsx";
 import "./Menu.css";
 import { Filters } from "./Filters.jsx";
 import { products as initialProducts } from "../../Mocks/products.json";
