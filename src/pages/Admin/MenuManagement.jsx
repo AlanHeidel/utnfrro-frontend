@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { ProductForm } from "../../components/Admin/ProductForm/ProductForm";
+import {
+  getPlatos,
+  createPlato,
+  updatePlato,
+  deletePlato,
+} from "../../api/menu";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+
 const statusLabels = {
   available: "Disponible",
   unavailable: "Agotado",
@@ -42,7 +49,6 @@ function normalizePlato(plato) {
     tags: ingredients,
     lastUpdated: new Date().toISOString(),
     image: plato.imagen?.trim() ?? "",
-    // opcional: conservar el shape original si querés usarlo después
     raw: plato,
   };
 }
@@ -71,35 +77,20 @@ export function MenuManagement() {
       try {
         setIsLoading(true);
         setError(null);
-
-        const response = await fetch(`${API_URL}/api/platos`);
-        if (!response.ok) {
-          throw new Error("Error al obtener platos");
-        }
-
-        const data = await response.json();
-        const normalized = Array.isArray(data)
-          ? data.map(normalizePlato)
-          : Array.isArray(data.data)
-          ? data.data.map(normalizePlato)
-          : [];
-
+        const data = await getPlatos();
         if (isMounted) {
-          setProducts(normalized);
+          setProducts(data.map(normalizePlato));
         }
-      } catch (err) {
+      } catch (error) {
         if (isMounted) {
-          setError(err.message || "No pudimos cargar los productos del menú.");
+          setError("No pudimos cargar los platos");
         }
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        if (isMounted) setIsLoading(false);
       }
     };
 
     loadProducts();
-
     return () => {
       isMounted = false;
     };
@@ -136,30 +127,41 @@ export function MenuManagement() {
     setIsFormOpen(false);
   };
 
-  const handleSubmitProduct = (formData) => {
-    const payload = {
-      ...formData,
-      price: Number(formData.price),
-      cost: Number(formData.cost),
-      lastUpdated: new Date().toISOString(),
-      id: formData.id ?? crypto.randomUUID(),
-    };
+  const handleSubmitProduct = async (formData) => {
+    try {
+      const payload = {
+        nombre: formData.name,
+        precio: Number(formData.price),
+        ingredientes: formData.tags ?? [],
+        tipoPlato: formData.category,
+        imagen: formData.image,
+      };
 
-    setProducts((prev) => {
-      const exists = prev.some((product) => product.id === payload.id);
-      if (exists) {
-        return prev.map((product) =>
-          product.id === payload.id ? payload : product
+      if (formData.id) {
+        const updated = await updatePlato(formData.id, payload);
+        setProducts((prev) =>
+          prev.map((product) =>
+            product.id === formData.id ? normalizePlato(updated) : product
+          )
         );
+      } else {
+        const created = await createPlato(payload);
+        setProducts((prev) => [normalizePlato(created), ...prev]);
       }
-      return [payload, ...prev];
-    });
 
-    handleCloseForm();
+      handleCloseForm();
+    } catch (error) {
+      setError("No pudimos guardar el plato");
+    }
   };
 
-  const handleDeleteProduct = (productId) => {
-    setProducts((prev) => prev.filter((product) => product.id !== productId));
+  const handleDeleteProduct = async (productId) => {
+    try {
+      await deletePlato(productId);
+      setProducts((prev) => prev.filter((product) => product.id !== productId));
+    } catch (error) {
+      setError("No pudimos eliminar el plato");
+    }
   };
 
   return (
