@@ -25,6 +25,13 @@ const OrdersIcon = () => (
 );
 
 const TablesIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <rect x="4" y="6" width="16" height="4" rx="1" />
+    <path d="M7 10v8M17 10v8" />
+  </svg>
+);
+
+const WaitersIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
     <circle cx="9" cy="7" r="4" />
@@ -103,6 +110,12 @@ export function Sidebar() {
       label: "Mesas y Clientes",
       icon: <TablesIcon />,
       path: "/admin/tables",
+    },
+    {
+      id: "waiters",
+      label: "Mozos y Empleados",
+      icon: <WaitersIcon />,
+      path: "/admin/waiters",
     },
     {
       id: "analytics",

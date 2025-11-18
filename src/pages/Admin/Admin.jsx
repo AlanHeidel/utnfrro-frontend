@@ -4,6 +4,7 @@ import { Dashboard } from "./Dashboard.jsx";
 import { MenuManagement } from "./MenuManagement.jsx";
 import { OrdersManagement } from "./OrdersManagement.jsx";
 import { CustomersManagement } from "./CustomersManagement.jsx";
+import { WaitersManagement } from "./WaitersManagement.jsx";
 import "./Admin.css";
 
 export function Admin() {
@@ -16,16 +17,17 @@ export function Admin() {
           <Route path="menu" element={<MenuManagement />} />
           <Route path="orders" element={<OrdersManagement />} />
           <Route path="tables" element={<CustomersManagement />} />
+          <Route path="waiters" element={<WaitersManagement />} />
           <Route
             path="analytics"
             element={
-              <div className="coming-soon">📈 Estadísticas - Próximamente</div>
+              <div className="coming-soon">Estadísticas - Próximamente</div>
             }
           />
           <Route
             path="settings"
             element={
-              <div className="coming-soon">⚙️ Configuración - Próximamente</div>
+              <div className="coming-soon">Configuración - Próximamente</div>
             }
           />
         </Routes>

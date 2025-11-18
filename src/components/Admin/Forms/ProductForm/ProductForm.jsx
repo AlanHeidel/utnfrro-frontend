@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import "./ProductForm.css";
+import "../Form.css";
 
 const emptyProduct = {
   id: null,
   name: "",
+  categoryId: "",
   category: "",
   price: "",
   cost: "",
@@ -19,7 +20,13 @@ const statusOptions = [
   { value: "unavailable", label: "Agotado" },
 ];
 
-export function ProductForm({ initialValues, categories, onCancel, onSubmit }) {
+const statusMap = {
+  disponible: "available",
+  destacado: "featured",
+  agotado: "unavailable",
+};
+
+export function ProductForm({ initialValues, categoryOptions, onCancel, onSubmit }) {
   const [formValues, setFormValues] = useState(emptyProduct);
   const [tagInput, setTagInput] = useState("");
 
@@ -28,19 +35,16 @@ export function ProductForm({ initialValues, categories, onCancel, onSubmit }) {
       setFormValues({
         ...emptyProduct,
         ...initialValues,
+        categoryId: initialValues.categoryId ?? "",
         price: initialValues.price?.toString() ?? "",
         cost: initialValues.cost?.toString() ?? "",
         tags: initialValues.tags ?? [],
+        status: statusMap[initialValues.status] ?? initialValues.status ?? "available",
       });
     } else {
       setFormValues(emptyProduct);
     }
   }, [initialValues]);
-
-  const categoryOptions = useMemo(() => {
-    const normalized = categories?.filter(Boolean) ?? [];
-    return [...new Set(normalized)].sort((a, b) => a.localeCompare(b));
-  }, [categories]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -94,21 +98,20 @@ export function ProductForm({ initialValues, categories, onCancel, onSubmit }) {
 
         <label>
           <span>Categoría</span>
-          <input
-            list="product-categories"
-            name="category"
-            value={formValues.category}
+          <select
+            name="categoryId"
+            value={formValues.categoryId}
             onChange={handleChange}
-            placeholder="Ej: Pizzas"
             required
-          />
-          <datalist id="product-categories">
+          >
+            <option value="" disabled>Seleccioná una categoría</option>
             {categoryOptions.map((category) => (
-              <option key={category} value={category} />
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
             ))}
-          </datalist>
+          </select>
         </label>
-
         <label>
           <span>Precio de venta</span>
           <input

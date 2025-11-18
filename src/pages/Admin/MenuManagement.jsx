@@ -1,25 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
-import { ProductForm } from "../../components/Admin/ProductForm/ProductForm";
+import { ProductForm } from "../../components/Admin/Forms/ProductForm/ProductForm";
 import {
   getPlatos,
   createPlato,
   updatePlato,
   deletePlato,
+  getTipoPlatos,
 } from "../../api/menu";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-
-const statusLabels = {
-  available: "Disponible",
-  unavailable: "Agotado",
-  featured: "Destacado",
-};
-
 const statusClasses = {
-  available: "status-available",
-  unavailable: "status-unavailable",
-  featured: "status-featured",
+  disponible: "status-available",
+  agotado: "status-unavailable",
+  destacado: "status-featured",
 };
 
 function capitalize(word) {
@@ -29,26 +22,40 @@ function capitalize(word) {
 
 function normalizePlato(plato) {
   const price = Number(plato.precio) || 0;
-  const ingredients = Array.isArray(plato.ingredientes)
-    ? plato.ingredientes
-    : [];
-  const tipo =
+  const cost = Number(
+    plato.costo ?? plato.precioCocina ?? plato.cost ?? 0
+  ) || 0;
+  const description = plato.descrip ?? plato.descripcion ?? "";
+
+  const status = plato.estado ?? "Disponible";
+
+  const rawIngredientes = plato.ingredientes;
+  const ingredients = Array.isArray(rawIngredientes)
+    ? rawIngredientes
+    : typeof rawIngredientes === "string"
+      ? JSON.parse(rawIngredientes)
+      : [];
+  const tipoPlatoData = plato.tipoPlato ?? {};
+  const categoryId = tipoPlatoData.id?.toString() ?? "";
+  const categoryName =
     typeof plato.tipoPlato === "string"
       ? plato.tipoPlato
-      : plato.tipoPlato?.nombre ?? plato.tipoPlato?.tipo ?? "";
+      : tipoPlatoData.name ?? tipoPlatoData.tipo ?? "";
+  const tags = ingredients.map(capitalize);
+  const default_image = "https://www.sillasmesas.es/blog/wp-content/webp-express/webp-images/uploads/2020/06/Que-tipos-de-restaurantes-hay.jpg.webp"
 
   return {
     id: plato.id?.toString() ?? crypto.randomUUID(),
+    cost,
+    description,
+    status,
     name: plato.nombre ?? "Sin nombre",
-    category: capitalize(tipo) || "Sin categoría",
+    categoryId,
+    category: capitalize(categoryName) || "Sin categoría",
     price,
-    cost: Number(price * 0.35),
-    status: "available",
-    description:
-      ingredients.length > 0 ? ingredients.join(", ") : "Sin descripción",
-    tags: ingredients,
+    tags,
     lastUpdated: new Date().toISOString(),
-    image: plato.imagen?.trim() ?? "",
+    image: plato.imagen?.trim() || default_image,
     raw: plato,
   };
 }
@@ -69,6 +76,7 @@ export function MenuManagement() {
   const [categoryFilter, setCategoryFilter] = useState("Todos");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [typeOptions, setTypeOptions] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -94,6 +102,20 @@ export function MenuManagement() {
     return () => {
       isMounted = false;
     };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    const loadTipos = async () => {
+      try {
+        const data = await getTipoPlatos();
+        if (alive) setTypeOptions(data);
+      } catch (_) {
+        if (alive) setTypeOptions([]);
+      }
+    };
+    loadTipos();
+    return () => { alive = false; };
   }, []);
 
   const categories = useMemo(() => {
@@ -129,26 +151,25 @@ export function MenuManagement() {
 
   const handleSubmitProduct = async (formData) => {
     try {
+      const estadoMap = { available: "disponible", featured: "destacado", unavailable: "agotado" }
       const payload = {
         nombre: formData.name,
         precio: Number(formData.price),
-        ingredientes: formData.tags ?? [],
-        tipoPlato: formData.category,
+        costo: Number(formData.cost),
+        descrip: formData.description,
+        ingredientes: JSON.stringify(formData.tags ?? []),
         imagen: formData.image,
+        estado: estadoMap[formData.status] ?? "disponible",
+        tipoPlato: Number(formData.categoryId),
       };
 
       if (formData.id) {
-        const updated = await updatePlato(formData.id, payload);
-        setProducts((prev) =>
-          prev.map((product) =>
-            product.id === formData.id ? normalizePlato(updated) : product
-          )
-        );
+        await updatePlato(formData.id, payload);
       } else {
-        const created = await createPlato(payload);
-        setProducts((prev) => [normalizePlato(created), ...prev]);
+        await createPlato(payload);
       }
-
+      const data = await getPlatos();
+      setProducts(data.map(normalizePlato));
       handleCloseForm();
     } catch (error) {
       setError("No pudimos guardar el plato");
@@ -218,71 +239,80 @@ export function MenuManagement() {
               No encontramos productos con los filtros aplicados.
             </div>
           ) : (
-            <div className="products-grid">
-              {filteredProducts.map((product) => (
-                <article key={product.id} className="admin-product-card">
-                  <header className="admin-product-card__header">
-                    <div>
-                      <h3>{product.name}</h3>
-                      <p className="muted">{product.category}</p>
-                    </div>
-                    <span
-                      className={`chip ${statusClasses[product.status] ?? ""}`}
-                    >
-                      {statusLabels[product.status] ?? product.status}
-                    </span>
-                  </header>
+            <div className="products-container">
+              {filteredProducts.map((product) => {
+                const margin =
+                  product.price > 0
+                    ? Math.round(((product.price - product.cost) / product.price) * 100)
+                    : 100;
 
-                  <p className="admin-product-card__description">
-                    {product.description}
-                  </p>
+                return (
+                  <article key={product.id} className="admin-product-card">
+                    <img
+                      className="admin-product-card__image"
+                      src={product.image}
+                      alt={product.name}
+                    />
+                    <header className="admin-product-card__header">
+                      <div>
+                        <h3>{product.name}</h3>
+                        <p className="muted">{product.category}</p>
+                      </div>
+                      <span
+                        className={`chip ${statusClasses[product.status] ?? ""}`}
+                      >
+                        {product.status ?? ""}
+                      </span>
+                    </header>
 
-                  <dl className="admin-product-card__meta">
-                    <div>
-                      <dt>Precio venta</dt>
-                      <dd>{formatCurrency(product.price)}</dd>
-                    </div>
-                    <div>
-                      <dt>Costo cocina</dt>
-                      <dd>{formatCurrency(product.cost)}</dd>
-                    </div>
-                    <div>
-                      <dt>Margin</dt>
-                      <dd>
-                        {Math.round(
-                          ((product.price - product.cost) / product.price) * 100
-                        )}
-                        %
-                      </dd>
-                    </div>
-                  </dl>
+                    <p className="admin-product-card__description">
+                      {product.description || "Sin descripción"}
+                    </p>
 
-                  {product.tags?.length > 0 && (
-                    <div className="admin-product-card__tags">
-                      {product.tags.map((tag) => (
-                        <span key={tag} className="product-tag">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                    <dl className="admin-product-card__meta">
+                      <div>
+                        <dt>Precio venta</dt>
+                        <dd>{formatCurrency(product.price)}</dd>
+                      </div>
+                      <div>
+                        <dt>Costo cocina</dt>
+                        <dd>{formatCurrency(product.cost)}</dd>
+                      </div>
+                      <div>
+                        <dt>Margin</dt>
+                        <dd>
+                          {margin}%
+                        </dd>
+                      </div>
+                    </dl>
 
-                  <footer className="admin-product-card__footer">
-                    <button
-                      className="btn-secondary"
-                      onClick={() => openEditForm(product)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="btn-link danger"
-                      onClick={() => handleDeleteProduct(product.id)}
-                    >
-                      Eliminar
-                    </button>
-                  </footer>
-                </article>
-              ))}
+                    {product.tags?.length > 0 && (
+                      <div className="admin-product-card__tags">
+                        {product.tags.map((tag) => (
+                          <span key={tag} className="product-tag">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <footer className="admin-product-card__footer">
+                      <button
+                        className="btn-secondary"
+                        onClick={() => openEditForm(product)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn-link danger"
+                        onClick={() => handleDeleteProduct(product.id)}
+                      >
+                        Eliminar
+                      </button>
+                    </footer>
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>
@@ -292,7 +322,7 @@ export function MenuManagement() {
             <h2>{editingProduct ? "Editar producto" : "Nuevo producto"}</h2>
             <ProductForm
               initialValues={editingProduct}
-              categories={categories.filter((category) => category !== "Todos")}
+              categoryOptions={typeOptions}
               onCancel={handleCloseForm}
               onSubmit={handleSubmitProduct}
             />

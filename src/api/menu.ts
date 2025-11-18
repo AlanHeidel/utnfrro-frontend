@@ -28,17 +28,22 @@ export async function getPlatos() {
 
 export async function createPlato(payload) {
   const { data } = await api.post("/api/platos", payload);
-  return data;
+  return data.data ?? data;
 }
 
 export async function updatePlato(
   id: string,
   payload: UpdatePlatoPayload
-): Promise<PlatoDTO> {
-  const { data } = await api.put<PlatoDTO>(`/api/platos/${id}`, payload);
-  return data;
+) {
+  const { data } = await api.put(`/api/platos/${id}`, payload);
+  return data.data ?? data;
 }
 
 export async function deletePlato(id: string): Promise<void> {
   await api.delete(`/api/platos/${id}`);
+}
+
+export async function getTipoPlatos() {
+  const { data } = await api.get("/api/tipoPlatos");
+  return Array.isArray(data) ? data : data.data ?? [];
 }
