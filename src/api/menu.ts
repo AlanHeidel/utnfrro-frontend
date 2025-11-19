@@ -47,3 +47,15 @@ export async function getTipoPlatos() {
   const { data } = await api.get("/api/tipoPlatos");
   return Array.isArray(data) ? data : data.data ?? [];
 }
+
+export async function getFeaturedPlatos(limit = 6) {
+  const platos = await getPlatos();
+  const featured = platos.filter((plato) => {
+    const estado = typeof plato.estado === "string" ? plato.estado.toLowerCase() : "";
+    return estado === "destacado" || estado === "featured";
+  });
+  if (typeof limit === "number") {
+    return featured.slice(0, limit);
+  }
+  return featured;
+}

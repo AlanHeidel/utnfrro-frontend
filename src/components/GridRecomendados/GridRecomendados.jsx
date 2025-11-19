@@ -1,28 +1,26 @@
-import './GridRecomendados.css';
+import "./GridRecomendados.css";
 
-export function GridRecomendados({ product }) {
-    return (
-        <>
-            <div className="gallery-grid">
-                <div className="gallery-item item-1">
-                    <img src="./public/images/asado.webp" alt="Asado 1" />
-                </div>
-                <div className="gallery-item item-2">
-                    <img src="./public/images/asado.webp" alt="Asado 2" />
-                </div>
-                <div className="gallery-item item-3">
-                    <img src="./public/images/asado.webp" alt="Asado 3" />
-                </div>
-                <div className="gallery-item item-4">
-                    <img src="./public/images/asado.webp" alt="Asado 4" />
-                </div>
-                <div className="gallery-item item-5">
-                    <img src="./public/images/asado.webp" alt="Asado 5" />
-                </div>
-                <div className="gallery-item item-6">
-                    <img src="./public/images/asado.webp" alt="Asado 6" />
-                </div>
-            </div>
-        </>
-    )
+const SLOT_COUNT = 6;
+
+export function GridRecomendados({ products = [] }) {
+  if (!products.length) return null;
+
+  return (
+    <div className="gallery-grid">
+      {products.slice(0, SLOT_COUNT).map((product, index) => (
+        <figure
+          className={`gallery-item item-${(index % SLOT_COUNT) + 1}`}
+          key={product.id ?? index}
+        >
+          <img src={product.imagen} alt={product.nombre} loading="lazy" />
+          <figcaption className="gallery-caption">
+            <strong>{product.nombre}</strong>
+            {product.precio > 0 && (
+              <span>${product.precio.toLocaleString("es-AR")}</span>
+            )}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
 }
