@@ -147,19 +147,19 @@ export function OrdersManagement() {
 
           <div className="orders-metrics">
             <div>
-              <span className="metric-title">Recibidos</span>
+              <span className="metric-title">Recibidos: </span>
               <strong>{metrics.pending}</strong>
             </div>
             <div>
-              <span className="metric-title">En cocina</span>
+              <span className="metric-title">En cocina: </span>
               <strong>{metrics.inProgress}</strong>
             </div>
             <div>
-              <span className="metric-title">Entregados</span>
+              <span className="metric-title">Entregados: </span>
               <strong>{metrics.delivered}</strong>
             </div>
             <div>
-              <span className="metric-title">Pedidos totales</span>
+              <span className="metric-title">Pedidos totales: </span>
               <strong>{orders.length}</strong>
             </div>
           </div>

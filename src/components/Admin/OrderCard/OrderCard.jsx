@@ -67,10 +67,7 @@ export function OrderCard({
             <dt>Total</dt>
             <dd>{formatCurrency(order.total)}</dd>
           </div>
-          <div>
-            <dt>Método</dt>
-            <dd>{order.type === "delivery" ? "Delivery" : "En salón"}</dd>
-          </div>
+
           <div>
             <dt>Mozo</dt>
             <dd>{order.waiter}</dd>

@@ -418,6 +418,12 @@
   flex-wrap: wrap;
 }
 
+.toolbar-right {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
 .filter-pill {
   border: 1px solid #d1d5db;
   border-radius: 999px;
