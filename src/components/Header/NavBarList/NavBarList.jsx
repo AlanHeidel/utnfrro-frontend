@@ -1,10 +1,19 @@
 import "./NavBarList.css";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { LoginCard } from "../../Login/LoginCard.jsx";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/auth.jsx";
 
 export function NavBarList() {
-  const [showLogin, setShowLogin] = useState(false);
+  const { openLoginModal, isAuthenticated, type, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleReserve = () => {
+    if (isAuthenticated && type === "client") {
+      navigate("/reservas");
+      return;
+    }
+    openLoginModal();
+  };
+
   return (
     <>
       <Link to="/menu" className="montserrat">
@@ -18,13 +27,21 @@ export function NavBarList() {
       </Link>
       <button
         className="montserrat reserve-button"
-        onClick={() => {
-          setShowLogin(true);
-        }}
+        onClick={handleReserve}
       >
         RESERVÁ UNA MESA
       </button>
-      {showLogin && <LoginCard onClose={() => setShowLogin(false)} />}
+      {isAuthenticated && (
+        <button
+          className="montserrat reserve-button"
+          onClick={() => {
+            logout();
+            navigate("/");
+          }}
+        >
+          Salir
+        </button>
+      )}
     </>
   );
 }

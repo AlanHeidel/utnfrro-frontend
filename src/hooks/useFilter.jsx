@@ -8,7 +8,9 @@ export function useFilter() {
     return products.filter((product) => {
       const matchesPrice = product.price <= filters.maxPrice;
       const matchesCategory =
-        filters.category === "all" || product.category === filters.category;
+        filters.category === "Todas" ||
+        filters.category === "all" ||
+        (product.category || "").toLowerCase() === filters.category.toLowerCase();
       const matchesSearch =
         !filters.searchTerm ||
         product.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||

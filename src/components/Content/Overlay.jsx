@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import './Overlay.css'
 
 export function Overlay () {
@@ -5,7 +6,7 @@ export function Overlay () {
     <>
         <div className="overlay">
               <img src="public/images/image-overlay.webp" alt="Logo del restaurante" />
-              <button className="order-button montserrat">ORDENÁ</button>
+              <Link to="/menu" className="order-button montserrat">ORDENÁ</Link>
             </div>
     </>
     )

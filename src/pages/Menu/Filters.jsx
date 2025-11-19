@@ -2,7 +2,7 @@ import { useId } from "react";
 import "./Filters.css";
 import { useFilter } from "../../hooks/useFilter.jsx";
 
-export function Filters() {
+export function Filters({ categories = [] }) {
   const { filters, setFilters } = useFilter();
 
   const categoryFilterId = useId();
@@ -67,11 +67,11 @@ export function Filters() {
           className="category-select"
           value={filters.category}
         >
-          <option value="all">Todas</option>
-          <option value="entrada">Entradas</option>
-          <option value="principal">Plato Principal</option>
-          <option value="postre">Postres</option>
-          <option value="bebida">Bebidas</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
         </select>
       </div>
     </section>

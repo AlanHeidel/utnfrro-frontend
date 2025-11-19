@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
+import { useAuth } from "../../../context/auth.jsx";
 
 // Iconos SVG
 const DashboardIcon = () => (
@@ -84,6 +85,8 @@ const UserIcon = () => (
 export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const menuItems = [
     {
@@ -192,7 +195,14 @@ export function Sidebar() {
             </div>
           )}
         </div>
-        <button className="logout-btn" title="Cerrar sesión">
+        <button
+          className="logout-btn"
+          title="Cerrar sesión"
+          onClick={() => {
+            logout();
+            navigate("/");
+          }}
+        >
           <LogoutIcon />
           {!isCollapsed && <span>Salir</span>}
         </button>
