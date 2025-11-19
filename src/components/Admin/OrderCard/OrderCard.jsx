@@ -1,14 +1,12 @@
 import "./OrderCard.css";
 
-const statusFlow = ["pending", "preparing", "ready", "delivered", "completed"];
+const statusFlow = ["pending", "in_progress", "delivered"];
 
 const statusLabels = {
   pending: "Recibido",
-  preparing: "En cocina",
-  ready: "Listo",
-  delivered: "En mesa",
-  completed: "Cerrado",
-  cancelled: "Cancelado",
+  in_progress: "En cocina",
+  delivered: "Entregado",
+  canceled: "Cancelado",
 };
 
 function formatCurrency(value) {
@@ -28,6 +26,7 @@ export function OrderCard({
   onStatusChange,
   onAdvanceStatus,
   onViewDetails,
+  disabled = false,
 }) {
   const currentIndex = statusFlow.indexOf(order.status);
   const nextStatus =
@@ -39,10 +38,7 @@ export function OrderCard({
     <article className={`order-card order-card--${order.status}`}>
       <header className="order-card__header">
         <div>
-          <h3>{order.code}</h3>
-          <p className="muted">
-            Mesa {order.table} · {order.customer}
-          </p>
+          <h3>{order.code} - Mesa {order.table}</h3>
         </div>
         <div className="order-card__status">
           <span className={`chip chip--${order.status}`}>
@@ -85,6 +81,7 @@ export function OrderCard({
       <footer className="order-card__footer">
         <select
           value={order.status}
+          disabled={disabled}
           onChange={(event) =>
             onStatusChange(order.id, event.target.value || order.status)
           }
@@ -94,13 +91,14 @@ export function OrderCard({
               {statusLabels[status]}
             </option>
           ))}
-          <option value="cancelled">{statusLabels.cancelled}</option>
+          <option value="canceled">{statusLabels.canceled}</option>
         </select>
 
         <div className="order-card__actions">
           {nextStatus && (
             <button
               className="btn-primary"
+              disabled={disabled}
               onClick={() => onAdvanceStatus(order.id, nextStatus)}
             >
               Avanzar a {statusLabels[nextStatus]}

@@ -1,87 +1,82 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { OrderCard } from "../../components/Admin/OrderCard/OrderCard";
-
-const initialOrders = [
-  {
-    id: "O-001",
-    code: "#001 · Salón",
-    table: "5",
-    customer: "Lucía M.",
-    status: "preparing",
-    type: "dine-in",
-    waiter: "Sofía",
-    total: 4550,
-    notes: "Sin cebolla en la hamburguesa.",
-    createdAt: "2024-10-16T18:10:00Z",
-    items: [
-      { id: "i-1", name: "Hamburguesa PPA", qty: 2, total: 2400 },
-      { id: "i-2", name: "Papas con cheddar", qty: 1, total: 850 },
-      { id: "i-3", name: "Limonada", qty: 2, total: 1300 },
-    ],
-  },
-  {
-    id: "O-002",
-    code: "#002 · Delivery",
-    table: "Delivery",
-    customer: "Martín R.",
-    status: "pending",
-    type: "delivery",
-    waiter: "Romina",
-    total: 6200,
-    notes: "",
-    createdAt: "2024-10-16T18:25:00Z",
-    items: [
-      { id: "i-4", name: "Pizza Margherita", qty: 1, total: 3550 },
-      { id: "i-5", name: "Cheesecake frutos rojos", qty: 2, total: 2650 },
-    ],
-  },
-  {
-    id: "O-003",
-    code: "#003 · Salón",
-    table: "2",
-    customer: "Diego S.",
-    status: "ready",
-    type: "dine-in",
-    waiter: "Lucas",
-    total: 3120,
-    notes: "Cumpleaños. Llevar velas.",
-    createdAt: "2024-10-16T17:58:00Z",
-    items: [
-      { id: "i-6", name: "Ensalada César", qty: 1, total: 2200 },
-      { id: "i-7", name: "Agua con gas", qty: 2, total: 920 },
-    ],
-  },
-  {
-    id: "O-004",
-    code: "#004 · Salón",
-    table: "8",
-    customer: "Mesa corporativa",
-    status: "delivered",
-    type: "dine-in",
-    waiter: "Gonzalo",
-    total: 10800,
-    notes: "",
-    createdAt: "2024-10-16T17:15:00Z",
-    items: [
-      { id: "i-8", name: "Pizza Cuatro Quesos", qty: 2, total: 7500 },
-      { id: "i-9", name: "Cervezas artesanales", qty: 4, total: 3300 },
-    ],
-  },
-];
+import { getPedidos, updatePedidoEstado } from "../../api/pedidos";
 
 const statusFilters = [
   { value: "all", label: "Todos" },
   { value: "pending", label: "Recibidos" },
-  { value: "preparing", label: "En cocina" },
-  { value: "ready", label: "Listos" },
-  { value: "delivered", label: "En mesa" },
+  { value: "in_progress", label: "En cocina" },
+  { value: "delivered", label: "Entregados" },
+  { value: "canceled", label: "Cancelados" },
 ];
 
+function formatMozo(mozo) {
+  if (!mozo && mozo !== 0) return "Sin asignar";
+  if (typeof mozo === "object") {
+    const nombre = mozo?.nombre ?? "";
+    const apellido = mozo?.apellido ?? "";
+    const full = `${nombre} ${apellido}`.trim();
+    return full || "Sin asignar";
+  }
+  return `Mozo #${mozo}`;
+}
+
+function normalizePedido(pedido) {
+  const mesa = pedido.mesa ?? {};
+  const mozoLabel = formatMozo(mesa.mozo);
+  return {
+    id: pedido.id?.toString() ?? crypto.randomUUID(),
+    code: `Pedido #${pedido.id ?? "?"}`,
+    table: mesa.numeroMesa?.toString() ?? "-",
+    customer: pedido.cliente?.nombre
+      ? `${pedido.cliente.nombre} ${pedido.cliente.apellido ?? ""}`.trim()
+      : `Mesa ${mesa.numeroMesa ?? "-"}`,
+    status: pedido.estado ?? "pending",
+    type: "dine-in",
+    waiter: mozoLabel,
+    total: Number(pedido.total) || 0,
+    notes: pedido.nota ?? "",
+    createdAt: pedido.fechaHora ?? new Date().toISOString(),
+    items:
+      pedido.items?.map((item) => ({
+        id: item.id?.toString() ?? crypto.randomUUID(),
+        name: item.plato?.nombre ?? "Plato",
+        qty: item.cantidad ?? 0,
+        total: Number(item.precioUnitario ?? 0) * Number(item.cantidad ?? 0),
+      })) ?? [],
+  };
+}
+
 export function OrdersManagement() {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [updatingOrderId, setUpdatingOrderId] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const data = await getPedidos();
+        if (alive) {
+          setOrders(data.map(normalizePedido));
+        }
+      } catch (err) {
+        if (alive) setError("No pudimos cargar los pedidos");
+      } finally {
+        if (alive) setLoading(false);
+      }
+    };
+    load();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const filteredOrders = useMemo(() => {
     return orders
@@ -99,19 +94,29 @@ export function OrdersManagement() {
 
   const metrics = useMemo(() => {
     const pending = orders.filter((o) => o.status === "pending").length;
-    const preparing = orders.filter((o) => o.status === "preparing").length;
-    const ready = orders.filter((o) => o.status === "ready").length;
+    const inProgress = orders.filter((o) => o.status === "in_progress").length;
+    const delivered = orders.filter((o) => o.status === "delivered").length;
     const total = orders.reduce((acc, order) => acc + order.total, 0);
 
-    return { pending, preparing, ready, total };
+    return { pending, inProgress, delivered, total };
   }, [orders]);
 
-  const handleStatusChange = (orderId, nextStatus) => {
+  const handleStatusChange = async (orderId, nextStatus) => {
+    if (!nextStatus) return;
+    setUpdatingOrderId(orderId);
+    const previousOrders = orders;
     setOrders((prev) =>
       prev.map((order) =>
         order.id === orderId ? { ...order, status: nextStatus } : order
       )
     );
+    try {
+      await updatePedidoEstado(orderId, nextStatus);
+    } catch (error) {
+      setOrders(previousOrders);
+    } finally {
+      setUpdatingOrderId(null);
+    }
   };
 
   const handleAdvanceStatus = (orderId, nextStatus) => {
@@ -119,7 +124,7 @@ export function OrdersManagement() {
   };
 
   const handleViewDetails = (orderId) => {
-    console.log("Ver detalle de", orderId);
+    // pendiente los detalles de los pedidos
   };
 
   return (
@@ -147,11 +152,11 @@ export function OrdersManagement() {
             </div>
             <div>
               <span className="metric-title">En cocina</span>
-              <strong>{metrics.preparing}</strong>
+              <strong>{metrics.inProgress}</strong>
             </div>
             <div>
-              <span className="metric-title">Listos</span>
-              <strong>{metrics.ready}</strong>
+              <span className="metric-title">Entregados</span>
+              <strong>{metrics.delivered}</strong>
             </div>
             <div>
               <span className="metric-title">Pedidos totales</span>
@@ -176,9 +181,8 @@ export function OrdersManagement() {
               {statusFilters.map((filter) => (
                 <button
                   key={filter.value}
-                  className={`filter-pill ${
-                    statusFilter === filter.value ? "active" : ""
-                  }`}
+                  className={`filter-pill ${statusFilter === filter.value ? "active" : ""
+                    }`}
                   onClick={() => setStatusFilter(filter.value)}
                 >
                   {filter.label}
@@ -187,7 +191,11 @@ export function OrdersManagement() {
             </div>
           </header>
 
-          {filteredOrders.length === 0 ? (
+          {loading ? (
+            <div className="empty-state">Cargando pedidos...</div>
+          ) : error ? (
+            <div className="empty-state">{error}</div>
+          ) : filteredOrders.length === 0 ? (
             <div className="empty-state">
               No hay pedidos con los criterios seleccionados.
             </div>
@@ -200,6 +208,7 @@ export function OrdersManagement() {
                   onStatusChange={handleStatusChange}
                   onAdvanceStatus={handleAdvanceStatus}
                   onViewDetails={handleViewDetails}
+                  disabled={updatingOrderId === order.id}
                 />
               ))}
             </div>

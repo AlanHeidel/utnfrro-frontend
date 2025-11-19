@@ -5,10 +5,13 @@ import { CloseButton } from "./NavBarList/CloseButton.jsx";
 import { Link } from "react-router-dom";
 import { useCart } from "../../hooks/useCart.jsx";
 import { CartItem } from "../Cart/cartItem.jsx";
+import { createPedidoFromTable } from "../../api/pedidos";
 
 export function MenuHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const { cart, getTotal, getTotalItems, clearCart } = useCart();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -29,6 +32,27 @@ export function MenuHeader() {
       document.body.style.width = "";
     };
   }, [isOpen]);
+
+  const handleSubmitOrder = async () => {
+    if (cart.length === 0 || isSubmitting) return;
+    try {
+      setIsSubmitting(true);
+      setSubmitMessage("");
+      const payload = {
+        items: cart.map((item) => ({
+          platoId: item.id,
+          cantidad: item.quantity,
+        })),
+      };
+      await createPedidoFromTable(payload);
+      setSubmitMessage("¡Pedido enviado! Cocina está preparando tu orden.");
+      clearCart();
+    } catch (error) {
+      setSubmitMessage("No pudimos enviar el pedido. Intenta de nuevo.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -74,7 +98,16 @@ export function MenuHeader() {
                 <button className="cart-clear-btn" onClick={clearCart}>
                   Vaciar Carrito
                 </button>
-                <button className="cart-checkout-btn">Finalizar Pedido</button>
+                <button
+                  className="cart-checkout-btn"
+                  onClick={handleSubmitOrder}
+                  disabled={isSubmitting || cart.length === 0}
+                >
+                  {isSubmitting ? "Enviando..." : "Enviar pedido"}
+                </button>
+                {submitMessage && (
+                  <p className="cart-submit-message">{submitMessage}</p>
+                )}
               </div>
             </>
           )}

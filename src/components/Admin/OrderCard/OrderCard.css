@@ -1,6 +1,7 @@
 .order-card {
   background: #fff;
   border-radius: 16px;
+  width: 500px;
   padding: 1.25rem;
   border: 1px solid #e5e7eb;
   display: flex;
@@ -111,7 +112,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 0.75rem;
-  margin: 0;
+  margin: 15px 0 0 0;
 }
 
 .order-card__meta dt {
