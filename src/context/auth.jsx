@@ -1,48 +1,44 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { login as apiLogin } from "../api/auth";
 import { LoginCard } from "../components/Login/LoginCard.jsx";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
     const [token, setToken] = useState(() => localStorage.getItem("authToken") || "");
-    const [user, setUser] = useState(() => {
-        const saved = localStorage.getItem("authUser");
-        return saved ? JSON.parse(saved) : null;
-    });
-    const [type, setType] = useState(() => localStorage.getItem("authType") || null);
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [redirectPath, setRedirectPath] = useState("/");
+    const claims = useMemo(() => {
+        if (!token || token.split(".").length < 3) return null;
+        try {
+            return jwtDecode(token);
+        } catch {
+            return null;
+        }
+    }, [token]);
+    const kind = claims?.kind; // "account" | "table-device"
+    const role = claims?.role; // "ADMIN" | "CLIENTE"
+    const type = useMemo(() => {
+        if (kind === "table-device") return "table-device";
+        if (role) return role.toLowerCase(); // "admin" | "cliente"
+        return null;
+    }, [kind, role]);
 
     useEffect(() => {
         if (token) localStorage.setItem("authToken", token);
         else localStorage.removeItem("authToken");
     }, [token]);
 
-    useEffect(() => {
-        if (user) localStorage.setItem("authUser", JSON.stringify(user));
-        else localStorage.removeItem("authUser");
-    }, [user]);
-
-    useEffect(() => {
-        if (type) localStorage.setItem("authType", type);
-        else localStorage.removeItem("authType");
-    }, [type]);
-
     const login = async (identifier, password) => {
         const response = await apiLogin({ identifier, password });
-        const resolvedType = response.type ?? (response.data?.role ? String(response.data.role).toLowerCase() : null);
         setToken(response.token);
-        setUser(response.data);
-        setType(resolvedType);
         setShowLoginModal(false);
-        return { token: response.token, data: response.data, type: resolvedType };
+        return response;
     };
 
     const logout = () => {
         setToken("");
-        setUser(null);
-        setType(null);
     };
 
     const openLoginModal = () => setShowLoginModal(true);
@@ -51,7 +47,8 @@ export function AuthProvider({ children }) {
     const value = useMemo(
         () => ({
             token,
-            user,
+            kind,
+            role,
             type,
             isAuthenticated: Boolean(token),
             login,
@@ -62,7 +59,7 @@ export function AuthProvider({ children }) {
             setRedirectPath,
             clearRedirectPath: () => setRedirectPath("/"),
         }),
-        [token, user, type, redirectPath]
+        [token, redirectPath]
     );
 
     return (
