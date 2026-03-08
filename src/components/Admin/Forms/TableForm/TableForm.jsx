@@ -3,8 +3,11 @@ import "../Form.css";
 
 const emptyProduct = {
   id: null,
-  nombre: "",
-  apellido: "",
+  numeroMesa: "",
+  capacidad: "",
+  lugar: "",
+  estado: "disponible",
+  mozoId: "",
 };
 
 export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
@@ -33,12 +36,17 @@ export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const selected = mozos.find((m) => String(m.id) === String(formValues.mozoId));
+    const numeroMesa =
+      formValues.numeroMesa === "" ? undefined : Number(formValues.numeroMesa);
+    const capacidad =
+      formValues.capacidad === "" ? undefined : Number(formValues.capacidad);
+    const mozoId =
+      formValues.mozoId === "" ? undefined : Number(formValues.mozoId);
     onSubmit({
       ...formValues,
-      numeroMesa: Number(formValues.numeroMesa),
-      capacidad: Number(formValues.capacidad),
-      mozoId: formValues.mozoId ? Number(formValues.mozoId) : undefined,
+      numeroMesa,
+      capacidad,
+      mozoId,
     });
   };
 
@@ -89,7 +97,9 @@ export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
             onChange={handleChange}
             required
           >
-            <option value="" disabled>Seleccioná un estado</option>
+            <option value="" disabled>
+              Seleccioná un estado
+            </option>
             <option value="disponible">Disponible</option>
             <option value="reservada">Reservada</option>
             <option value="ocupada">Ocupada</option>
@@ -105,7 +115,9 @@ export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
           onChange={handleChange}
           required
         >
-          <option value="" disabled>Seleccioná un mozo</option>
+          <option value="" disabled>
+            Seleccioná un mozo
+          </option>
           {mozos.map((mozo) => (
             <option key={mozo.id} value={mozo.id}>
               {mozo.nombre} {mozo.apellido}
@@ -119,7 +131,7 @@ export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
           Cancelar
         </button>
         <button type="submit" className="btn-primary">
-          {formValues.id ? "Guardar cambios" : "Crear producto"}
+          {formValues.id ? "Guardar cambios" : "Crear mesa"}
         </button>
       </footer>
     </form>

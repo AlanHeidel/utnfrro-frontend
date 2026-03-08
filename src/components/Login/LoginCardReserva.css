@@ -1,0 +1,154 @@
+.reservas-auth {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: var(--sidebar-bg, #1a1a1a);
+}
+
+.reservas-auth__panel {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 320ms ease,
+    border-radius 320ms ease;
+}
+
+.reservas-auth__panel--icon {
+  left: 0;
+  z-index: 1;
+  background: var(--sidebar-bg, #1a1a1a);
+}
+
+.reservas-auth__panel--form {
+  left: 50%;
+  z-index: 2;
+  background: var(--primary-orange, #ff6b35);
+  border-top-left-radius: 42px;
+  border-bottom-left-radius: 42px;
+}
+
+.reservas-auth.is-register .reservas-auth__panel--icon {
+  transform: translateX(100%);
+  background: var(--primary-orange, #ff6b35);
+}
+
+.reservas-auth.is-register .reservas-auth__panel--form {
+  transform: translateX(-100%);
+  background: var(--sidebar-bg, #1a1a1a);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 42px;
+  border-bottom-right-radius: 42px;
+}
+
+.reservas-auth__icon-shell {
+  width: 168px;
+  height: 168px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.reservas-auth__icon-shell svg {
+  width: 88px;
+  height: 88px;
+  color: #ffffff;
+}
+
+.reservas-auth__card {
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reservas-auth.is-register .reservas-auth__card {
+  transform: scale(1.01);
+}
+
+.reservas-auth__switch-line {
+  margin: 0;
+  font-size: 14px;
+  color: #4b5563;
+  text-align: center;
+}
+
+.reservas-auth__switch-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--primary-orange, #ff6b35);
+  font-weight: 700;
+  margin-left: 6px;
+  padding: 0;
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+.reservas-auth__switch-button--standalone {
+  margin-left: 0;
+}
+
+.reservas-auth__info {
+  margin: 0;
+  font-size: 14px;
+  color: #165c2a;
+  background: rgba(35, 153, 84, 0.14);
+  border-radius: 10px;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+@media (max-width: 900px) {
+  .reservas-auth {
+    display: grid;
+    grid-template-rows: 220px 1fr;
+  }
+
+  .reservas-auth__panel {
+    position: relative;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+    border-radius: 0 !important;
+    padding: 24px 16px;
+  }
+
+  .reservas-auth__panel--icon {
+    min-height: 220px;
+    background: var(--sidebar-bg, #1a1a1a);
+  }
+
+  .reservas-auth__panel--form {
+    min-height: calc(100vh - 220px);
+    background: var(--primary-orange, #ff6b35);
+    padding-top: 24px;
+    padding-bottom: 32px;
+  }
+
+  .reservas-auth.is-register .reservas-auth__panel--icon {
+    background: var(--primary-orange, #ff6b35);
+  }
+
+  .reservas-auth.is-register .reservas-auth__panel--form {
+    background: var(--sidebar-bg, #1a1a1a);
+  }
+
+  .reservas-auth__icon-shell {
+    width: 120px;
+    height: 120px;
+  }
+
+  .reservas-auth__icon-shell svg {
+    width: 64px;
+    height: 64px;
+  }
+}

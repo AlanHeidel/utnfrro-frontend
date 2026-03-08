@@ -1,10 +1,13 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import { Home } from "./pages/Home.jsx";
 import { About } from "./pages/About.jsx";
 import { Menu } from "./pages/Menu/Menu.jsx";
 import { Admin } from "./pages/Admin/Admin.jsx";
 import { Reservas } from "./pages/Reservas.jsx";
+import { AdminLoginPage } from "./components/Login/AdminLoginPage.jsx";
+import { LoginCardMesa } from "./components/Login/LoginCardMesa.jsx";
+import { LoginCardReserva } from "./components/Login/LoginCardReserva.jsx";
 import { ProtectedRoute } from "./components/Routes/ProtectedRoute.jsx";
 import { MainLayout } from "./Layouts/MainLayout.jsx";
 import { MenuLayout } from "./Layouts/MenuLayout.jsx";
@@ -25,16 +28,17 @@ export function App() {
               <Route
                 path="/reservas"
                 element={
-                  <ProtectedRoute allowed={["client"]}>
+                  <ProtectedRoute allowed={["cliente", "client"]}>
                     <Reservas />
                   </ProtectedRoute>
                 }
               />
             </Route>
-          <Route element={<MenuLayout />}>
-            <Route
-              path="/menu"
-              element={
+            <Route path="/reservas/login" element={<LoginCardReserva />} />
+            <Route element={<MenuLayout />}>
+              <Route
+                path="/menu"
+                element={
                   <ProtectedRoute allowed={["table-device"]}>
                     <FiltersProvider>
                       <Menu />
@@ -43,6 +47,11 @@ export function App() {
                 }
               />
             </Route>
+            <Route path="/menu/login" element={<LoginCardMesa />} />
+            <Route path="/mesa/login" element={<Navigate to="/menu/login" replace />} />
+            {/* Login de admin: página separada */}
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            {/* Panel admin protegido: si no hay token admin, redirige al login */}
             <Route
               path="/admin/*"
               element={
@@ -57,5 +66,4 @@ export function App() {
       </ToastProvider>
     </AuthProvider>
   );
-
 }

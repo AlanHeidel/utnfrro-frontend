@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 import { useAuth } from "../../../context/auth.jsx";
 
@@ -63,12 +62,6 @@ const SettingsIcon = () => (
   </svg>
 );
 
-const ChevronIcon = ({ direction }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d={direction === "left" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"} />
-  </svg>
-);
-
 const LogoutIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
@@ -83,9 +76,7 @@ const UserIcon = () => (
 );
 
 export function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
   const { logout } = useAuth();
 
   const menuItems = [
@@ -142,24 +133,15 @@ export function Sidebar() {
   };
 
   return (
-    <aside className={`admin-sidebar ${isCollapsed ? "collapsed" : ""}`}>
+    <aside className="admin-sidebar">
       {/* Header del Sidebar */}
       <div className="sidebar-header">
-        {!isCollapsed && (
-          <div className="sidebar-logo">
-            <span className="logo-icon">
-              <img src="../../../public/images/home-icon.png" alt="logo" />
-            </span>
-            <h2>PPA Admin</h2>
-          </div>
-        )}
-        <button
-          className="collapse-btn"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          title={isCollapsed ? "Expandir" : "Contraer"}
-        >
-          <ChevronIcon direction={isCollapsed ? "right" : "left"} />
-        </button>
+        <div className="sidebar-logo">
+          <span className="logo-icon">
+            <img src="../../../public/images/home-icon.png" alt="logo" />
+          </span>
+          <h2>PPA Admin</h2>
+        </div>
       </div>
 
       {/* Menú de navegación */}
@@ -170,12 +152,10 @@ export function Sidebar() {
               <Link
                 to={item.path}
                 className={`nav-link ${isActive(item) ? "active" : ""}`}
-                title={isCollapsed ? item.label : ""}
+                title={item.label}
               >
                 <span className="nav-icon">{item.icon}</span>
-                {!isCollapsed && (
-                  <span className="nav-label">{item.label}</span>
-                )}
+                <span className="nav-label">{item.label}</span>
               </Link>
             </li>
           ))}
@@ -184,27 +164,25 @@ export function Sidebar() {
 
       {/* Footer del Sidebar */}
       <div className="sidebar-footer">
-        <div className={`user-info ${isCollapsed ? "collapsed" : ""}`}>
+        <div className="user-info">
           <div className="user-avatar">
             <UserIcon />
           </div>
-          {!isCollapsed && (
-            <div className="user-details">
-              <p className="user-name">Admin</p>
-              <p className="user-role">Administrador</p>
-            </div>
-          )}
+          <div className="user-details">
+            <p className="user-name">Admin</p>
+            <p className="user-role">Administrador</p>
+          </div>
         </div>
         <button
           className="logout-btn"
           title="Cerrar sesión"
           onClick={() => {
             logout();
-            navigate("/");
+            window.location.replace("/");
           }}
         >
           <LogoutIcon />
-          {!isCollapsed && <span>Salir</span>}
+          <span>Salir</span>
         </button>
       </div>
     </aside>

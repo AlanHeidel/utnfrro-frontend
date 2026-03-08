@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { ProductForm } from "../../components/Admin/Forms/ProductForm/ProductForm";
+import { AdminModal } from "../../components/Admin/Modal/AdminModal";
 import {
   getPlatos,
   createPlato,
@@ -22,9 +23,8 @@ function capitalize(word) {
 
 function normalizePlato(plato) {
   const price = Number(plato.precio) || 0;
-  const cost = Number(
-    plato.costo ?? plato.precioCocina ?? plato.cost ?? 0
-  ) || 0;
+  const cost =
+    Number(plato.costo ?? plato.precioCocina ?? plato.cost ?? 0) || 0;
   const description = plato.descrip ?? plato.descripcion ?? "";
 
   const status = plato.estado ?? "Disponible";
@@ -33,8 +33,8 @@ function normalizePlato(plato) {
   const ingredients = Array.isArray(rawIngredientes)
     ? rawIngredientes
     : typeof rawIngredientes === "string"
-      ? JSON.parse(rawIngredientes)
-      : [];
+    ? JSON.parse(rawIngredientes)
+    : [];
   const tipoPlatoData = plato.tipoPlato ?? {};
   const categoryId = tipoPlatoData.id?.toString() ?? "";
   const categoryName =
@@ -42,7 +42,8 @@ function normalizePlato(plato) {
       ? plato.tipoPlato
       : tipoPlatoData.name ?? tipoPlatoData.tipo ?? "";
   const tags = ingredients.map(capitalize);
-  const default_image = "https://www.sillasmesas.es/blog/wp-content/webp-express/webp-images/uploads/2020/06/Que-tipos-de-restaurantes-hay.jpg.webp"
+  const default_image =
+    "https://www.sillasmesas.es/blog/wp-content/webp-express/webp-images/uploads/2020/06/Que-tipos-de-restaurantes-hay.jpg.webp";
 
   return {
     id: plato.id?.toString() ?? crypto.randomUUID(),
@@ -115,7 +116,9 @@ export function MenuManagement() {
       }
     };
     loadTipos();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const categories = useMemo(() => {
@@ -151,7 +154,11 @@ export function MenuManagement() {
 
   const handleSubmitProduct = async (formData) => {
     try {
-      const estadoMap = { available: "disponible", featured: "destacado", unavailable: "agotado" }
+      const estadoMap = {
+        available: "disponible",
+        featured: "destacado",
+        unavailable: "agotado",
+      };
       const payload = {
         nombre: formData.name,
         precio: Number(formData.price),
@@ -178,10 +185,14 @@ export function MenuManagement() {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      await deletePlato(productId);
-      setProducts((prev) => prev.filter((product) => product.id !== productId));
+      await updatePlato(productId, { estado: "agotado" });
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === productId ? { ...product, status: "agotado" } : product
+        )
+      );
     } catch (error) {
-      setError("No pudimos eliminar el plato");
+      setError("No pudimos actualizar el plato");
     }
   };
 
@@ -243,7 +254,9 @@ export function MenuManagement() {
               {filteredProducts.map((product) => {
                 const margin =
                   product.price > 0
-                    ? Math.round(((product.price - product.cost) / product.price) * 100)
+                    ? Math.round(
+                        ((product.price - product.cost) / product.price) * 100
+                      )
                     : 100;
 
                 return (
@@ -259,7 +272,9 @@ export function MenuManagement() {
                         <p className="muted">{product.category}</p>
                       </div>
                       <span
-                        className={`chip ${statusClasses[product.status] ?? ""}`}
+                        className={`chip ${
+                          statusClasses[product.status] ?? ""
+                        }`}
                       >
                         {product.status ?? ""}
                       </span>
@@ -280,9 +295,7 @@ export function MenuManagement() {
                       </div>
                       <div>
                         <dt>Margin</dt>
-                        <dd>
-                          {margin}%
-                        </dd>
+                        <dd>{margin}%</dd>
                       </div>
                     </dl>
 
@@ -303,12 +316,18 @@ export function MenuManagement() {
                       >
                         Editar
                       </button>
-                      <button
-                        className="btn-link danger"
-                        onClick={() => handleDeleteProduct(product.id)}
-                      >
-                        Eliminar
-                      </button>
+
+                      {product.status === "agotado" ? (
+                        ""
+                      ) : (
+                        <button
+                          className="btn-link danger"
+                          onClick={() => handleDeleteProduct(product.id)}
+                          disabled={product.status === "agotado"}
+                        >
+                          Eliminar
+                        </button>
+                      )}
                     </footer>
                   </article>
                 );
@@ -318,15 +337,17 @@ export function MenuManagement() {
         </section>
 
         {isFormOpen && (
-          <div className="dashboard-section">
-            <h2>{editingProduct ? "Editar producto" : "Nuevo producto"}</h2>
+          <AdminModal
+            title={editingProduct ? "Editar producto" : "Nuevo producto"}
+            onClose={handleCloseForm}
+          >
             <ProductForm
               initialValues={editingProduct}
               categoryOptions={typeOptions}
               onCancel={handleCloseForm}
               onSubmit={handleSubmitProduct}
             />
-          </div>
+          </AdminModal>
         )}
       </div>
     </div>

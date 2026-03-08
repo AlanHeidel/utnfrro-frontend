@@ -23,4 +23,24 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const url = String(error?.config?.url ?? "");
+    const message = String(error?.response?.data?.message ?? "").toLowerCase();
+    const isLoginRequest = url.includes("/api/accounts/login");
+    const isTokenError =
+      message.includes("token") ||
+      message.includes("jwt") ||
+      message.includes("expired") ||
+      message.includes("inválido") ||
+      message.includes("invalido");
 
+    if (status === 401 && !isLoginRequest && isTokenError) {
+      localStorage.removeItem("authToken");
+      window.dispatchEvent(new Event("auth:logout"));
+    }
+    return Promise.reject(error);
+  },
+);

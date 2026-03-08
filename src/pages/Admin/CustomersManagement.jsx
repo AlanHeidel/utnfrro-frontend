@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { TableForm } from "../../components/Admin/Forms/TableForm/TableForm";
+import { AdminModal } from "../../components/Admin/Modal/AdminModal";
 import {
   getMesas,
   createMesa,
@@ -28,8 +29,10 @@ function normalizeMesa(mesa) {
     capacidad: mesa.capacidad ?? 0,
     lugar: mesa.lugar ?? "",
     estado: mesa.estado ?? "disponible",
-    mozoId: mesa.mozo?.id?.toString() ?? "",
-    mozoNombre: mesa.mozo ? `${mesa.mozo.nombre} ${mesa.mozo.apellido}` : "Sin asignar",
+    mozoId: mesa.mozo?.id?.toString() ?? mesa.mozoId?.toString() ?? "",
+    mozoNombre: mesa.mozo
+      ? `${mesa.mozo.nombre} ${mesa.mozo.apellido}`
+      : "",
   };
 }
 
@@ -59,15 +62,15 @@ export function CustomersManagement() {
   const handleSubmitProduct = async (formData) => {
     try {
       const payload = {
-        numeroMesa: Number(formData.numeroMesa),
-        capacidad: Number(formData.capacidad),
+        numeroMesa: formData.numeroMesa,
+        capacidad: formData.capacidad,
         lugar: formData.lugar,
         estado: formData.estado,
-        mozo: Number(formData.mozoId),
+        mozoId: formData.mozoId ?? undefined,
       };
 
       if (formData.id) {
-        await updateMesa(formData.id, payload);
+        await updateMesa(Number(formData.id), payload);
       } else {
         await createMesa(payload);
       }
@@ -99,7 +102,9 @@ export function CustomersManagement() {
       }
     };
     load();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -108,10 +113,14 @@ export function CustomersManagement() {
       try {
         const data = await getMozos();
         if (alive) setMozos(data);
-      } catch (_) { if (alive) setMozos([]); }
+      } catch (_) {
+        if (alive) setMozos([]);
+      }
     };
     loadMozos();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const filteredTables = useMemo(() => {
@@ -121,30 +130,45 @@ export function CustomersManagement() {
 
   const metrics = useMemo(() => {
     const total = tables.length || 0;
-    const occupied = tables.filter(t => t.estado === "ocupada").length;
-    const reserved = tables.filter(t => t.estado === "reservada").length;
-    const free = tables.filter(t => t.estado === "disponible").length;
+    const occupied = tables.filter((t) => t.estado === "ocupada").length;
+    const reserved = tables.filter((t) => t.estado === "reservada").length;
+    const free = tables.filter((t) => t.estado === "disponible").length;
 
-    const utilization = total > 0
-      ? Math.round(((occupied + reserved) / total) * 100)
-      : 0;
+    const utilization =
+      total > 0 ? Math.round(((occupied + reserved) / total) * 100) : 0;
 
     return { occupied, reserved, free, utilization };
   }, [tables]);
+
+  const mozosById = useMemo(() => {
+    return new Map(mozos.map((mozo) => [String(mozo.id), mozo]));
+  }, [mozos]);
 
   const order = ["disponible", "reservada", "ocupada"];
   const cycleStatus = async (tableId) => {
     const current = tables.find((t) => t.id === tableId);
     if (!current) return;
+    const mesaId = Number(tableId);
 
-    const nextStatus = order[(order.indexOf(current.estado) + 1) % order.length];
+    const nextStatus =
+      order[(order.indexOf(current.estado) + 1) % order.length];
 
     setTables((prev) =>
       prev.map((t) => (t.id === tableId ? { ...t, estado: nextStatus } : t))
     );
 
     try {
-      await updateMesa(tableId, { estado: nextStatus });
+      const mozoValue =
+        current.mozoId === "" || current.mozoId === null || current.mozoId === undefined
+          ? undefined
+          : Number(current.mozoId);
+      await updateMesa(mesaId, {
+        numeroMesa: Number(current.numeroMesa),
+        capacidad: Number(current.capacidad),
+        lugar: current.lugar,
+        estado: nextStatus,
+        mozoId: mozoValue,
+      });
     } catch (e) {
       const data = await getMesas();
       setTables(data.map(normalizeMesa));
@@ -169,19 +193,19 @@ export function CustomersManagement() {
 
           <div className="tables-metrics">
             <div>
-              <span className="metric-title">Mesas ocupadas:  </span>
+              <span className="metric-title">Mesas ocupadas: </span>
               <strong>{metrics.occupied}</strong>
             </div>
             <div>
-              <span className="metric-title">Reservas:  </span>
+              <span className="metric-title">Reservas: </span>
               <strong>{metrics.reserved}</strong>
             </div>
             <div>
-              <span className="metric-title">Mesas libres:  </span>
+              <span className="metric-title">Mesas libres: </span>
               <strong>{metrics.free}</strong>
             </div>
             <div>
-              <span className="metric-title">Total mesas:  </span>
+              <span className="metric-title">Total mesas: </span>
               <strong>{tables.length}</strong>
             </div>
           </div>
@@ -191,8 +215,9 @@ export function CustomersManagement() {
           <div className="tables-toolbar">
             <div className="toolbar-left">
               <button
-                className={`filter-pill ${statusFilter === "all" ? "active" : ""
-                  }`}
+                className={`filter-pill ${
+                  statusFilter === "all" ? "active" : ""
+                }`}
                 onClick={() => setStatusFilter("all")}
               >
                 Todas
@@ -200,8 +225,9 @@ export function CustomersManagement() {
               {Object.entries(statusLabels).map(([value, label]) => (
                 <button
                   key={value}
-                  className={`filter-pill ${statusFilter === value ? "active" : ""
-                    }`}
+                  className={`filter-pill ${
+                    statusFilter === value ? "active" : ""
+                  }`}
                   onClick={() => setStatusFilter(value)}
                 >
                   {label}
@@ -226,25 +252,31 @@ export function CustomersManagement() {
                   <header className="table-card__header">
                     <h3>Mesa {table.numeroMesa}</h3>
                     <span
-                      className={`table-status ${statusClasses[table.estado] ?? ""
-                        }`}
+                      className={`table-status ${
+                        statusClasses[table.estado] ?? ""
+                      }`}
                     >
                       {statusLabels[table.estado] ?? table.estado}
                     </span>
                   </header>
 
                   <div className="ubi-capacity">
-                    <p className="product-tag">{table.lugar || "Sin ubicación"}</p>
-
-                    <p className="muted">
-                      Capacidad {table.capacidad}
+                    <p className="product-tag">
+                      {table.lugar || "Sin ubicación"}
                     </p>
+
+                    <p className="muted">Capacidad {table.capacidad}</p>
                   </div>
 
                   <div className="table-card__meta">
                     <div>
                       <span className="metric-title">Mozo asignado</span>
-                      <strong>{table.mozoNombre || "Sin asignar"}</strong>
+                      <strong>
+                        {table.mozoNombre ||
+                          (table.mozoId && mozosById.get(String(table.mozoId))
+                            ? `${mozosById.get(String(table.mozoId)).nombre} ${mozosById.get(String(table.mozoId)).apellido}`
+                            : "Sin asignar")}
+                      </strong>
                     </div>
                   </div>
 
@@ -262,7 +294,12 @@ export function CustomersManagement() {
                       </button>
                     </div>
                     <div className="btn-tables-container">
-                      <button className="btn-secondary" onClick={() => openEditForm(table)}>Editar</button>
+                      <button
+                        className="btn-secondary"
+                        onClick={() => openEditForm(table)}
+                      >
+                        Editar
+                      </button>
                       <button
                         className="btn-primary"
                         onClick={() => cycleStatus(table.id)}
@@ -270,7 +307,6 @@ export function CustomersManagement() {
                         Cambiar estado
                       </button>
                     </div>
-
                   </footer>
                 </article>
               ))}
@@ -279,17 +315,18 @@ export function CustomersManagement() {
         </section>
 
         {isFormOpen && (
-          <div className="dashboard-section">
-            <h2>{editingProduct ? "Editar producto" : "Nuevo producto"}</h2>
+          <AdminModal
+            title={editingProduct ? "Editar mesa" : "Nueva mesa"}
+            onClose={handleCloseForm}
+          >
             <TableForm
               initialValues={editingProduct}
               mozos={mozos}
               onCancel={handleCloseForm}
               onSubmit={handleSubmitProduct}
             />
-          </div>
+          </AdminModal>
         )}
-
       </div>
     </div>
   );

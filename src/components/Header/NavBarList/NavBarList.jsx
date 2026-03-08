@@ -3,22 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/auth.jsx";
 
 export function NavBarList() {
-  const { openLoginModal, isAuthenticated, type, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth(); // ← sacamos openLoginModal
   const navigate = useNavigate();
-
-  const handleReserve = () => {
-    if (isAuthenticated && type === "client") {
-      navigate("/reservas");
-      return;
-    }
-    openLoginModal();
-  };
 
   return (
     <>
-      <Link to="/menu" className="montserrat">
+      <button
+        className="montserrat menu-button"
+        onClick={() => navigate("/menu")}
+      >
         MENU
-      </Link>
+      </button>
       <Link to="/" className="montserrat">
         RECOMENDADOS
       </Link>
@@ -27,7 +22,7 @@ export function NavBarList() {
       </Link>
       <button
         className="montserrat reserve-button"
-        onClick={handleReserve}
+        onClick={() => navigate("/reservas")}
       >
         RESERVÁ UNA MESA
       </button>
@@ -36,7 +31,7 @@ export function NavBarList() {
           className="montserrat reserve-button"
           onClick={() => {
             logout();
-            navigate("/");
+            window.location.replace("/");
           }}
         >
           Salir

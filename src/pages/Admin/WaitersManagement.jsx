@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { WaiterForm } from "../../components/Admin/Forms/WaiterForm/WaiterForm";
+import { AdminModal } from "../../components/Admin/Modal/AdminModal";
 import {
     getMozos,
     createMozo,
@@ -147,19 +148,19 @@ export function WaitersManagement() {
                     )}
                 </section>
 
-                {
-                    isFormOpen && (
-                        <div className="dashboard-section">
-                            <h2>{editingProduct ? "Editar mozo" : "Nuevo mozo"}</h2>
-                            <WaiterForm
-                                initialValues={editingProduct}
-                                mozos={mozos}
-                                onCancel={handleCloseForm}
-                                onSubmit={handleSubmitProduct}
-                            />
-                        </div>
-                    )
-                }
+                {isFormOpen && (
+                    <AdminModal
+                        title={editingProduct ? "Editar mozo" : "Nuevo mozo"}
+                        onClose={handleCloseForm}
+                    >
+                        <WaiterForm
+                            initialValues={editingProduct}
+                            mozos={mozos}
+                            onCancel={handleCloseForm}
+                            onSubmit={handleSubmitProduct}
+                        />
+                    </AdminModal>
+                )}
 
             </div >
         </div >

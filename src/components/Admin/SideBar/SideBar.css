@@ -28,10 +28,6 @@
   border-right: 1px solid var(--border-color);
 }
 
-.admin-sidebar.collapsed {
-  width: 80px;
-}
-
 /* Header */
 .sidebar-header {
   padding: 1.5rem;
@@ -77,33 +73,6 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.collapse-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  padding: 0;
-}
-
-.collapse-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
-.collapse-btn:hover {
-  background: var(--hover-bg);
-  border-color: var(--primary-orange);
-  color: var(--primary-orange);
-  transform: scale(1.05);
 }
 
 /* Navegación */
@@ -208,15 +177,6 @@
   font-size: 0.9375rem;
 }
 
-.collapsed .nav-label {
-  display: none;
-}
-
-.collapsed .nav-link {
-  justify-content: center;
-  padding: 0.875rem;
-}
-
 /* Footer */
 .sidebar-footer {
   padding: 1.5rem;
@@ -233,11 +193,6 @@
   background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   border: 1px solid var(--border-color);
-}
-
-.user-info.collapsed {
-  justify-content: center;
-  padding: 0.75rem 0.5rem;
 }
 
 .user-avatar {
@@ -304,14 +259,6 @@
   box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
 }
 
-.collapsed .logout-btn {
-  padding: 0.75rem 0.5rem;
-}
-
-.collapsed .logout-btn span {
-  display: none;
-}
-
 /* Animaciones */
 @keyframes fadeIn {
   from {
@@ -326,11 +273,6 @@
 @media (max-width: 768px) {
   .admin-sidebar {
     width: 80px;
-  }
-
-  .admin-sidebar.collapsed {
-    width: 0;
-    padding: 0;
   }
 
   .sidebar-logo,

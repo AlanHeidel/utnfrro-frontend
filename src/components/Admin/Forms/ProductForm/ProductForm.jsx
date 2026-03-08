@@ -29,6 +29,17 @@ const statusMap = {
 export function ProductForm({ initialValues, categoryOptions, onCancel, onSubmit }) {
   const [formValues, setFormValues] = useState(emptyProduct);
   const [tagInput, setTagInput] = useState("");
+  const resolvedCategories = useMemo(
+    () =>
+      (categoryOptions ?? [])
+        .map((category) => {
+          const id = category.id ?? category.tipoId ?? category._id ?? "";
+          const label = category.name ?? category.nombre ?? category.tipo ?? "";
+          return { id, label };
+        })
+        .filter((category) => category.id !== "" && category.label !== ""),
+    [categoryOptions]
+  );
 
   useEffect(() => {
     if (initialValues) {
@@ -105,9 +116,9 @@ export function ProductForm({ initialValues, categoryOptions, onCancel, onSubmit
             required
           >
             <option value="" disabled>Seleccioná una categoría</option>
-            {categoryOptions.map((category) => (
+            {resolvedCategories.map((category) => (
               <option key={category.id} value={category.id}>
-                {category.name}
+                {category.label}
               </option>
             ))}
           </select>
