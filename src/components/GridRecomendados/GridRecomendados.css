@@ -12,6 +12,7 @@
   position: relative;
   overflow: hidden;
   border-radius: 16px;
+  margin: 0;
 }
 
 .gallery-item img {

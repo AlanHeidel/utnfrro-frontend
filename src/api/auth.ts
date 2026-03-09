@@ -8,7 +8,7 @@ export interface LoginPayload {
 export interface LoginResponse {
     message: string;
     token: string;
-    type: "admin" | "client" | "table-device";
+    type: "admin" | "client" | "cliente" | "table-device";
     data: any;
 }
 
@@ -18,7 +18,7 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
 }
 
 export interface RegisterPayload {
-    name: string;
+    nombre: string;
     email: string;
     password: string;
 }

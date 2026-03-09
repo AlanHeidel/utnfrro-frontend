@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../context/auth.jsx";
-import { CalendarDays, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { registerClient } from "../../api/auth";
 import "./LoginCard.css";
 import "./LoginCardReserva.css";
 
@@ -29,6 +30,7 @@ export function LoginCardReserva() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setRegisterInfo("");
     setLoading(true);
     try {
       await login(identifier, password);
@@ -40,7 +42,7 @@ export function LoginCardReserva() {
     }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setRegisterError("");
     setRegisterInfo("");
@@ -49,8 +51,28 @@ export function LoginCardReserva() {
       setRegisterError("Las contrasenas no coinciden.");
       return;
     }
+    try {
+      await registerClient({
+        nombre: registerData.nombre.trim(),
+        email: registerData.email.trim(),
+        password: registerData.password,
+      });
 
-    setRegisterInfo("Registro pendiente de integracion con backend.");
+      try {
+        await login(
+          registerData.email.trim(),
+          registerData.password,
+        );
+        window.location.replace("/reservas");
+      } catch {
+        setMode("login");
+        setError("Cuenta creada. Inicia sesion para continuar.");
+      }
+    } catch (err) {
+      const backendMessage =
+        err?.response?.data?.message || "No pudimos crear la cuenta.";
+      setRegisterError(String(backendMessage));
+    }
   };
 
   const goToRegister = () => {
@@ -70,10 +92,49 @@ export function LoginCardReserva() {
   };
 
   return (
-    <div className={`reservas-auth ${isRegisterMode ? "is-register" : "is-login"}`}>
+    <div
+      className={`reservas-auth ${isRegisterMode ? "is-register" : "is-login"}`}
+    >
+      <button
+        type="button"
+        className="auth-home-button"
+        onClick={() => window.location.replace("/")}
+        aria-label="Volver al inicio"
+      >
+        <img src="/images/home-icon.png" alt="" />
+      </button>
+
       <section className="reservas-auth__panel reservas-auth__panel--icon">
-        <div className="reservas-auth__icon-shell" aria-hidden="true">
-          <CalendarDays />
+        <div className="reservas-auth__home-logo-decor" aria-hidden="true">
+          <img
+            className="reservas-auth__home-logo"
+            src="/images/image-overlay.webp"
+            alt=""
+          />
+        </div>
+        <div
+          className="reservas-auth__pill-selector"
+          role="tablist"
+          aria-label="Tipo de acceso"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={isRegisterMode}
+            className={`reservas-auth__pill ${isRegisterMode ? "is-active" : ""}`}
+            onClick={goToRegister}
+          >
+            Registrarte
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={!isRegisterMode}
+            className={`reservas-auth__pill ${!isRegisterMode ? "is-active" : ""}`}
+            onClick={goToLogin}
+          >
+            Ingresar
+          </button>
         </div>
       </section>
 
@@ -81,7 +142,7 @@ export function LoginCardReserva() {
         <div className="login-card reservas-auth__card">
           {!isRegisterMode ? (
             <form onSubmit={handleLoginSubmit} className="form-content">
-              <h1 className="title">Iniciar sesion</h1>
+              <div className="title">INGRESAR</div>
               {error && <p className="error-text">{error}</p>}
               <div className="input-box-container">
                 <div className="input-box">
@@ -107,31 +168,31 @@ export function LoginCardReserva() {
                     className="toggle-password"
                     onClick={() => setShowLoginPassword((prev) => !prev)}
                   >
-                    {showLoginPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showLoginPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
                   </button>
                 </div>
               </div>
               <div className="login-footer-container">
-                <button className="button-entrar" type="submit" disabled={loading}>
+                <button
+                  className="button-entrar"
+                  type="submit"
+                  disabled={loading}
+                >
                   {loading ? "Ingresando..." : "Entrar"}
                 </button>
-                <p className="reservas-auth__switch-line">
-                  No tienes cuenta?
-                  <button
-                    type="button"
-                    className="reservas-auth__switch-button"
-                    onClick={goToRegister}
-                  >
-                    Registrate aqui
-                  </button>
-                </p>
               </div>
             </form>
           ) : (
             <form onSubmit={handleRegisterSubmit} className="form-content">
-              <h1 className="title">Crear cuenta</h1>
+              <div className="title">REGISTRARSE</div>
               {registerError && <p className="error-text">{registerError}</p>}
-              {registerInfo && <p className="reservas-auth__info">{registerInfo}</p>}
+              {registerInfo && (
+                <p className="reservas-auth__info">{registerInfo}</p>
+              )}
               <div className="input-box-container">
                 <div className="input-box">
                   <input
@@ -164,7 +225,11 @@ export function LoginCardReserva() {
                     className="toggle-password"
                     onClick={() => setShowRegisterPasswords((prev) => !prev)}
                   >
-                    {showRegisterPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showRegisterPasswords ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
                   </button>
                 </div>
                 <div className="input-box">
@@ -181,13 +246,6 @@ export function LoginCardReserva() {
               <div className="login-footer-container">
                 <button className="button-entrar" type="submit">
                   Registrarme
-                </button>
-                <button
-                  type="button"
-                  className="reservas-auth__switch-button reservas-auth__switch-button--standalone"
-                  onClick={goToLogin}
-                >
-                  Ya tienes cuenta? Inicia sesion
                 </button>
               </div>
             </form>

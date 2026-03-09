@@ -5,6 +5,7 @@ import { MenuManagement } from "./MenuManagement.jsx";
 import { OrdersManagement } from "./OrdersManagement.jsx";
 import { CustomersManagement } from "./CustomersManagement.jsx";
 import { WaitersManagement } from "./WaitersManagement.jsx";
+import { ReservationsManagement } from "./ReservationsManagement.jsx";
 import "./Admin.css";
 
 export function Admin() {
@@ -16,6 +17,7 @@ export function Admin() {
           <Route index element={<Dashboard />} />
           <Route path="menu" element={<MenuManagement />} />
           <Route path="orders" element={<OrdersManagement />} />
+          <Route path="reservas" element={<ReservationsManagement />} />
           <Route path="tables" element={<CustomersManagement />} />
           <Route path="waiters" element={<WaitersManagement />} />
           <Route

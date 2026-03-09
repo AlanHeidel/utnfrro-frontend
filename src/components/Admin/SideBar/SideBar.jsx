@@ -24,6 +24,13 @@ const OrdersIcon = () => (
   </svg>
 );
 
+const ReservationsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </svg>
+);
+
 const TablesIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
     <rect x="4" y="6" width="16" height="4" rx="1" />
@@ -98,6 +105,12 @@ export function Sidebar() {
       label: "Pedidos Activos",
       icon: <OrdersIcon />,
       path: "/admin/orders",
+    },
+    {
+      id: "reservas",
+      label: "Reservas",
+      icon: <ReservationsIcon />,
+      path: "/admin/reservas",
     },
     {
       id: "tables",

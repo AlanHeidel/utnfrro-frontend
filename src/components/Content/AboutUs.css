@@ -1,3 +1,7 @@
+#aboutus {
+  scroll-margin-top: 100px;
+}
+
 .aboutus-section-1-1 {
   display: flex;
   flex-direction: column;

@@ -1,4 +1,5 @@
 import "./AboutUs.css";
+import { Link } from "react-router-dom";
 
 export function AboutUs() {
   return (
@@ -19,13 +20,15 @@ export function AboutUs() {
           role="presentation"
         >
           <div className="aboutus-section-4-image">
-            <img src="public/images/cheffs-image.webp" alt="cheffs team" />
+            <img src="/images/cheffs-image.webp" alt="cheffs team" />
           </div>
           <div className="aboutus-group">
             <h3 className="aboutus-group-description">
               Profesionales comprometidos con la excelencia en cada preparación.
             </h3>
-            <button className="aboutus-button">CONOCER MÁS</button>
+            <Link to="/nosotros" className="aboutus-button">
+              CONOCER MÁS
+            </Link>
           </div>
         </div>
       </section>

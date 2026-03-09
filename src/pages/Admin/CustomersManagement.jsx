@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { TableForm } from "../../components/Admin/Forms/TableForm/TableForm";
 import { AdminModal } from "../../components/Admin/Modal/AdminModal";
+import { finalizeReserva, getReservas } from "../../api/reservas";
 import {
   getMesas,
   createMesa,
@@ -43,6 +44,7 @@ export function CustomersManagement() {
   const [mozos, setMozos] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [updatingTableId, setUpdatingTableId] = useState(null);
 
   const openCreateForm = () => {
     setEditingProduct(null);
@@ -144,34 +146,79 @@ export function CustomersManagement() {
     return new Map(mozos.map((mozo) => [String(mozo.id), mozo]));
   }, [mozos]);
 
-  const order = ["disponible", "reservada", "ocupada"];
+  const refreshTables = async () => {
+    const data = await getMesas();
+    setTables(data.map(normalizeMesa));
+  };
+
+  const toMozoId = (mozoId) =>
+    mozoId === "" || mozoId === null || mozoId === undefined
+      ? undefined
+      : Number(mozoId);
+
   const cycleStatus = async (tableId) => {
     const current = tables.find((t) => t.id === tableId);
     if (!current) return;
-    const mesaId = Number(tableId);
+    if (current.estado === "reservada") return;
 
-    const nextStatus =
-      order[(order.indexOf(current.estado) + 1) % order.length];
+    const mesaId = Number(tableId);
+    const nextStatus = current.estado === "ocupada" ? "disponible" : "ocupada";
+
+    setUpdatingTableId(tableId);
+    setError(null);
 
     setTables((prev) =>
       prev.map((t) => (t.id === tableId ? { ...t, estado: nextStatus } : t))
     );
 
     try {
-      const mozoValue =
-        current.mozoId === "" || current.mozoId === null || current.mozoId === undefined
-          ? undefined
-          : Number(current.mozoId);
       await updateMesa(mesaId, {
         numeroMesa: Number(current.numeroMesa),
         capacidad: Number(current.capacidad),
         lugar: current.lugar,
         estado: nextStatus,
-        mozoId: mozoValue,
+        mozoId: toMozoId(current.mozoId),
       });
     } catch (e) {
-      const data = await getMesas();
-      setTables(data.map(normalizeMesa));
+      setError("No pudimos actualizar el estado de la mesa.");
+      await refreshTables();
+    } finally {
+      setUpdatingTableId(null);
+    }
+  };
+
+  const handleReleaseTable = async (tableId) => {
+    const current = tables.find((t) => t.id === tableId);
+    if (!current) return;
+    if (current.estado !== "reservada") return;
+
+    const mesaId = Number(tableId);
+    setUpdatingTableId(tableId);
+    setError(null);
+
+    try {
+      const reservas = await getReservas();
+      const activeReserva = reservas.find((reserva) => {
+        const reservaMesaId = reserva?.mesa?.id ?? reserva?.mesaId;
+        const estado = String(reserva?.estado ?? "").toLowerCase();
+        return (
+          Number(reservaMesaId) === mesaId &&
+          (estado.includes("activa") || estado.includes("active"))
+        );
+      });
+
+      if (activeReserva?.id) {
+        await finalizeReserva(activeReserva.id);
+      } else {
+        throw new Error("No se encontro reserva activa para esa mesa.");
+      }
+
+      await refreshTables();
+    } catch (e) {
+      setError("No pudimos finalizar la reserva activa de esta mesa.");
+      await refreshTables();
+    } finally {
+      setUpdatingTableId(null);
     }
   };
 
@@ -301,10 +348,19 @@ export function CustomersManagement() {
                         Editar
                       </button>
                       <button
-                        className="btn-primary"
-                        onClick={() => cycleStatus(table.id)}
+                        className={table.estado === "reservada" ? "btn-secondary" : "btn-primary"}
+                        onClick={() =>
+                          table.estado === "reservada"
+                            ? handleReleaseTable(table.id)
+                            : cycleStatus(table.id)
+                        }
+                        disabled={updatingTableId === table.id}
                       >
-                        Cambiar estado
+                        {updatingTableId === table.id
+                          ? "Actualizando..."
+                          : table.estado === "reservada"
+                            ? "Liberar mesa"
+                            : "Cambiar estado"}
                       </button>
                     </div>
                   </footer>

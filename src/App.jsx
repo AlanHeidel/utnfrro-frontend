@@ -24,7 +24,8 @@ export function App() {
           <Routes>
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
-              <Route path="/about" element={<About />} />
+              <Route path="/nosotros" element={<About />} />
+              <Route path="/about" element={<Navigate to="/nosotros" replace />} />
               <Route
                 path="/reservas"
                 element={

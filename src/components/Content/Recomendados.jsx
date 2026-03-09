@@ -43,7 +43,7 @@ export function Recomendados() {
   }, []);
 
   return (
-    <section className="recomendados">
+    <section id="recomendados" className="recomendados">
       <div
         className="recomendados-section-1"
         aria-hidden="true"

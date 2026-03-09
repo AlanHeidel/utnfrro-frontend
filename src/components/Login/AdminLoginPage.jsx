@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/auth.jsx";
-import { Eye, EyeOff, Monitor } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import "./LoginCard.css";
 
@@ -12,10 +12,14 @@ function resolveUserTypeFromToken(token) {
     const role = String(claims?.role ?? "").toLowerCase();
     const type = String(claims?.type ?? "").toLowerCase();
 
-    if (kind === "table-device" || kind.includes("table")) return "table-device";
-    if (claims?.mesaId !== undefined && claims?.mesaId !== null) return "table-device";
-    if (role === "table-device" || role === "table_device") return "table-device";
-    if (type === "table-device" || type === "table_device") return "table-device";
+    if (kind === "table-device" || kind.includes("table"))
+      return "table-device";
+    if (claims?.mesaId !== undefined && claims?.mesaId !== null)
+      return "table-device";
+    if (role === "table-device" || role === "table_device")
+      return "table-device";
+    if (type === "table-device" || type === "table_device")
+      return "table-device";
 
     if (role.includes("admin")) return "admin";
     if (type.includes("admin")) return "admin";
@@ -57,16 +61,29 @@ export function AdminLoginPage() {
 
   return (
     <div className="login-page">
+      <button
+        type="button"
+        className="auth-home-button"
+        onClick={() => window.location.replace("/")}
+        aria-label="Volver al inicio"
+      >
+        <img src="/images/home-icon.png" alt="" />
+      </button>
+
       <section className="login-page__left">
-        <div className="login-page__icon-shell" aria-hidden="true">
-          <Monitor />
+        <div className="login-page__home-logo-decor" aria-hidden="true">
+          <img
+            className="login-page__home-logo"
+            src="/images/image-overlay.webp"
+            alt=""
+          />
         </div>
       </section>
 
       <section className="login-page__right">
         <div className="login-card">
           <form onSubmit={handleSubmit} className="form-content">
-            <h1 className="title">Panel Administrador</h1>
+            <h1 className="title">ADMINISTRADOR</h1>
             {error && <p className="error-text">{error}</p>}
             <div className="input-box-container">
               <div className="input-box">
@@ -97,7 +114,11 @@ export function AdminLoginPage() {
               </div>
             </div>
             <div className="login-footer-container">
-              <button className="button-entrar" type="submit" disabled={loading}>
+              <button
+                className="button-entrar"
+                type="submit"
+                disabled={loading}
+              >
                 {loading ? "Ingresando..." : "Entrar"}
               </button>
             </div>

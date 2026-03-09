@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/auth.jsx";
-import { BookOpen, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import "./LoginCard.css";
 
 export function LoginCardMesa() {
@@ -27,16 +27,30 @@ export function LoginCardMesa() {
 
   return (
     <div className="login-page">
+      <button
+        type="button"
+        className="auth-home-button"
+        onClick={() => window.location.replace("/")}
+        aria-label="Volver al inicio"
+      >
+        <img src="/images/home-icon.png" alt="" />
+      </button>
+
       <section className="login-page__left">
-        <div className="login-page__icon-shell" aria-hidden="true">
-          <BookOpen />
+        <div className="login-page__home-logo-decor" aria-hidden="true">
+          <img
+            className="login-page__home-logo"
+            src="/images/image-overlay.webp"
+            alt=""
+          />
         </div>
       </section>
 
       <section className="login-page__right">
         <div className="login-card">
           <form onSubmit={handleSubmit} className="form-content">
-            <h1 className="title">Acceso Mesa</h1>
+            <div className="title">INGRESAR</div>
+            Ingresa a tu cuenta de mesa
             {error && <p className="error-text">{error}</p>}
             <div className="input-box-container">
               <div className="input-box">
@@ -67,7 +81,11 @@ export function LoginCardMesa() {
               </div>
             </div>
             <div className="login-footer-container">
-              <button className="button-entrar" type="submit" disabled={loading}>
+              <button
+                className="button-entrar"
+                type="submit"
+                disabled={loading}
+              >
                 {loading ? "Ingresando..." : "Entrar"}
               </button>
             </div>

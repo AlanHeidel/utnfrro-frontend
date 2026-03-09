@@ -15,6 +15,11 @@ function resolveTypeFromClaims(claims) {
   if (type === "table-device" || type === "table_device") return "table-device";
   if (role === "table-device" || role === "table_device") return "table-device";
 
+  if (kind.includes("client") || kind.includes("cliente")) return "client";
+  if (claims.clienteId !== undefined && claims.clienteId !== null) return "client";
+  if (type.includes("client") || type.includes("cliente")) return "client";
+  if (role.includes("client") || role.includes("cliente")) return "client";
+
   if (role.includes("admin")) return "admin";
   if (type.includes("admin")) return "admin";
   if (role) return role;
