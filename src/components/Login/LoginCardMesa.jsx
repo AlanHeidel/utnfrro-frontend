@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/auth.jsx";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Lock, UserRound } from "lucide-react";
 import "./LoginCard.css";
 
 export function LoginCardMesa() {
@@ -50,10 +50,12 @@ export function LoginCardMesa() {
         <div className="login-card">
           <form onSubmit={handleSubmit} className="form-content">
             <div className="title">INGRESAR</div>
-            Ingresa a tu cuenta de mesa
             {error && <p className="error-text">{error}</p>}
             <div className="input-box-container">
               <div className="input-box">
+                <span className="input-leading-icon" aria-hidden="true">
+                  <UserRound size={18} />
+                </span>
                 <input
                   placeholder="Usuario"
                   required
@@ -63,6 +65,9 @@ export function LoginCardMesa() {
                 />
               </div>
               <div className="input-box">
+                <span className="input-leading-icon" aria-hidden="true">
+                  <Lock size={18} />
+                </span>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Contraseña"

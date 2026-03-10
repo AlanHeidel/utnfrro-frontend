@@ -10,6 +10,8 @@ const emptyProduct = {
   mozoId: "",
 };
 
+const allowedStatus = new Set(["disponible", "ocupada"]);
+
 export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
   const [formValues, setFormValues] = useState(emptyProduct);
 
@@ -21,7 +23,9 @@ export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
         numeroMesa: initialValues.numeroMesa?.toString() ?? "",
         capacidad: initialValues.capacidad?.toString() ?? "",
         lugar: initialValues.lugar?.toString() ?? "",
-        estado: initialValues.estado ?? "disponible",
+        estado: allowedStatus.has(initialValues.estado)
+          ? initialValues.estado
+          : "disponible",
         mozoId: initialValues.mozoId?.toString() ?? "",
       });
     } else {
@@ -46,6 +50,9 @@ export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
       ...formValues,
       numeroMesa,
       capacidad,
+      estado: allowedStatus.has(formValues.estado)
+        ? formValues.estado
+        : "disponible",
       mozoId,
     });
   };
@@ -101,7 +108,6 @@ export function TableForm({ initialValues, mozos = [], onCancel, onSubmit }) {
               Seleccioná un estado
             </option>
             <option value="disponible">Disponible</option>
-            <option value="reservada">Reservada</option>
             <option value="ocupada">Ocupada</option>
           </select>
         </label>

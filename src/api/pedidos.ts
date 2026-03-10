@@ -58,7 +58,7 @@ export async function updatePedidoEstado(
   return data.data ?? data;
 }
 
-export async function getPedidoForTable(id: number | string): Promise<PedidoDTO> {
-    const { data } = await api.get(`/api/pedidos/table/${id}`);
+export async function getPedidoForTable(mesaId: number | string): Promise<PedidoDTO> {
+    const { data } = await api.get(`/api/pedidos/table/${mesaId}`);
     return data.data ?? data;
 }

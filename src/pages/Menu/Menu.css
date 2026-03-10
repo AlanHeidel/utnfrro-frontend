@@ -36,3 +36,9 @@
   font-size: 1rem;
   color: #999;
 }
+
+@media (max-width: 768px) {
+  .menu {
+    padding: 92px 16px 22px;
+  }
+}

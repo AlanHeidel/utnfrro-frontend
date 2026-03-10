@@ -59,6 +59,7 @@
   color: #b45309;
 }
 
+.chip--in_progress,
 .chip--preparing {
   background: #e0f2fe;
   color: #1e40af;
@@ -75,6 +76,7 @@
   color: #5b21b6;
 }
 
+.chip--canceled,
 .chip--cancelled {
   background: #fee2e2;
   color: #b91c1c;
@@ -147,4 +149,22 @@
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.order-card__cancel-link {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: #b91c1c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.order-card__cancel-link:hover {
+  color: #991b1b;
 }

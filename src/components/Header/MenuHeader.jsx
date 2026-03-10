@@ -2,16 +2,18 @@ import "./MenuHeader.css";
 import { useState, useEffect } from "react";
 import { CartButton } from "./NavBarList/CartButton.jsx";
 import { CloseButton } from "./NavBarList/CloseButton.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../hooks/useCart.jsx";
+import { useToast } from "../../hooks/useToast.jsx";
 import { CartItem } from "../Cart/cartItem.jsx";
 import { createPedidoFromTable } from "../../api/pedidos";
 
 export function MenuHeader() {
+  const navigate = useNavigate();
+  const { showToast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const { cart, getTotal, getTotalItems, clearCart } = useCart();
+  const { cart, getTotal, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -37,7 +39,6 @@ export function MenuHeader() {
     if (cart.length === 0 || isSubmitting) return;
     try {
       setIsSubmitting(true);
-      setSubmitMessage("");
       const payload = {
         items: cart.map((item) => ({
           platoId: item.id,
@@ -45,10 +46,12 @@ export function MenuHeader() {
         })),
       };
       await createPedidoFromTable(payload);
-      setSubmitMessage("¡Pedido enviado! Cocina está preparando tu orden.");
       clearCart();
+      setIsOpen(false);
+      showToast("Pedido enviado", "success");
+      navigate("/menu/pedidos");
     } catch (error) {
-      setSubmitMessage("No pudimos enviar el pedido. Intenta de nuevo.");
+      showToast("No pudimos enviar el pedido. Intenta de nuevo.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -61,7 +64,10 @@ export function MenuHeader() {
           <Link to="/" className="menu-logo">
             <img src="/images/home-icon.png" alt="Logo del restaurante" />
           </Link>
-          <div>
+          <div className="menu-actions">
+            <Link to="/menu/pedidos" className="montserrat reserve-button">
+              Ver pedidos
+            </Link>
             <CartButton isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} />
           </div>
         </nav>
@@ -105,9 +111,6 @@ export function MenuHeader() {
                 >
                   {isSubmitting ? "Enviando..." : "Enviar pedido"}
                 </button>
-                {submitMessage && (
-                  <p className="cart-submit-message">{submitMessage}</p>
-                )}
               </div>
             </>
           )}

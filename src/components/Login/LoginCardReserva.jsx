@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/auth.jsx";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, UserRound } from "lucide-react";
 import { registerClient } from "../../api/auth";
 import "./LoginCard.css";
 import "./LoginCardReserva.css";
@@ -146,6 +146,9 @@ export function LoginCardReserva() {
               {error && <p className="error-text">{error}</p>}
               <div className="input-box-container">
                 <div className="input-box">
+                  <span className="input-leading-icon" aria-hidden="true">
+                    <Mail size={18} />
+                  </span>
                   <input
                     placeholder="Email"
                     required
@@ -155,6 +158,9 @@ export function LoginCardReserva() {
                   />
                 </div>
                 <div className="input-box">
+                  <span className="input-leading-icon" aria-hidden="true">
+                    <Lock size={18} />
+                  </span>
                   <input
                     type={showLoginPassword ? "text" : "password"}
                     placeholder="Contrasena"
@@ -195,6 +201,9 @@ export function LoginCardReserva() {
               )}
               <div className="input-box-container">
                 <div className="input-box">
+                  <span className="input-leading-icon" aria-hidden="true">
+                    <UserRound size={18} />
+                  </span>
                   <input
                     placeholder="Nombre"
                     required
@@ -203,6 +212,9 @@ export function LoginCardReserva() {
                   />
                 </div>
                 <div className="input-box">
+                  <span className="input-leading-icon" aria-hidden="true">
+                    <Mail size={18} />
+                  </span>
                   <input
                     placeholder="Email"
                     required
@@ -212,6 +224,9 @@ export function LoginCardReserva() {
                   />
                 </div>
                 <div className="input-box">
+                  <span className="input-leading-icon" aria-hidden="true">
+                    <Lock size={18} />
+                  </span>
                   <input
                     type={showRegisterPasswords ? "text" : "password"}
                     placeholder="Contrasena"
@@ -233,6 +248,9 @@ export function LoginCardReserva() {
                   </button>
                 </div>
                 <div className="input-box">
+                  <span className="input-leading-icon" aria-hidden="true">
+                    <Lock size={18} />
+                  </span>
                   <input
                     type={showRegisterPasswords ? "text" : "password"}
                     placeholder="Confirmar contrasena"

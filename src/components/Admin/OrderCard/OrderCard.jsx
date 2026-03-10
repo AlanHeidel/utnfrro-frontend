@@ -24,15 +24,12 @@ function minutesSince(dateString) {
 export function OrderCard({
   order,
   onStatusChange,
-  onAdvanceStatus,
   onViewDetails,
   disabled = false,
 }) {
-  const currentIndex = statusFlow.indexOf(order.status);
-  const nextStatus =
-    currentIndex >= 0 && currentIndex < statusFlow.length - 1
-      ? statusFlow[currentIndex + 1]
-      : null;
+  const canCancel =
+    order.status !== "delivered" && order.status !== "canceled";
+  const canChangeStatus = order.status !== "canceled";
 
   return (
     <article className={`order-card order-card--${order.status}`}>
@@ -76,37 +73,39 @@ export function OrderCard({
       </div>
 
       <footer className="order-card__footer">
-        <select
-          value={order.status}
-          disabled={disabled}
-          onChange={(event) =>
-            onStatusChange(order.id, event.target.value || order.status)
-          }
-        >
-          {statusFlow.map((status) => (
-            <option key={status} value={status}>
-              {statusLabels[status]}
-            </option>
-          ))}
-          <option value="canceled">{statusLabels.canceled}</option>
-        </select>
+        {canChangeStatus && (
+          <select
+            value={order.status}
+            disabled={disabled}
+            onChange={(event) =>
+              onStatusChange(order.id, event.target.value || order.status)
+            }
+          >
+            {statusFlow.map((status) => (
+              <option key={status} value={status}>
+                {statusLabels[status]}
+              </option>
+            ))}
+          </select>
+        )}
 
         <div className="order-card__actions">
-          {nextStatus && (
-            <button
-              className="btn-primary"
-              disabled={disabled}
-              onClick={() => onAdvanceStatus(order.id, nextStatus)}
-            >
-              Avanzar a {statusLabels[nextStatus]}
-            </button>
-          )}
           <button
             className="btn-link"
             onClick={() => onViewDetails?.(order.id)}
           >
             Ver detalle
           </button>
+          {canCancel && (
+            <button
+              type="button"
+              className="order-card__cancel-link"
+              disabled={disabled}
+              onClick={() => onStatusChange(order.id, "canceled")}
+            >
+              Cancelar
+            </button>
+          )}
         </div>
       </footer>
     </article>

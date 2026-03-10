@@ -26,8 +26,13 @@
   color: #f4f4f4;
   backdrop-filter: blur(6px);
   pointer-events: auto;
-  animation: toast-in 0.24s ease-out;
+  animation: toast-in 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
   overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.toast.is-exiting {
+  animation: toast-out 0.36s cubic-bezier(0.4, 0, 0.8, 0.2) forwards;
 }
 
 .toast::before {
@@ -119,7 +124,9 @@
   background: transparent;
   color: rgba(255, 255, 255, 0.74);
   cursor: pointer;
-  transition: transform 0.18s ease, color 0.18s ease,
+  transition:
+    transform 0.18s ease,
+    color 0.18s ease,
     background-color 0.18s ease;
 }
 
@@ -137,11 +144,22 @@
 @keyframes toast-in {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
+    transform: translateX(120%) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(120%) scale(0.98);
   }
 }
 

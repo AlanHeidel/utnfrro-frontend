@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { TableForm } from "../../components/Admin/Forms/TableForm/TableForm";
 import { AdminModal } from "../../components/Admin/Modal/AdminModal";
+import { useToast } from "../../hooks/useToast.jsx";
 import { finalizeReserva, getReservas } from "../../api/reservas";
 import {
   getMesas,
@@ -38,6 +39,7 @@ function normalizeMesa(mesa) {
 }
 
 export function CustomersManagement() {
+  const { showToast } = useToast();
   const [tables, setTables] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [error, setError] = useState(null);
@@ -63,6 +65,7 @@ export function CustomersManagement() {
 
   const handleSubmitProduct = async (formData) => {
     try {
+      const isEditing = Boolean(formData.id);
       const payload = {
         numeroMesa: formData.numeroMesa,
         capacidad: formData.capacidad,
@@ -76,6 +79,7 @@ export function CustomersManagement() {
       } else {
         await createMesa(payload);
       }
+      showToast(isEditing ? "Mesa editada" : "Mesa creada", "success");
       const data = await getMesas();
       setTables(data.map(normalizeMesa));
       handleCloseForm();
@@ -88,6 +92,7 @@ export function CustomersManagement() {
     try {
       await deleteMesa(productId);
       setTables((prev) => prev.filter((product) => product.id !== productId));
+      showToast("Mesa eliminada", "success");
     } catch (error) {
       setError("No pudimos eliminar la mesa");
     }

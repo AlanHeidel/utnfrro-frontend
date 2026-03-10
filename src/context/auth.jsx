@@ -51,7 +51,9 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const handleLogout = () => {
       localStorage.removeItem("authToken");
+      localStorage.removeItem("cart");
       setToken("");
+      window.dispatchEvent(new Event("cart:clear"));
     };
     window.addEventListener("auth:logout", handleLogout);
     return () => window.removeEventListener("auth:logout", handleLogout);
@@ -73,7 +75,9 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("cart");
     setToken("");
+    window.dispatchEvent(new Event("cart:clear"));
   };
 
   const value = useMemo(

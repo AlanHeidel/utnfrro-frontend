@@ -9,7 +9,11 @@ import {
 } from "../api/reservas";
 
 function getToday() {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function normalizeHour(raw) {
@@ -94,6 +98,11 @@ function getReservaStatusLabel(status) {
   if (!raw) return "Sin estado";
   const formatted = raw.replaceAll("_", " ").toLowerCase();
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+function canCancelReserva(status) {
+  const normalized = String(status ?? "").toLowerCase();
+  return !normalized.includes("cancel") && !normalized.includes("final");
 }
 
 function normalizeReserva(raw) {
@@ -537,7 +546,7 @@ export function Reservas() {
                     <em className={`status ${getReservaStatusClass(reserva.estado)}`}>
                       {getReservaStatusLabel(reserva.estado)}
                     </em>
-                    {!String(reserva.estado).toLowerCase().includes("cancel") && (
+                    {canCancelReserva(reserva.estado) && (
                       <button
                         type="button"
                         className="reservas-btn reservas-btn--danger"

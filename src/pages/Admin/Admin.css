@@ -347,15 +347,6 @@
   gap: 0.5rem;
 }
 
-.product-tag {
-  background: rgba(255, 107, 53, 0.12);
-  color: #ff6b35;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
 .admin-product-card__footer {
   display: flex;
   justify-content: space-between;

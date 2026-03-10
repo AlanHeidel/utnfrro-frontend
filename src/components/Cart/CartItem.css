@@ -1,17 +1,18 @@
 .cart-item {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
+  padding: 0.95rem 0.55rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   align-items: center;
 }
 
 .cart-item-image {
-  width: 80px;
-  height: 80px;
+  width: 110px;
+  height: 110px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .cart-item-details {
@@ -22,17 +23,19 @@
 }
 
 .cart-item-name {
-  color: #fff;
+  color: #f3f3f3;
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+  line-height: 1.3;
 }
 
 .cart-item-price {
   margin: 0;
-  color: #666;
-  font-weight: bold;
-  font-size: 0.95rem;
+  color: rgba(243, 243, 243, 0.72);
+  font-weight: 700;
+  font-size: 0.9rem;
+  font-family: "Montserrat", sans-serif;
 }
 
 /* Controles de cantidad */
@@ -46,59 +49,55 @@
 .quantity-btn {
   width: 32px;
   height: 32px;
-  border: 2px solid #ddd;
-  background: white;
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  color: #333;
+  color: rgba(243, 243, 243, 0.9);
 }
 
 .quantity-btn:hover {
-  border-color: #4caf50;
-  color: #4caf50;
-  background: #f0f9f0;
+  border-color: rgba(255, 107, 53, 0.72);
+  color: #ff8c61;
+  background: rgba(255, 107, 53, 0.12);
 }
 
 .quantity-btn:active {
   transform: scale(0.95);
 }
 
-.quantity-decrease:hover {
-  border-color: #ff4444;
-  color: #ff4444;
-  background: #fff0f0;
-}
-
 .cart-item-quantity {
-  font-weight: bold;
-  font-size: 1.1rem;
+  font-weight: 700;
+  font-size: 1.05rem;
   min-width: 30px;
   text-align: center;
-  color: #666;
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
 }
 
 .cart-item-subtotal {
   margin: 0;
-  font-size: 0.9rem;
-  color: #437545;
-  font-weight: bold;
+  font-size: 0.84rem;
+  color: #ffb18e;
+  font-weight: 700;
+  font-family: "Montserrat", sans-serif;
 }
 
 .cart-item-remove {
-  background: #ff4444;
-  color: white;
-  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(243, 243, 243, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   width: 32px;
   height: 32px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,7 +106,9 @@
 }
 
 .cart-item-remove:hover {
-  background: #cc0000;
+  color: #ff8c61;
+  border-color: rgba(255, 107, 53, 0.72);
+  background: rgba(255, 107, 53, 0.12);
   transform: scale(1.1);
 }
 

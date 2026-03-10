@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { ChevronDown, Search, SlidersHorizontal, Tags } from "lucide-react";
 import "./Filters.css";
 import { useFilter } from "../../hooks/useFilter.jsx";
 
@@ -32,7 +33,10 @@ export function Filters({ categories = [] }) {
   return (
     <section className="filters">
       <div className="filter-group price-filter">
-        <label htmlFor={maxPriceFilterId}>Precio Máximo:</label>
+        <label htmlFor={maxPriceFilterId}>
+          <SlidersHorizontal size={16} />
+          Precio maximo
+        </label>
         <div className="price-slider-container">
           <input
             type="range"
@@ -47,32 +51,45 @@ export function Filters({ categories = [] }) {
         </div>
       </div>
 
-      <div className="filter-group">
-        <label htmlFor="search">Buscar</label>
-        <input
-          type="text"
-          id="search"
-          placeholder="Buscar platos..."
-          value={filters.searchTerm || ""}
-          onChange={handleSearchChange}
-          className="search-input"
-        />
+      <div className="filter-group filter-group--search">
+        <label htmlFor="search">
+          <Search size={16} />
+          Buscar
+        </label>
+        <div className="filters-input-shell">
+          <input
+            type="text"
+            id="search"
+            placeholder="Buscar platos..."
+            value={filters.searchTerm || ""}
+            onChange={handleSearchChange}
+            className="filters-search-input"
+          />
+        </div>
       </div>
 
-      <div className="filter-group">
-        <label htmlFor={categoryFilterId}>Categoría</label>
-        <select
-          id={categoryFilterId}
-          onChange={handleChangeCategory}
-          className="category-select"
-          value={filters.category}
-        >
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+      <div className="filter-group filter-group--category">
+        <label htmlFor={categoryFilterId}>
+          <Tags size={16} />
+          Categoria
+        </label>
+        <div className="filters-select-shell">
+          <select
+            id={categoryFilterId}
+            onChange={handleChangeCategory}
+            className="filters-category-select"
+            value={filters.category}
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+          <span className="filters-select-arrow" aria-hidden="true">
+            <ChevronDown size={17} />
+          </span>
+        </div>
       </div>
     </section>
   );

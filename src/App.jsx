@@ -3,6 +3,7 @@ import "./App.css";
 import { Home } from "./pages/Home.jsx";
 import { About } from "./pages/About.jsx";
 import { Menu } from "./pages/Menu/Menu.jsx";
+import { TableOrders } from "./pages/Menu/TableOrders.jsx";
 import { Admin } from "./pages/Admin/Admin.jsx";
 import { Reservas } from "./pages/Reservas.jsx";
 import { AdminLoginPage } from "./components/Login/AdminLoginPage.jsx";
@@ -44,6 +45,14 @@ export function App() {
                     <FiltersProvider>
                       <Menu />
                     </FiltersProvider>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/menu/pedidos"
+                element={
+                  <ProtectedRoute allowed={["table-device"]}>
+                    <TableOrders />
                   </ProtectedRoute>
                 }
               />

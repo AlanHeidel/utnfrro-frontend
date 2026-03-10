@@ -9,7 +9,7 @@
     align-items: center;
     color: black;
     background: white;
-    width: 100vw;
+    width: 100%;
     padding: 100px 50px;
     transform: translateY(-4px);
 }

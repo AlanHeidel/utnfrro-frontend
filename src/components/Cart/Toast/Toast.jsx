@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./Toast.css";
 
 export function Toast({ message, type = "success", onClose }) {
+  const [isExiting, setIsExiting] = useState(false);
   const normalizedType =
     type === "error" || type === "info" || type === "success" ? type : "info";
 
@@ -36,16 +37,28 @@ export function Toast({ message, type = "success", onClose }) {
   };
 
   useEffect(() => {
+    if (isExiting) return undefined;
     const timer = setTimeout(() => {
-      onClose();
-    }, 2600);
+      setIsExiting(true);
+    }, 3600);
 
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, [isExiting]);
+
+  useEffect(() => {
+    if (!isExiting) return undefined;
+    const timer = setTimeout(() => {
+      onClose();
+    }, 360);
+
+    return () => clearTimeout(timer);
+  }, [isExiting, onClose]);
+
+  const handleClose = () => setIsExiting(true);
 
   return (
     <div
-      className={`toast toast-${normalizedType}`}
+      className={`toast toast-${normalizedType} ${isExiting ? "is-exiting" : ""}`}
       role={normalizedType === "error" ? "alert" : "status"}
       aria-live={normalizedType === "error" ? "assertive" : "polite"}
     >
@@ -56,7 +69,7 @@ export function Toast({ message, type = "success", onClose }) {
         <span className="toast-message">{message}</span>
       </div>
 
-      <button className="toast-close" onClick={onClose} aria-label="Cerrar toast">
+      <button className="toast-close" onClick={handleClose} aria-label="Cerrar toast">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="m6 6 12 12M18 6 6 18" />
         </svg>

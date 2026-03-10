@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { ProductForm } from "../../components/Admin/Forms/ProductForm/ProductForm";
 import { AdminModal } from "../../components/Admin/Modal/AdminModal";
+import { useToast } from "../../hooks/useToast.jsx";
 import {
   getPlatos,
   createPlato,
@@ -70,6 +71,7 @@ function formatCurrency(value) {
 }
 
 export function MenuManagement() {
+  const { showToast } = useToast();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -154,6 +156,7 @@ export function MenuManagement() {
 
   const handleSubmitProduct = async (formData) => {
     try {
+      const isEditing = Boolean(formData.id);
       const estadoMap = {
         available: "disponible",
         featured: "destacado",
@@ -175,6 +178,7 @@ export function MenuManagement() {
       } else {
         await createPlato(payload);
       }
+      showToast(isEditing ? "Plato editado" : "Plato creado", "success");
       const data = await getPlatos();
       setProducts(data.map(normalizePlato));
       handleCloseForm();
@@ -191,6 +195,7 @@ export function MenuManagement() {
           product.id === productId ? { ...product, status: "agotado" } : product
         )
       );
+      showToast("Plato eliminado", "success");
     } catch (error) {
       setError("No pudimos actualizar el plato");
     }

@@ -42,6 +42,11 @@ function getStatusClass(status) {
   return "table-status--reserved";
 }
 
+function canCancelReservation(status) {
+  const normalized = normalizeStatus(status);
+  return !normalized.includes("cancel") && !normalized.includes("final");
+}
+
 function normalizeReserva(raw) {
   const clienteNombre = [raw?.cliente?.nombre, raw?.cliente?.apellido]
     .filter(Boolean)
@@ -248,7 +253,7 @@ export function ReservationsManagement() {
 
                   <footer className="table-card__footer">
                     <span className="muted">Reserva #{reserva.id}</span>
-                    {!reserva.estado.includes("cancel") && (
+                    {canCancelReservation(reserva.estado) && (
                       <button
                         type="button"
                         className="btn-link danger"
@@ -268,4 +273,3 @@ export function ReservationsManagement() {
     </div>
   );
 }
-

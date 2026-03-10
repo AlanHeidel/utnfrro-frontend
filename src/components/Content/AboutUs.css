@@ -1,5 +1,6 @@
 #aboutus {
   scroll-margin-top: 100px;
+  width: 100%;
 }
 
 .aboutus-section-1-1 {
@@ -25,7 +26,7 @@
   position: relative;
   align-items: center;
   justify-content: center;
-  width: 100vw;
+  width: 100%;
 }
 .aboutus-section-4-image {
   width: 100%;

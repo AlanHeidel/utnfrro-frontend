@@ -114,25 +114,65 @@
   position: relative;
   display: flex;
   align-items: center;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(26, 26, 26, 0.2);
+  backdrop-filter: blur(3px);
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.18s ease;
+}
+
+.input-box:hover {
+  border-color: rgba(26, 26, 26, 0.3);
+}
+
+.input-box:focus-within {
+  border-color: rgba(31, 36, 46, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(31, 36, 46, 0.12),
+    0 14px 24px rgba(31, 36, 46, 0.16);
+  transform: translateY(-1px);
+}
+
+.input-leading-icon {
+  position: absolute;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(31, 36, 46, 0.58);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.input-box:focus-within .input-leading-icon {
+  color: rgba(31, 36, 46, 0.92);
 }
 
 .input-box input {
   width: 100%;
-  border: 1px solid #d6d9de;
+  border: 1px solid transparent;
   outline: none;
   border-radius: 12px;
-  padding: 12px 44px 12px 14px;
+  padding: 13px 44px 13px 42px;
   font-size: 15px;
-  background: #f8f9fb;
-  color: #171a21;
+  font-weight: 500;
+  background: transparent;
+  color: #1a1a1a;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
 .input-box input:focus {
-  border-color: var(--primary-orange, #ff6b35);
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.18);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.input-box input::placeholder {
+  color: rgba(31, 36, 46, 0.58);
 }
 
 .toggle-password {
@@ -141,10 +181,16 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #555d67;
+  color: rgba(31, 36, 46, 0.62);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 0.2s ease, transform 0.16s ease;
+}
+
+.toggle-password:hover {
+  color: rgba(31, 36, 46, 0.96);
+  transform: scale(1.06);
 }
 
 .toggle-password:focus {
@@ -172,7 +218,7 @@
   font-size: 15px;
   border-radius: 12px;
   color: #ffffff;
-  background: linear-gradient(135deg, var(--sidebar-bg, #1a1a1a), #2a2a2a);
+  background: var(--sidebar-bg, #1a1a1a);
   font-weight: 700;
   transition:
     transform 0.1s ease,

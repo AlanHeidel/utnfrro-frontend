@@ -119,10 +119,6 @@ export function OrdersManagement() {
     }
   };
 
-  const handleAdvanceStatus = (orderId, nextStatus) => {
-    handleStatusChange(orderId, nextStatus);
-  };
-
   const handleViewDetails = (orderId) => {
     // pendiente los detalles de los pedidos
   };
@@ -206,7 +202,6 @@ export function OrdersManagement() {
                   key={order.id}
                   order={order}
                   onStatusChange={handleStatusChange}
-                  onAdvanceStatus={handleAdvanceStatus}
                   onViewDetails={handleViewDetails}
                   disabled={updatingOrderId === order.id}
                 />

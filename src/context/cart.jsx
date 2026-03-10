@@ -11,6 +11,16 @@ export function CartProvider({ children }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
+  useEffect(() => {
+    const handleCartClear = () => {
+      setCart([]);
+      localStorage.removeItem("cart");
+    };
+
+    window.addEventListener("cart:clear", handleCartClear);
+    return () => window.removeEventListener("cart:clear", handleCartClear);
+  }, []);
+
   // Agregar producto al carrito
   const addToCart = (product) => {
     const productInCartIndex = cart.findIndex((item) => item.id === product.id);

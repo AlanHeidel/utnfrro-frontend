@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/auth.jsx";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Lock, UserRound } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import "./LoginCard.css";
 
@@ -87,6 +87,9 @@ export function AdminLoginPage() {
             {error && <p className="error-text">{error}</p>}
             <div className="input-box-container">
               <div className="input-box">
+                <span className="input-leading-icon" aria-hidden="true">
+                  <UserRound size={18} />
+                </span>
                 <input
                   placeholder="Usuario"
                   required
@@ -96,6 +99,9 @@ export function AdminLoginPage() {
                 />
               </div>
               <div className="input-box">
+                <span className="input-leading-icon" aria-hidden="true">
+                  <Lock size={18} />
+                </span>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Contraseña"
