@@ -1,5 +1,6 @@
 #recomendados {
     scroll-margin-top: 100px;
+    width: 100%;
 }
 
 .recomendados-section-1 {
@@ -36,6 +37,6 @@
     padding: 24px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
-    margin: 0 auto;
+    margin: 150px auto;
     width: min(90%, 600px);
 }
