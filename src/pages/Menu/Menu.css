@@ -13,6 +13,7 @@
   align-items: center;
   min-height: 70vh;
   gap: 20px;
+  padding-bottom: 50px;
 }
 
 .no-results {

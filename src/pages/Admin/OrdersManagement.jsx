@@ -48,6 +48,20 @@ function normalizePedido(pedido) {
   };
 }
 
+function getNumericId(value) {
+  const id = Number(value);
+  return Number.isFinite(id) ? id : 0;
+}
+
+function sortByNewestOrder(items) {
+  return [...items].sort((a, b) => {
+    const byDate =
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    if (!Number.isNaN(byDate) && byDate !== 0) return byDate;
+    return getNumericId(b.id) - getNumericId(a.id);
+  });
+}
+
 export function OrdersManagement() {
   const [orders, setOrders] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
@@ -64,7 +78,7 @@ export function OrdersManagement() {
         setError("");
         const data = await getPedidos();
         if (alive) {
-          setOrders(data.map(normalizePedido));
+          setOrders(sortByNewestOrder(data.map(normalizePedido)));
         }
       } catch (err) {
         if (alive) setError("No pudimos cargar los pedidos");

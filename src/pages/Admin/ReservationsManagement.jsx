@@ -71,6 +71,19 @@ function normalizeReserva(raw) {
   };
 }
 
+function getNumericId(value) {
+  const id = Number(value);
+  return Number.isFinite(id) ? id : 0;
+}
+
+function sortByNewestReservation(items) {
+  return [...items].sort((a, b) => {
+    const byId = getNumericId(b.id) - getNumericId(a.id);
+    if (byId !== 0) return byId;
+    return new Date(b.inicio).getTime() - new Date(a.inicio).getTime();
+  });
+}
+
 export function ReservationsManagement() {
   const [reservas, setReservas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,7 +97,11 @@ export function ReservationsManagement() {
     setError("");
     try {
       const data = await getReservas();
-      setReservas((Array.isArray(data) ? data : []).map(normalizeReserva));
+      setReservas(
+        sortByNewestReservation(
+          (Array.isArray(data) ? data : []).map(normalizeReserva),
+        ),
+      );
     } catch (_) {
       setError("No pudimos cargar las reservas.");
       setReservas([]);
@@ -116,8 +133,7 @@ export function ReservationsManagement() {
           : `mesa ${reserva.mesaId ?? ""}`;
         const haystack = `${reserva.cliente} ${tableLabel}`.toLowerCase();
         return haystack.includes(searchTerm.trim().toLowerCase());
-      })
-      .sort((a, b) => new Date(a.inicio).getTime() - new Date(b.inicio).getTime());
+      });
   }, [reservas, searchTerm, statusFilter]);
 
   const metrics = useMemo(() => {

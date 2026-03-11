@@ -62,6 +62,15 @@ function normalizePlato(plato) {
   };
 }
 
+function getNumericId(value) {
+  const id = Number(value);
+  return Number.isFinite(id) ? id : 0;
+}
+
+function sortByNewestId(items) {
+  return [...items].sort((a, b) => getNumericId(b.id) - getNumericId(a.id));
+}
+
 function formatCurrency(value) {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
@@ -74,7 +83,7 @@ export function MenuManagement() {
   const { showToast } = useToast();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loadError, setLoadError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("Todos");
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -87,14 +96,14 @@ export function MenuManagement() {
     const loadProducts = async () => {
       try {
         setIsLoading(true);
-        setError(null);
+        setLoadError(null);
         const data = await getPlatos();
         if (isMounted) {
-          setProducts(data.map(normalizePlato));
+          setProducts(sortByNewestId(data.map(normalizePlato)));
         }
-      } catch (error) {
+      } catch (_) {
         if (isMounted) {
-          setError("No pudimos cargar los platos");
+          setLoadError("No pudimos cargar los platos");
         }
       } finally {
         if (isMounted) setIsLoading(false);
@@ -180,10 +189,10 @@ export function MenuManagement() {
       }
       showToast(isEditing ? "Plato editado" : "Plato creado", "success");
       const data = await getPlatos();
-      setProducts(data.map(normalizePlato));
+      setProducts(sortByNewestId(data.map(normalizePlato)));
       handleCloseForm();
-    } catch (error) {
-      setError("No pudimos guardar el plato");
+    } catch (_) {
+      showToast("El plato no pudo cargarse", "error");
     }
   };
 
@@ -196,8 +205,8 @@ export function MenuManagement() {
         )
       );
       showToast("Plato eliminado", "success");
-    } catch (error) {
-      setError("No pudimos actualizar el plato");
+    } catch (_) {
+      showToast("No pudimos actualizar el plato", "error");
     }
   };
 
@@ -248,8 +257,8 @@ export function MenuManagement() {
 
           {isLoading ? (
             <div className="empty-state">Cargando productos del menú...</div>
-          ) : error ? (
-            <div className="empty-state">{error}</div>
+          ) : loadError ? (
+            <div className="empty-state">{loadError}</div>
           ) : filteredProducts.length === 0 ? (
             <div className="empty-state">
               No encontramos productos con los filtros aplicados.

@@ -1,9 +1,48 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { getPedidoForTable } from "../../api/pedidos";
+import {
+  getPedidosEnCocinaForTable,
+  getPedidosRecibidosForTable,
+} from "../../api/pedidos";
 import { useAuth } from "../../context/auth.jsx";
 import "./TableOrders.css";
+
+const orderJourney = [
+  {
+    key: "pending",
+    title: "Pendientes",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="6" width="20" height="13" rx="2" />
+        <circle cx="12" cy="12.5" r="2.5" />
+        <path d="M6 9.5v6M18 9.5v6" />
+      </svg>
+    ),
+  },
+  {
+    key: "received",
+    title: "Recibidos",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v17l3-2 2 2 2-2 2 2 2-2 3 2V4a2 2 0 0 0-2-2z" />
+        <line x1="8" y1="9" x2="16" y2="9" />
+        <line x1="8" y1="13" x2="14" y2="13" />
+        <line x1="8" y1="17" x2="11" y2="17" />
+      </svg>
+    ),
+  },
+  {
+    key: "preparing",
+    title: "En cocina",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-2-1-4-1-4s-1 3-3 3c-1 0-2-1-2-2 0-2 2-6 2-6z" />
+        <path d="M12 22c-3.3 0-6-2.7-6-6 0-3 1.7-5.6 3-7 0 2 1 3.5 3 4 2 .5 4-1 4-3 1.2 1.4 2 3.4 2 6 0 3.3-2.7 6-6 6z" />
+      </svg>
+    ),
+  },
+];
 
 function getMesaIdFromToken(token) {
   if (!token || token.split(".").length < 3) return null;
@@ -18,6 +57,13 @@ function getMesaIdFromToken(token) {
 
 function getStatusLabel(status) {
   const normalized = String(status ?? "").toLowerCase();
+  if (
+    normalized.includes("payment") ||
+    normalized.includes("pago") ||
+    normalized.includes("pendiente")
+  ) {
+    return "Pendiente";
+  }
   if (normalized.includes("pending")) return "Recibido";
   if (normalized.includes("progress")) return "En cocina";
   if (normalized.includes("deliver")) return "Entregado";
@@ -57,108 +103,246 @@ function normalizePedido(pedido) {
   };
 }
 
+function sortByNewest(orders) {
+  return [...orders].sort((a, b) => {
+    const dateDiff =
+      new Date(b.fechaHora ?? 0).getTime() -
+      new Date(a.fechaHora ?? 0).getTime();
+    if (!Number.isNaN(dateDiff) && dateDiff !== 0) return dateDiff;
+    return Number(b.id ?? 0) - Number(a.id ?? 0);
+  });
+}
+
+function normalizeOrdersList(rawOrders) {
+  return sortByNewest((Array.isArray(rawOrders) ? rawOrders : []).map(normalizePedido));
+}
+
 export function TableOrders() {
   const { token } = useAuth();
-  const [order, setOrder] = useState(null);
-  const [hasActiveOrder, setHasActiveOrder] = useState(true);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeStep, setActiveStep] = useState("received");
+  const [stepCounts, setStepCounts] = useState({
+    pending: 0,
+    received: 0,
+    preparing: 0,
+  });
+  const totalSteps = orderJourney.length;
+  const activeStepIndex = orderJourney.findIndex((step) => step.key === activeStep);
+  const trackEdgePercent = 100 / (totalSteps * 2);
+  const trackSpanPercent = 100 - trackEdgePercent * 2;
+  const fillProgress =
+    activeStepIndex <= 0 ? 0 : activeStepIndex / Math.max(totalSteps - 1, 1);
+  const trackFillWidth = `${fillProgress * trackSpanPercent}%`;
+  const trackEdge = `${trackEdgePercent}%`;
+  const emptyMessageByStep = {
+    pending: "No hay pedidos pendientes de pago para tu mesa.",
+    received: "No hay pedidos recibidos para tu mesa.",
+    preparing: "No hay pedidos en cocina para tu mesa.",
+  };
 
-  const loadOrder = useCallback(async () => {
+  const loadOrders = useCallback(async (stepKey) => {
     setLoading(true);
     setError("");
-    setHasActiveOrder(true);
     try {
       const mesaId = getMesaIdFromToken(token);
       if (!mesaId) {
-        setOrder(null);
-        setHasActiveOrder(false);
+        setOrders([]);
         setError("No pudimos identificar la mesa de esta cuenta.");
         return;
       }
 
-      const pedido = await getPedidoForTable(mesaId);
-      setOrder(normalizePedido(pedido));
+      const [recibidosResult, enCocinaResult] = await Promise.allSettled([
+        getPedidosRecibidosForTable(mesaId),
+        getPedidosEnCocinaForTable(mesaId),
+      ]);
+
+      const parseResult = (result, queryKey) => {
+        if (result.status === "fulfilled") {
+          return { orders: normalizeOrdersList(result.value), fatal: "" };
+        }
+
+        const status = result.reason?.response?.status;
+        if (status === 404) return { orders: [], fatal: "" };
+
+        const isActiveQuery =
+          (stepKey === "received" && queryKey === "received") ||
+          (stepKey === "preparing" && queryKey === "preparing");
+
+        if (!isActiveQuery) return { orders: [], fatal: "" };
+        if (status === 400) return { orders: [], fatal: "El id de mesa es inválido." };
+        if (status === 403) return { orders: [], fatal: "Este pedido no pertenece a tu mesa." };
+        return { orders: [], fatal: "No pudimos cargar tus pedidos." };
+      };
+
+      const recibidosData = parseResult(recibidosResult, "received");
+      const enCocinaData = parseResult(enCocinaResult, "preparing");
+
+      setStepCounts({
+        pending: 0,
+        received: recibidosData.orders.length,
+        preparing: enCocinaData.orders.length,
+      });
+
+      const fatalError = recibidosData.fatal || enCocinaData.fatal;
+      if (fatalError) {
+        setOrders([]);
+        setError(fatalError);
+        return;
+      }
+
+      if (stepKey === "preparing") {
+        setOrders(enCocinaData.orders);
+        return;
+      }
+
+      if (stepKey === "received") {
+        setOrders(recibidosData.orders);
+        return;
+      }
+
+      setOrders([]);
     } catch (error) {
-      const status = error?.response?.status;
-      if (status === 404) {
-        setOrder(null);
-        setHasActiveOrder(false);
-        return;
-      }
-      if (status === 403) {
-        setOrder(null);
-        setHasActiveOrder(false);
-        setError("Este pedido no pertenece a tu mesa.");
-        return;
-      }
       setError("No pudimos cargar tus pedidos.");
-      setOrder(null);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
   }, [token]);
 
   useEffect(() => {
-    loadOrder();
-  }, [loadOrder]);
+    loadOrders(activeStep);
+  }, [activeStep, loadOrders]);
+
+  const handleStepClick = (stepKey) => {
+    if (stepKey === activeStep) {
+      loadOrders(stepKey);
+      return;
+    }
+    setActiveStep(stepKey);
+  };
 
   return (
     <section className="table-orders">
-      <header className="table-orders__header">
-        <div>
-          <h1>Tus pedidos</h1>
-          <p>Consulta el estado y el detalle de lo que pediste desde tu mesa.</p>
-        </div>
-        <button type="button" className="table-orders__refresh" onClick={loadOrder}>
-          Actualizar
-        </button>
-      </header>
+      <div className="table-orders__container">
+        <section
+          className="table-orders__journey"
+          aria-label="Flujo del pedido"
+        >
+          <div className="table-orders__stepper-wrapper">
+            <div className="table-orders__stepper-bar">
+              <Link to="/menu" className="table-orders__back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+                Volver al menú
+              </Link>
+              <button
+                type="button"
+                className="table-orders__refresh"
+                onClick={() => loadOrders(activeStep)}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="23 4 23 10 17 10" />
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                </svg>
+                Actualizar
+              </button>
+            </div>
+
+            <div className="table-orders__stepper-track">
+              <div
+                className="table-orders__track-line"
+                style={{ left: trackEdge, right: trackEdge }}
+              />
+              <div
+                className="table-orders__track-line-fill"
+                style={{ left: trackEdge, width: trackFillWidth }}
+              />
+              {orderJourney.map((step) => (
+                <button
+                  type="button"
+                  key={step.key}
+                  className={`table-orders__step table-orders__step--${
+                    step.key === activeStep
+                      ? "active"
+                      : (stepCounts[step.key] ?? 0) > 0
+                        ? "has-orders"
+                        : "inactive"
+                  }`}
+                  onClick={() => handleStepClick(step.key)}
+                >
+                  <div className="table-orders__step-icon">
+                    <div className="table-orders__step-counter">
+                      {stepCounts[step.key] ?? 0}
+                    </div>
+                    {step.icon}
+                  </div>
+                  <div className="table-orders__step-name">{step.title}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
 
       {loading ? (
         <div className="table-orders__empty">Cargando pedidos...</div>
       ) : error ? (
         <div className="table-orders__empty">{error}</div>
-      ) : !hasActiveOrder || !order ? (
+      ) : orders.length === 0 ? (
         <div className="table-orders__empty">
-          <p>No hay un pedido activo para tu mesa.</p>
+          <p>{emptyMessageByStep[activeStep] ?? "No hay pedidos para tu mesa."}</p>
           <Link to="/menu" className="table-orders__back">
             Ir al menú
           </Link>
         </div>
       ) : (
         <div className="table-orders__grid">
-          <article key={order.id} className="table-orders__card">
-            <header className="table-orders__card-head">
-              <div>
-                <h2>Pedido #{order.id}</h2>
-                <p>Mesa {order.mesaNumero}</p>
-              </div>
-              <span className={`table-orders__status ${getStatusClass(order.estado)}`}>
-                {getStatusLabel(order.estado)}
-              </span>
-            </header>
+          {orders.map((order) => (
+            <article key={order.id} className="table-orders__card">
+              <header className="table-orders__card-head">
+                <div>
+                  <h2>Pedido #{order.id}</h2>
+                  <p>Mesa {order.mesaNumero}</p>
+                </div>
+                <span
+                  className={`table-orders__status ${getStatusClass(order.estado)}`}
+                >
+                  {getStatusLabel(order.estado)}
+                </span>
+              </header>
 
-            <p className="table-orders__date">{formatDateTime(order.fechaHora)}</p>
+              <p className="table-orders__date">
+                {formatDateTime(order.fechaHora)}
+              </p>
 
-            <ul className="table-orders__items">
-              {order.items.map((item) => (
-                <li key={item.id ?? `${item.plato?.id}-${item.cantidad}`}>
-                  <span>
-                    {item.cantidad}x {item.plato?.nombre ?? "Plato"}
-                  </span>
-                  <strong>
-                    ${(Number(item.precioUnitario ?? 0) * Number(item.cantidad ?? 0)).toFixed(2)}
-                  </strong>
-                </li>
-              ))}
-            </ul>
+              <ul className="table-orders__items">
+                {order.items.map((item) => (
+                  <li
+                    key={`${order.id}-${item.id ?? `${item.plato?.id}-${item.cantidad}`}`}
+                  >
+                    <span>
+                      {item.cantidad}x {item.plato?.nombre ?? "Plato"}
+                    </span>
+                    <strong>
+                      $
+                      {(
+                        Number(item.precioUnitario ?? 0) *
+                        Number(item.cantidad ?? 0)
+                      ).toFixed(2)}
+                    </strong>
+                  </li>
+                ))}
+              </ul>
 
-            <footer className="table-orders__footer">
-              <span>Total</span>
-              <strong>${order.total.toFixed(2)}</strong>
-            </footer>
-          </article>
+              <footer className="table-orders__footer">
+                <span>Total</span>
+                <strong>${order.total.toFixed(2)}</strong>
+              </footer>
+            </article>
+          ))}
         </div>
       )}
     </section>

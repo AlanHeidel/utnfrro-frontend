@@ -38,6 +38,15 @@ function normalizeMesa(mesa) {
   };
 }
 
+function getNumericId(value) {
+  const id = Number(value);
+  return Number.isFinite(id) ? id : 0;
+}
+
+function sortByNewestId(items) {
+  return [...items].sort((a, b) => getNumericId(b.id) - getNumericId(a.id));
+}
+
 export function CustomersManagement() {
   const { showToast } = useToast();
   const [tables, setTables] = useState([]);
@@ -81,7 +90,7 @@ export function CustomersManagement() {
       }
       showToast(isEditing ? "Mesa editada" : "Mesa creada", "success");
       const data = await getMesas();
-      setTables(data.map(normalizeMesa));
+      setTables(sortByNewestId(data.map(normalizeMesa)));
       handleCloseForm();
     } catch (error) {
       setError("No pudimos guardar la mesa");
@@ -103,7 +112,7 @@ export function CustomersManagement() {
     const load = async () => {
       try {
         const data = await getMesas();
-        if (alive) setTables(data.map(normalizeMesa));
+        if (alive) setTables(sortByNewestId(data.map(normalizeMesa)));
       } catch (_) {
         if (alive) setTables([]);
       }
@@ -153,7 +162,7 @@ export function CustomersManagement() {
 
   const refreshTables = async () => {
     const data = await getMesas();
-    setTables(data.map(normalizeMesa));
+    setTables(sortByNewestId(data.map(normalizeMesa)));
   };
 
   const toMozoId = (mozoId) =>

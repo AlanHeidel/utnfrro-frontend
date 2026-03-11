@@ -18,6 +18,15 @@ function normalizeMozo(mozo) {
     };
 }
 
+function getNumericId(value) {
+    const id = Number(value);
+    return Number.isFinite(id) ? id : 0;
+}
+
+function sortByNewestId(items) {
+    return [...items].sort((a, b) => getNumericId(b.id) - getNumericId(a.id));
+}
+
 export function WaitersManagement() {
     const [mozos, setMozos] = useState([]);
     const [error, setError] = useState(null);
@@ -54,7 +63,7 @@ export function WaitersManagement() {
                 await createMozo(payload);
             }
             const data = await getMozos();
-            setMozos(data.map(normalizeMozo));
+            setMozos(sortByNewestId(data.map(normalizeMozo)));
             handleCloseForm();
         } catch (error) {
             setError("No pudimos guardar el mozo");
@@ -75,7 +84,7 @@ export function WaitersManagement() {
         const loadMozos = async () => {
             try {
                 const data = await getMozos();
-                if (alive) setMozos(data);
+                if (alive) setMozos(sortByNewestId(data.map(normalizeMozo)));
             } catch (_) { if (alive) setMozos([]); }
         };
         loadMozos();

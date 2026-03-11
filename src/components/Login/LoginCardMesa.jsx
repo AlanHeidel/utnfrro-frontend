@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/auth.jsx";
-import { Eye, EyeOff, Lock, UserRound } from "lucide-react";
+import { CircleAlert, Eye, EyeOff, Lock, UserRound } from "lucide-react";
 import "./LoginCard.css";
 
 export function LoginCardMesa() {
@@ -94,6 +94,10 @@ export function LoginCardMesa() {
                 {loading ? "Ingresando..." : "Entrar"}
               </button>
             </div>
+            <p className="login-context-note">
+              <CircleAlert size={16} aria-hidden="true" />
+              Este acceso es exclusivo para cuentas de mesa dentro del restaurante.
+            </p>
           </form>
         </div>
       </section>

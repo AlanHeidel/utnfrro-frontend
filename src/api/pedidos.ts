@@ -32,6 +32,13 @@ export interface PedidoDTO {
     }>;
 }
 
+function normalizePedidoListResponse(payload: any): PedidoDTO[] {
+  const data = payload?.data ?? payload;
+  if (Array.isArray(data)) return data;
+  if (data && typeof data === "object") return [data];
+  return [];
+}
+
 export async function createPedidoFromTable(
   payload: CreatePedidoPayload
 ): Promise<PedidoDTO> {
@@ -58,7 +65,23 @@ export async function updatePedidoEstado(
   return data.data ?? data;
 }
 
-export async function getPedidoForTable(mesaId: number | string): Promise<PedidoDTO> {
-    const { data } = await api.get(`/api/pedidos/table/${mesaId}`);
-    return data.data ?? data;
+export async function getPedidoForTable(
+  mesaId: number | string
+): Promise<PedidoDTO[]> {
+  const { data } = await api.get(`/api/pedidos/table/${mesaId}`);
+  return normalizePedidoListResponse(data);
+}
+
+export async function getPedidosRecibidosForTable(
+  mesaId: number | string
+): Promise<PedidoDTO[]> {
+  const { data } = await api.get(`/api/pedidos/table/${mesaId}/recibidos`);
+  return normalizePedidoListResponse(data);
+}
+
+export async function getPedidosEnCocinaForTable(
+  mesaId: number | string
+): Promise<PedidoDTO[]> {
+  const { data } = await api.get(`/api/pedidos/table/${mesaId}/en-cocina`);
+  return normalizePedidoListResponse(data);
 }
