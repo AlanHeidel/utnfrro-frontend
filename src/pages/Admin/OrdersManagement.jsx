@@ -5,6 +5,7 @@ import { getPedidos, updatePedidoEstado } from "../../api/pedidos";
 
 const statusFilters = [
   { value: "all", label: "Todos" },
+  { value: "pending_payment", label: "Pendiente pago" },
   { value: "pending", label: "Recibidos" },
   { value: "in_progress", label: "En cocina" },
   { value: "delivered", label: "Entregados" },

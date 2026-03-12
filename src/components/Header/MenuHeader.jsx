@@ -1,14 +1,16 @@
 import "./MenuHeader.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import { CartButton } from "./NavBarList/CartButton.jsx";
 import { CloseButton } from "./NavBarList/CloseButton.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../hooks/useCart.jsx";
 import { useToast } from "../../hooks/useToast.jsx";
 import { CartItem } from "../Cart/cartItem.jsx";
-import { createPedidoFromTable } from "../../api/pedidos";
+import { createTablePaymentPreference } from "../../api/payments";
 
 export function MenuHeader() {
+  const emptyCartColor = "rgba(32, 32, 32, 1)";
+  const emptyCartIconId = useId().replaceAll(":", "");
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +47,7 @@ export function MenuHeader() {
           cantidad: item.quantity,
         })),
       };
-      await createPedidoFromTable(payload);
+      await createTablePaymentPreference(payload);
       clearCart();
       setIsOpen(false);
       showToast("Pedido enviado", "success");
@@ -89,7 +91,78 @@ export function MenuHeader() {
         </div>
         <div className="pedido-list">
           {cart.length === 0 ? (
-            <p className="cart-empty">Tu carrito está vacío</p>
+            <div className="cart-empty">
+              <div className="cart-empty__icon" aria-hidden="true">
+                <svg
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="100%"
+                  height="100%"
+                >
+                  <defs>
+                    <mask id={`cart-mask-${emptyCartIconId}`}>
+                      <rect x="0" y="0" width="100" height="100" fill="white" />
+                      <circle cx="28" cy="38" r="16" fill="black" />
+                    </mask>
+                    <mask id={`x-mask-${emptyCartIconId}`}>
+                      <circle cx="28" cy="38" r="14" fill="white" />
+                      <line
+                        x1="21"
+                        y1="31"
+                        x2="35"
+                        y2="45"
+                        stroke="black"
+                        strokeWidth="4.5"
+                        strokeLinecap="round"
+                      />
+                      <line
+                        x1="35"
+                        y1="31"
+                        x2="21"
+                        y2="45"
+                        stroke="black"
+                        strokeWidth="4.5"
+                        strokeLinecap="round"
+                      />
+                    </mask>
+                  </defs>
+                  <path
+                    d="M28 22 L88 22 L80 62 L36 62 Z"
+                    fill={emptyCartColor}
+                    mask={`url(#cart-mask-${emptyCartIconId})`}
+                  />
+                  <path
+                    d="M14 14 L24 14 L28 22"
+                    stroke={emptyCartColor}
+                    strokeWidth="6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                  />
+                  <line
+                    x1="36"
+                    y1="62"
+                    x2="80"
+                    y2="62"
+                    stroke={emptyCartColor}
+                    strokeWidth="6"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="42" cy="74" r="6" fill={emptyCartColor} />
+                  <circle cx="72" cy="74" r="6" fill={emptyCartColor} />
+                  <circle
+                    cx="28"
+                    cy="38"
+                    r="14"
+                    fill={emptyCartColor}
+                    mask={`url(#x-mask-${emptyCartIconId})`}
+                  />
+                </svg>
+              </div>
+              <p className="cart-empty__text">
+                Parece que tu carrito está vacío
+              </p>
+            </div>
           ) : (
             <>
               <div className="cart-items">

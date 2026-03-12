@@ -1,8 +1,7 @@
 import "./OrderCard.css";
 
-const statusFlow = ["pending", "in_progress", "delivered"];
-
 const statusLabels = {
+  pending_payment: "Pendiente pago",
   pending: "Recibido",
   in_progress: "En cocina",
   delivered: "Entregado",
@@ -16,9 +15,32 @@ function formatCurrency(value) {
   }).format(value);
 }
 
-function minutesSince(dateString) {
-  const diff = (Date.now() - new Date(dateString).getTime()) / (1000 * 60) || 0;
-  return Math.max(Math.round(diff), 0);
+function formatElapsedTime(dateString) {
+  const timestamp = new Date(dateString).getTime();
+  if (!Number.isFinite(timestamp)) return "-";
+
+  const diffMs = Math.max(Date.now() - timestamp, 0);
+  const minutes = Math.floor(diffMs / (1000 * 60));
+
+  if (minutes < 60) return `${minutes} min`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} h`;
+
+  const days = Math.floor(hours / 24);
+  return `${days} d`;
+}
+
+function getNextStatus(status) {
+  if (status === "pending") return "in_progress";
+  if (status === "in_progress") return "delivered";
+  return null;
+}
+
+function getAdvanceLabel(status) {
+  if (status === "pending") return "Avanzar a cocina";
+  if (status === "in_progress") return "Entregar";
+  return "";
 }
 
 export function OrderCard({
@@ -27,21 +49,23 @@ export function OrderCard({
   onViewDetails,
   disabled = false,
 }) {
-  const canCancel =
-    order.status !== "delivered" && order.status !== "canceled";
-  const canChangeStatus = order.status !== "canceled";
+  const canCancel = order.status !== "delivered" && order.status !== "canceled";
+  const nextStatus = getNextStatus(order.status);
+  const canAdvanceStatus = Boolean(nextStatus);
 
   return (
     <article className={`order-card order-card--${order.status}`}>
       <header className="order-card__header">
         <div>
-          <h3>{order.code} - Mesa {order.table}</h3>
+          <h3>
+            {order.code} - Mesa {order.table}
+          </h3>
         </div>
         <div className="order-card__status">
           <span className={`chip chip--${order.status}`}>
             {statusLabels[order.status] ?? order.status}
           </span>
-          <time>{minutesSince(order.createdAt)} min</time>
+          <time>{formatElapsedTime(order.createdAt)}</time>
         </div>
       </header>
 
@@ -73,39 +97,35 @@ export function OrderCard({
       </div>
 
       <footer className="order-card__footer">
-        {canChangeStatus && (
-          <select
-            value={order.status}
-            disabled={disabled}
-            onChange={(event) =>
-              onStatusChange(order.id, event.target.value || order.status)
-            }
-          >
-            {statusFlow.map((status) => (
-              <option key={status} value={status}>
-                {statusLabels[status]}
-              </option>
-            ))}
-          </select>
-        )}
-
         <div className="order-card__actions">
-          <button
-            className="btn-link"
-            onClick={() => onViewDetails?.(order.id)}
-          >
-            Ver detalle
-          </button>
           {canCancel && (
             <button
               type="button"
-              className="order-card__cancel-link"
+              className="btn-link danger order-card__cancel-link"
               disabled={disabled}
               onClick={() => onStatusChange(order.id, "canceled")}
             >
               Cancelar
             </button>
           )}
+          <div className="order-card__btn-container">
+            <button
+              className="btn-link"
+              onClick={() => onViewDetails?.(order.id)}
+            >
+              Ver detalle
+            </button>
+            {canAdvanceStatus && (
+              <button
+                type="button"
+                className="btn-primary order-card__advance-btn"
+                disabled={disabled}
+                onClick={() => onStatusChange(order.id, nextStatus)}
+              >
+                {getAdvanceLabel(order.status)}
+              </button>
+            )}
+          </div>
         </div>
       </footer>
     </article>

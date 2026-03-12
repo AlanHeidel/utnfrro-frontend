@@ -12,7 +12,7 @@ export interface CreatePedidoPayload {
 
 export interface PedidoDTO {
     id: number;
-    estado: "pending" | "in_progress" | "delivered" | "canceled";
+    estado: "pending_payment" | "pending" | "in_progress" | "delivered" | "canceled";
     total: number;
     fechaHora: string;
     mesa: {
@@ -83,5 +83,12 @@ export async function getPedidosEnCocinaForTable(
   mesaId: number | string
 ): Promise<PedidoDTO[]> {
   const { data } = await api.get(`/api/pedidos/table/${mesaId}/en-cocina`);
+  return normalizePedidoListResponse(data);
+}
+
+export async function getPedidosPendientesPagoForTable(
+  mesaId: number | string
+): Promise<PedidoDTO[]> {
+  const { data } = await api.get(`/api/pedidos/table/${mesaId}/pendientes-pago`);
   return normalizePedidoListResponse(data);
 }

@@ -1,12 +1,32 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import {
   getPedidosEnCocinaForTable,
+  getPedidosPendientesPagoForTable,
   getPedidosRecibidosForTable,
 } from "../../api/pedidos";
+import {
+  confirmTablePayment,
+  recoverPedidoPaymentPreference,
+} from "../../api/payments";
+import { LoadingLogo } from "../../components/Shared/LoadingLogo/LoadingLogo";
 import { useAuth } from "../../context/auth.jsx";
 import "./TableOrders.css";
+
+const MP_REDIRECT_QUERY_KEYS = [
+  "collection_id",
+  "collection_status",
+  "payment_id",
+  "status",
+  "external_reference",
+  "payment_type",
+  "merchant_order_id",
+  "preference_id",
+  "site_id",
+  "processing_mode",
+  "merchant_account_id",
+];
 
 const orderJourney = [
   {
@@ -93,6 +113,18 @@ function formatDateTime(value) {
 }
 
 function normalizePedido(pedido) {
+  const paymentData = pedido?.payment ?? pedido?.pago ?? {};
+  const preferenceData = paymentData?.preference ?? {};
+  const initPoint = String(
+    pedido?.initPoint ??
+      pedido?.init_point ??
+      paymentData?.initPoint ??
+      paymentData?.init_point ??
+      preferenceData?.initPoint ??
+      preferenceData?.init_point ??
+      ""
+  ).trim();
+
   return {
     id: pedido?.id,
     estado: pedido?.estado ?? "",
@@ -100,7 +132,17 @@ function normalizePedido(pedido) {
     fechaHora: pedido?.fechaHora ?? null,
     mesaNumero: pedido?.mesa?.numeroMesa ?? "-",
     items: Array.isArray(pedido?.items) ? pedido.items : [],
+    initPoint,
   };
+}
+
+function isPendingPaymentStatus(status) {
+  const normalized = String(status ?? "").toLowerCase();
+  return (
+    normalized.includes("pending_payment") ||
+    normalized.includes("pending-payment") ||
+    normalized.includes("pendiente_pago")
+  );
 }
 
 function sortByNewest(orders) {
@@ -119,15 +161,22 @@ function normalizeOrdersList(rawOrders) {
 
 export function TableOrders() {
   const { token } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const lastConfirmedPaymentIdRef = useRef("");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeStep, setActiveStep] = useState("received");
+  const [activeStep, setActiveStep] = useState("pending");
   const [stepCounts, setStepCounts] = useState({
     pending: 0,
     received: 0,
     preparing: 0,
   });
+  const [confirmingPayment, setConfirmingPayment] = useState(false);
+  const [paymentLoadingOrderId, setPaymentLoadingOrderId] = useState(null);
+  const [paymentErrorOrderId, setPaymentErrorOrderId] = useState(null);
+  const [paymentError, setPaymentError] = useState("");
   const totalSteps = orderJourney.length;
   const activeStepIndex = orderJourney.findIndex((step) => step.key === activeStep);
   const trackEdgePercent = 100 / (totalSteps * 2);
@@ -153,7 +202,8 @@ export function TableOrders() {
         return;
       }
 
-      const [recibidosResult, enCocinaResult] = await Promise.allSettled([
+      const [pendientesPagoResult, recibidosResult, enCocinaResult] = await Promise.allSettled([
+        getPedidosPendientesPagoForTable(mesaId),
         getPedidosRecibidosForTable(mesaId),
         getPedidosEnCocinaForTable(mesaId),
       ]);
@@ -167,6 +217,7 @@ export function TableOrders() {
         if (status === 404) return { orders: [], fatal: "" };
 
         const isActiveQuery =
+          (stepKey === "pending" && queryKey === "pending") ||
           (stepKey === "received" && queryKey === "received") ||
           (stepKey === "preparing" && queryKey === "preparing");
 
@@ -176,19 +227,26 @@ export function TableOrders() {
         return { orders: [], fatal: "No pudimos cargar tus pedidos." };
       };
 
+      const pendientesPagoData = parseResult(pendientesPagoResult, "pending");
       const recibidosData = parseResult(recibidosResult, "received");
       const enCocinaData = parseResult(enCocinaResult, "preparing");
 
       setStepCounts({
-        pending: 0,
+        pending: pendientesPagoData.orders.length,
         received: recibidosData.orders.length,
         preparing: enCocinaData.orders.length,
       });
 
-      const fatalError = recibidosData.fatal || enCocinaData.fatal;
+      const fatalError =
+        pendientesPagoData.fatal || recibidosData.fatal || enCocinaData.fatal;
       if (fatalError) {
         setOrders([]);
         setError(fatalError);
+        return;
+      }
+
+      if (stepKey === "pending") {
+        setOrders(pendientesPagoData.orders);
         return;
       }
 
@@ -214,6 +272,107 @@ export function TableOrders() {
   useEffect(() => {
     loadOrders(activeStep);
   }, [activeStep, loadOrders]);
+
+  useEffect(() => {
+    setPaymentLoadingOrderId(null);
+    setPaymentErrorOrderId(null);
+    setPaymentError("");
+  }, [activeStep]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const paymentId = params.get("payment_id") ?? params.get("paymentId") ?? "";
+    if (!paymentId) return;
+
+    if (lastConfirmedPaymentIdRef.current === paymentId) return;
+    lastConfirmedPaymentIdRef.current = paymentId;
+
+    const paymentStatus = String(
+      params.get("status") ?? params.get("collection_status") ?? ""
+    ).toLowerCase();
+
+    const clearMpQueryParams = () => {
+      const cleanParams = new URLSearchParams(location.search);
+      MP_REDIRECT_QUERY_KEYS.forEach((key) => cleanParams.delete(key));
+      const nextSearch = cleanParams.toString();
+      navigate(
+        `${location.pathname}${nextSearch ? `?${nextSearch}` : ""}`,
+        { replace: true }
+      );
+    };
+
+    if (paymentStatus && paymentStatus !== "approved") {
+      clearMpQueryParams();
+      return;
+    }
+
+    let cancelled = false;
+    setConfirmingPayment(true);
+    (async () => {
+      try {
+        await confirmTablePayment(paymentId);
+        if (cancelled) return;
+        await loadOrders(activeStep);
+      } catch (error) {
+        if (cancelled) return;
+        const status = error?.response?.status;
+        if (status === 403) {
+          setError("No tienes permisos para confirmar este pago.");
+        } else if (status === 404) {
+          setError("No encontramos el pago para confirmar.");
+        } else {
+          setError("No pudimos confirmar el pago. Intenta actualizar.");
+        }
+      } finally {
+        if (!cancelled) {
+          setConfirmingPayment(false);
+          clearMpQueryParams();
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      setConfirmingPayment(false);
+    };
+  }, [activeStep, loadOrders, location.pathname, location.search, navigate]);
+
+  const handlePayOrder = async (order) => {
+    if (!order || !isPendingPaymentStatus(order.estado)) return;
+
+    setPaymentLoadingOrderId(order.id);
+    setPaymentErrorOrderId(null);
+    setPaymentError("");
+
+    try {
+      let initPoint = order.initPoint ?? "";
+
+      if (!initPoint) {
+        const recovered = await recoverPedidoPaymentPreference(order.id);
+        initPoint = initPoint || recovered.initPoint;
+      }
+
+      if (initPoint) {
+        window.location.assign(initPoint);
+        return;
+      }
+
+      setPaymentErrorOrderId(order.id);
+      setPaymentError("No pudimos generar el pago para este pedido.");
+    } catch (error) {
+      const status = error?.response?.status;
+      setPaymentErrorOrderId(order.id);
+      if (status === 403) {
+        setPaymentError("No tienes permisos para pagar este pedido.");
+      } else if (status === 404) {
+        setPaymentError("No encontramos la preferencia de pago.");
+      } else {
+        setPaymentError("No pudimos iniciar Mercado Pago. Intenta de nuevo.");
+      }
+    } finally {
+      setPaymentLoadingOrderId(null);
+    }
+  };
 
   const handleStepClick = (stepKey) => {
     if (stepKey === activeStep) {
@@ -287,8 +446,12 @@ export function TableOrders() {
         </section>
       </div>
 
-      {loading ? (
-        <div className="table-orders__empty">Cargando pedidos...</div>
+      {loading || confirmingPayment ? (
+        <div className="table-orders__empty table-orders__empty--loading">
+          <LoadingLogo
+            label={confirmingPayment ? "Confirmando pago..." : "Cargando pedidos..."}
+          />
+        </div>
       ) : error ? (
         <div className="table-orders__empty">{error}</div>
       ) : orders.length === 0 ? (
@@ -341,6 +504,25 @@ export function TableOrders() {
                 <span>Total</span>
                 <strong>${order.total.toFixed(2)}</strong>
               </footer>
+
+              {isPendingPaymentStatus(order.estado) && (
+                <div className="table-orders__payment">
+                  <button
+                    type="button"
+                    className="table-orders__pay-btn"
+                    onClick={() => handlePayOrder(order)}
+                    disabled={paymentLoadingOrderId === order.id}
+                  >
+                    {paymentLoadingOrderId === order.id
+                      ? "Preparando pago..."
+                      : "Pagar"}
+                  </button>
+
+                  {paymentErrorOrderId === order.id && paymentError ? (
+                    <p className="table-orders__payment-error">{paymentError}</p>
+                  ) : null}
+                </div>
+              )}
             </article>
           ))}
         </div>

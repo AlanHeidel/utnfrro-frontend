@@ -58,6 +58,11 @@
   letter-spacing: 0.5px;
 }
 
+.chip--pending_payment {
+  background: #ffe7d6;
+  color: #b84a14;
+}
+
 .chip--pending {
   background: #fef3c7;
   color: #b45309;
@@ -163,35 +168,21 @@
   gap: 0.75rem;
 }
 
-.order-card__footer select {
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  padding: 0.65rem 0.8rem;
-  font-weight: 600;
-  color: #1f2937;
-  background: #fff;
-}
-
 .order-card__actions {
   display: flex;
-  gap: 0.75rem;
+  justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.order-card__cancel-link {
-  margin-left: auto;
-  border: none;
-  background: transparent;
-  color: #b91c1c;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0;
+.order-card__advance-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.order-card__cancel-link:hover {
-  color: #991b1b;
+.order-card__btn-container {
+  display: flex;
+  gap: 0.5rem;
 }
