@@ -3,15 +3,14 @@ import "./Recomendados.css";
 import { GridRecomendados } from "../GridRecomendados/GridRecomendados.jsx";
 import { getFeaturedPlatos } from "../../api/menu";
 
-const DEFAULT_IMAGE =
-  "https://www.sillasmesas.es/blog/wp-content/webp-express/webp-images/uploads/2020/06/Que-tipos-de-restaurantes-hay.jpg.webp";
+const default_image = "/images/default-image.webp";
 
 function normalizePlato(plato) {
   return {
     id: plato.id?.toString() ?? crypto.randomUUID(),
     nombre: plato.nombre ?? "Plato destacado",
     precio: Number(plato.precio) || 0,
-    imagen: plato.imagen?.trim() || DEFAULT_IMAGE,
+    imagen: plato.imagen?.trim() || default_image,
   };
 }
 
@@ -26,7 +25,7 @@ export function Recomendados() {
       try {
         setLoading(true);
         setError("");
-        const data = await getFeaturedPlatos(6);
+        const data = await getFeaturedPlatos();
         if (alive) {
           setFeatured(data.map(normalizePlato));
         }

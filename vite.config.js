@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    allowedHosts: [".ngrok-free.dev"],
+    allowedHosts: ["problems-lines-searching-discounts.trycloudflare.com"],
   },
 });

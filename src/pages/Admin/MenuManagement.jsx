@@ -17,6 +17,19 @@ const statusClasses = {
   destacado: "status-featured",
 };
 
+const DEFAULT_IMAGE_PATH = "/images/default-image.webp";
+
+function isDefaultImagePath(value) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (!normalized) return false;
+  return (
+    normalized.includes("/images/default-image.webp") ||
+    normalized.includes("../public/images/default-image.webp") ||
+    normalized.includes("./images/default-image.webp") ||
+    normalized.includes("public/images/default-image.webp")
+  );
+}
+
 function capitalize(word) {
   if (!word) return "";
   return word.charAt(0).toUpperCase() + word.slice(1);
@@ -34,17 +47,16 @@ function normalizePlato(plato) {
   const ingredients = Array.isArray(rawIngredientes)
     ? rawIngredientes
     : typeof rawIngredientes === "string"
-    ? JSON.parse(rawIngredientes)
-    : [];
+      ? JSON.parse(rawIngredientes)
+      : [];
   const tipoPlatoData = plato.tipoPlato ?? {};
   const categoryId = tipoPlatoData.id?.toString() ?? "";
   const categoryName =
     typeof plato.tipoPlato === "string"
       ? plato.tipoPlato
-      : tipoPlatoData.name ?? tipoPlatoData.tipo ?? "";
+      : (tipoPlatoData.name ?? tipoPlatoData.tipo ?? "");
   const tags = ingredients.map(capitalize);
-  const default_image =
-    "https://www.sillasmesas.es/blog/wp-content/webp-express/webp-images/uploads/2020/06/Que-tipos-de-restaurantes-hay.jpg.webp";
+  const default_image = DEFAULT_IMAGE_PATH;
 
   return {
     id: plato.id?.toString() ?? crypto.randomUUID(),
@@ -144,7 +156,7 @@ export function MenuManagement() {
         return product.category === categoryFilter;
       })
       .filter((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()),
       );
   }, [products, categoryFilter, searchTerm]);
 
@@ -154,7 +166,15 @@ export function MenuManagement() {
   };
 
   const openEditForm = (product) => {
-    setEditingProduct(product);
+    const sourceImage = String(
+      product?.raw?.imagen ?? product?.image ?? ""
+    ).trim();
+    const imageInputValue = isDefaultImagePath(sourceImage) ? "" : sourceImage;
+
+    setEditingProduct({
+      ...product,
+      image: imageInputValue,
+    });
     setIsFormOpen(true);
   };
 
@@ -201,8 +221,10 @@ export function MenuManagement() {
       await updatePlato(productId, { estado: "agotado" });
       setProducts((prev) =>
         prev.map((product) =>
-          product.id === productId ? { ...product, status: "agotado" } : product
-        )
+          product.id === productId
+            ? { ...product, status: "agotado" }
+            : product,
+        ),
       );
       showToast("Plato eliminado", "success");
     } catch (_) {
@@ -269,7 +291,7 @@ export function MenuManagement() {
                 const margin =
                   product.price > 0
                     ? Math.round(
-                        ((product.price - product.cost) / product.price) * 100
+                        ((product.price - product.cost) / product.price) * 100,
                       )
                     : 100;
 

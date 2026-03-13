@@ -3,7 +3,9 @@ import "./Menu.css";
 import { Filters } from "./Filters.jsx";
 import { useFilter } from "../../hooks/useFilter.jsx";
 import { useEffect, useState, useMemo } from "react";
-import { getPlatos } from "../../api/menu";
+import { getMenuPlatos } from "../../api/menu";
+
+const default_image = "/images/default-image.webp";
 
 export function Menu() {
   const { filterProducts } = useFilter();
@@ -13,14 +15,13 @@ export function Menu() {
 
   const normalizePlato = (plato) => {
     const categoryRaw = plato.tipoPlato?.name ?? plato.tipoPlato?.tipo ?? "Sin categoría";
-    const defaultImg = "https://www.sillasmesas.es/blog/wp-content/webp-express/webp-images/uploads/2020/06/Que-tipos-de-restaurantes-hay.jpg.webp";
     return {
       id: plato.id?.toString() ?? crypto.randomUUID(),
       name: plato.nombre ?? "Sin nombre",
       price: Number(plato.precio) || 0,
       description: plato.descrip ?? plato.descripcion ?? "",
       category: categoryRaw,
-      thumbnail: plato.imagen?.trim() || defaultImg,
+      thumbnail: plato.imagen?.trim() || default_image,
     };
   };
 
@@ -34,7 +35,7 @@ export function Menu() {
     const load = async () => {
       try {
         setLoading(true);
-        const data = await getPlatos();
+        const data = await getMenuPlatos();
         if (alive) setProducts(data.map(normalizePlato));
       } catch (e) {
         if (alive) setError("No pudimos cargar el menú");

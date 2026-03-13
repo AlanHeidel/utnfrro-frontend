@@ -26,6 +26,11 @@ export async function getPlatos() {
   return Array.isArray(data) ? data : data.data ?? [];
 }
 
+export async function getMenuPlatos() {
+  const { data } = await api.get("/api/platos/menu");
+  return Array.isArray(data) ? data : data.data ?? [];
+}
+
 export async function createPlato(payload) {
   const { data } = await api.post("/api/platos", payload);
   return data.data ?? data;
@@ -48,14 +53,7 @@ export async function getTipoPlatos() {
   return Array.isArray(data) ? data : data.data ?? [];
 }
 
-export async function getFeaturedPlatos(limit = 6) {
-  const platos = await getPlatos();
-  const featured = platos.filter((plato) => {
-    const estado = typeof plato.estado === "string" ? plato.estado.toLowerCase() : "";
-    return estado === "destacado" || estado === "featured";
-  });
-  if (typeof limit === "number") {
-    return featured.slice(0, limit);
-  }
-  return featured;
+export async function getFeaturedPlatos() {
+  const { data } = await api.get("/api/platos/destacados");
+  return Array.isArray(data) ? data : data.data ?? [];
 }
