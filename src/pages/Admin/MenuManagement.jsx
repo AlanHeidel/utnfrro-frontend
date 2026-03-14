@@ -20,7 +20,9 @@ const statusClasses = {
 const DEFAULT_IMAGE_PATH = "/images/default-image.webp";
 
 function isDefaultImagePath(value) {
-  const normalized = String(value ?? "").trim().toLowerCase();
+  const normalized = String(value ?? "")
+    .trim()
+    .toLowerCase();
   if (!normalized) return false;
   return (
     normalized.includes("/images/default-image.webp") ||
@@ -167,7 +169,7 @@ export function MenuManagement() {
 
   const openEditForm = (product) => {
     const sourceImage = String(
-      product?.raw?.imagen ?? product?.image ?? ""
+      product?.raw?.imagen ?? product?.image ?? "",
     ).trim();
     const imageInputValue = isDefaultImagePath(sourceImage) ? "" : sourceImage;
 
@@ -297,11 +299,13 @@ export function MenuManagement() {
 
                 return (
                   <article key={product.id} className="admin-product-card">
-                    <img
-                      className="admin-product-card__image"
-                      src={product.image}
-                      alt={product.name}
-                    />
+                    <div className="image-card__container">
+                      <img
+                        className="admin-product-card__image"
+                        src={product.image}
+                        alt={product.name}
+                      />
+                    </div>
                     <header className="admin-product-card__header">
                       <div>
                         <h3>{product.name}</h3>
@@ -316,9 +320,11 @@ export function MenuManagement() {
                       </span>
                     </header>
 
-                    <p className="admin-product-card__description">
-                      {product.description || "Sin descripción"}
-                    </p>
+                    <div className="product-description__container">
+                      <p className="admin-product-card__description">
+                        {product.description || "Sin descripción"}
+                      </p>
+                    </div>
 
                     <dl className="admin-product-card__meta">
                       <div>
