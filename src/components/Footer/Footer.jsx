@@ -7,7 +7,7 @@ export function Footer() {
                 <div className='footer-container'>
                     <section className="footer-contact">
                         <div className='footer-contact-icon'>
-                            <img src="public/images/home-icon.png" alt="home icon" />
+                            <img src="/images/home-icon.png" alt="home icon" />
                             <h3>Contáctanos</h3>
                         </div>
                         <p>Encontranos en nuestras redes sociales</p>

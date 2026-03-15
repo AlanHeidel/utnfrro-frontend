@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import "./Sidebar.css";
+import "./SideBar.css";
 import { useAuth } from "../../../context/auth.jsx";
 
 // Iconos SVG
@@ -151,7 +151,7 @@ export function Sidebar() {
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <span className="logo-icon">
-            <img src="../../../public/images/home-icon.png" alt="logo" />
+            <img src="/images/home-icon.png" alt="logo" />
           </span>
           <h2>PPA Admin</h2>
         </div>

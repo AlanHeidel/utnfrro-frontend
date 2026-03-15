@@ -5,7 +5,7 @@ export function Overlay () {
     return (
     <>
         <div className="overlay">
-              <img src="public/images/image-overlay.webp" alt="Logo del restaurante" />
+              <img src="/images/image-overlay.webp" alt="Logo del restaurante" />
               <Link to="/menu" className="order-button montserrat">ORDENÁ</Link>
             </div>
     </>

@@ -55,15 +55,15 @@ export function Description() {
               role="presentation"
             >
               <img
-                src="public/images/parrilla-image-4.webp"
+                src="/images/parrilla-image-4.webp"
                 alt="corte de carne"
               />
               <img
-                src="public/images/parrilla-image.webp"
+                src="/images/parrilla-image.webp"
                 alt="corte de carne"
               />
               <img
-                src="public/images/parrilla-image-4.webp"
+                src="/images/parrilla-image-4.webp"
                 alt="corte de carne"
               />
             </div>
@@ -77,12 +77,12 @@ export function Description() {
           <div className="aboutus-section-3-image">
             <div className="aboutus-section-3-image-slider">
               <img
-                src="public/images/vinos-image.webp"
+                src="/images/vinos-image.webp"
                 alt="botellas de vino"
               />
-              <img src="public/images/vinos-image-2.webp" alt="copa de vino" />
+              <img src="/images/vinos-image-2.webp" alt="copa de vino" />
               <img
-                src="public/images/vinos-image.webp"
+                src="/images/vinos-image.webp"
                 alt="botellas de vino"
               />
             </div>
