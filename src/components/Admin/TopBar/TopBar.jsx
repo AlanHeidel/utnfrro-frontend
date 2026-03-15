@@ -1,4 +1,5 @@
 import "./TopBar.css";
+import { useNavigate } from "react-router-dom";
 
 // Iconos SVG
 const BellIcon = () => (
@@ -24,6 +25,8 @@ const SettingsIcon = () => (
 );
 
 export function TopBar({ title, subtitle }) {
+  const navigate = useNavigate();
+
   return (
     <div className="admin-topbar">
       <div className="topbar-content">
@@ -36,7 +39,12 @@ export function TopBar({ title, subtitle }) {
             <BellIcon />
             <span className="notification-badge">3</span>
           </button>
-          <button className="topbar-btn">
+          <button
+            className="topbar-btn"
+            type="button"
+            aria-label="Ir a configuración"
+            onClick={() => navigate("/admin/settings")}
+          >
             <SettingsIcon />
           </button>
         </div>

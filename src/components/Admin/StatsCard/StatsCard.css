@@ -1,7 +1,7 @@
 .stats-card {
   background: white;
-  border-radius: 16px;
-  padding: 1.5rem;
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid #f0f0f0;
@@ -16,83 +16,40 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
 }
 
 .stats-title {
-  font-size: 0.875rem;
+  font-size: 0.68rem;
   color: #6b6b6b;
-  margin: 0 0 0.5rem 0;
-  font-weight: 500;
+  margin: 0 0 0.2rem 0;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .stats-value {
-  font-size: 2rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
+  line-height: 1.1;
 }
 
 .stats-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 8px;
+  border: 1px solid rgba(255, 107, 53, 0.22);
+  background: rgba(255, 107, 53, 0.08);
 }
 
 .stats-icon svg {
   width: 100%;
   height: 100%;
-  color: white;
-}
-
-/* Colores distintivos para cada stat */
-.stats-card-blue .stats-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.stats-card-green .stats-icon {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.stats-card-orange .stats-icon {
-  background: linear-gradient(135deg, #ff6b35 0%, #e85a2a 100%);
-}
-
-.stats-card-red .stats-icon {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-}
-
-.stats-footer {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #f5f5f5;
-}
-
-.stats-trend {
-  font-size: 0.875rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.trend-up {
-  color: #10b981;
-}
-
-.trend-down {
-  color: #ef4444;
-}
-
-.stats-period {
-  font-size: 0.75rem;
-  color: #9ca3af;
+  color: #b24a1b;
 }

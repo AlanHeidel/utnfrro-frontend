@@ -4,8 +4,6 @@ export function StatsCard({
   title,
   value,
   icon,
-  trend,
-  trendValue,
   color = "blue",
 }) {
   return (
@@ -17,18 +15,6 @@ export function StatsCard({
         </div>
         <div className="stats-icon">{icon}</div>
       </div>
-      {trend && (
-        <div className="stats-footer">
-          <span
-            className={`stats-trend ${
-              trend === "up" ? "trend-up" : "trend-down"
-            }`}
-          >
-            {trend === "up" ? "↑" : "↓"} {trendValue}
-          </span>
-          <span className="stats-period">vs. mes anterior</span>
-        </div>
-      )}
     </div>
   );
 }
