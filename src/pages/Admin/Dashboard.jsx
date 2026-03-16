@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { StatsCard } from "../../components/Admin/StatsCard/StatsCard";
 import { AdminModal } from "../../components/Admin/Modal/AdminModal";
+import { LoadingDots } from "../../components/Shared/LoadingDots/LoadingDots";
 import {
   getCuentasUsuariosMetric,
   getDashboardMensual,
@@ -334,7 +335,9 @@ export function Dashboard() {
 
   const handleOpenGoalsModal = async () => {
     const fallbackSales = Number(monthlyData?.objetivos?.ventas?.objetivo ?? 0);
-    const fallbackOrders = Number(monthlyData?.objetivos?.pedidos?.objetivo ?? 0);
+    const fallbackOrders = Number(
+      monthlyData?.objetivos?.pedidos?.objetivo ?? 0,
+    );
     const fallbackCanceled = Number(
       monthlyData?.objetivos?.cancelaciones?.maximoTolerado ?? 0,
     );
@@ -455,7 +458,11 @@ export function Dashboard() {
         actualText: formatCurrency(ventas.actual),
         targetText: formatCurrency(ventas.objetivo),
         progress: clampPercent(
-          ventasObjetivo <= 0 ? (ventasActual > 0 ? 100 : 0) : ventasProgressRaw,
+          ventasObjetivo <= 0
+            ? ventasActual > 0
+              ? 100
+              : 0
+            : ventasProgressRaw,
         ),
         progressText: `${(ventasObjetivo <= 0
           ? ventasActual > 0
@@ -509,29 +516,31 @@ export function Dashboard() {
   const stats = [
     {
       title: "Pedidos Hoy",
-      value: loadingMetrics ? "..." : metrics.pedidosHoy.toString(),
+      value: metrics.pedidosHoy.toString(),
       icon: <OrdersIcon />,
       color: "subtle",
+      isLoading: loadingMetrics,
     },
     {
       title: "Ingresos Hoy",
-      value: loadingMetrics ? "..." : formattedIngresos,
+      value: formattedIngresos,
       icon: <RevenueIcon />,
       color: "subtle",
+      isLoading: loadingMetrics,
     },
     {
       title: "Mesas Ocupadas",
-      value: loadingMetrics
-        ? "..."
-        : `${metrics.mesasOcupadas}/${metrics.totalMesas}`,
+      value: `${metrics.mesasOcupadas}/${metrics.totalMesas}`,
       icon: <TablesIcon />,
       color: "subtle",
+      isLoading: loadingMetrics,
     },
     {
       title: "Cuentas Usuarios",
-      value: loadingMetrics ? "..." : metrics.cuentasUsuarios.toString(),
+      value: metrics.cuentasUsuarios.toString(),
       icon: <UsersIcon />,
       color: "subtle",
+      isLoading: loadingMetrics,
     },
   ];
 
@@ -568,84 +577,88 @@ export function Dashboard() {
               </label>
             </header>
             <div className="analytics-card__body">
-              {loadingMonthly ? (
-                <div className="analytics-card__empty">Cargando gráfica...</div>
-              ) : monthlyError ? (
-                <div className="analytics-card__empty">{monthlyError}</div>
-              ) : areaData.length === 0 ? (
-                <div className="analytics-card__empty">
-                  Sin datos para mostrar.
-                </div>
-              ) : (
-                <div className="analytics-chart analytics-chart--area">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={areaData}
-                      margin={{ top: 10, right: 16, left: 0, bottom: 0 }}
-                    >
-                      <defs>
-                        <linearGradient
-                          id="areaIngresos"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="0%"
-                            stopColor="#ff6b35"
-                            stopOpacity={0.32}
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor="#ff6b35"
-                            stopOpacity={0.03}
-                          />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f1e9e3" />
-                      <XAxis
-                        dataKey="day"
-                        tick={{ fill: "#8c796d", fontSize: 12 }}
-                        axisLine={{ stroke: "#eadfd7" }}
-                        tickLine={false}
-                      />
-                      <YAxis
-                        tick={{ fill: "#8c796d", fontSize: 12 }}
-                        axisLine={false}
-                        tickLine={false}
-                        tickFormatter={(value) =>
-                          new Intl.NumberFormat("es-AR", {
-                            notation: "compact",
-                            maximumFractionDigits: 1,
-                          }).format(value)
-                        }
-                      />
-                      <Tooltip
-                        isAnimationActive={true}
-                        formatter={(value) => [
-                          formatCurrency(value),
-                          "Ingresos",
-                        ]}
-                        labelFormatter={(label) => `Día ${label}`}
-                        contentStyle={{
-                          border: "1px solid #f0e3da",
-                          borderRadius: "10px",
-                          boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
-                        }}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="ingresos"
-                        stroke="#e76834"
-                        strokeWidth={2.2}
-                        fill="url(#areaIngresos)"
-                        activeDot={{ r: 5 }}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
+              <div className="recharts-wrapper recharts-wrapper--area">
+                {loadingMonthly ? (
+                  <div className="analytics-card__empty">
+                    <LoadingDots />
+                  </div>
+                ) : monthlyError ? (
+                  <div className="analytics-card__empty">{monthlyError}</div>
+                ) : areaData.length === 0 ? (
+                  <div className="analytics-card__empty">
+                    Sin datos para mostrar.
+                  </div>
+                ) : (
+                  <div className="analytics-chart analytics-chart--area">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={areaData}
+                        margin={{ top: 10, right: 16, left: 0, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient
+                            id="areaIngresos"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="0%"
+                              stopColor="#ff6b35"
+                              stopOpacity={0.32}
+                            />
+                            <stop
+                              offset="100%"
+                              stopColor="#ff6b35"
+                              stopOpacity={0.03}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1e9e3" />
+                        <XAxis
+                          dataKey="day"
+                          tick={{ fill: "#8c796d", fontSize: 12 }}
+                          axisLine={{ stroke: "#eadfd7" }}
+                          tickLine={false}
+                        />
+                        <YAxis
+                          tick={{ fill: "#8c796d", fontSize: 12 }}
+                          axisLine={false}
+                          tickLine={false}
+                          tickFormatter={(value) =>
+                            new Intl.NumberFormat("es-AR", {
+                              notation: "compact",
+                              maximumFractionDigits: 1,
+                            }).format(value)
+                          }
+                        />
+                        <Tooltip
+                          isAnimationActive={true}
+                          formatter={(value) => [
+                            formatCurrency(value),
+                            "Ingresos",
+                          ]}
+                          labelFormatter={(label) => `Día ${label}`}
+                          contentStyle={{
+                            border: "1px solid #f0e3da",
+                            borderRadius: "10px",
+                            boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+                          }}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="ingresos"
+                          stroke="#e76834"
+                          strokeWidth={2.2}
+                          fill="url(#areaIngresos)"
+                          activeDot={{ r: 5 }}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+              </div>
             </div>
           </article>
 
@@ -657,57 +670,61 @@ export function Dashboard() {
               </div>
             </header>
             <div className="analytics-card__body">
-              {loadingMonthly ? (
-                <div className="analytics-card__empty">Cargando gráfica...</div>
-              ) : monthlyError ? (
-                <div className="analytics-card__empty">{monthlyError}</div>
-              ) : !hasPieData ? (
-                <div className="analytics-card__empty">
-                  Sin datos para mostrar.
-                </div>
-              ) : (
-                <>
-                  <div className="analytics-chart analytics-chart--pie">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Tooltip
-                          content={<PieStatusTooltip />}
-                          isAnimationActive={true}
-                          animationDuration={300}
-                          animationEasing="ease-out"
-                          offset={10}
-                        />
-                        <Pie
-                          data={pieData}
-                          dataKey="cantidad"
-                          nameKey="estadoLabel"
-                          innerRadius={52}
-                          outerRadius={88}
-                          paddingAngle={2}
-                        >
-                          {pieData.map((entry) => (
-                            <Cell key={entry.estado} fill={entry.color} />
-                          ))}
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
+              <div className="recharts-wrapper recharts-wrapper--pie">
+                {loadingMonthly ? (
+                  <div className="analytics-card__empty">
+                    <LoadingDots />
                   </div>
-                  <ul className="analytics-legend">
-                    {pieData.map((entry) => (
-                      <li key={entry.estado}>
-                        <span
-                          className="analytics-legend__dot"
-                          style={{ backgroundColor: entry.color }}
-                        />
-                        <span className="analytics-legend__label">
-                          {entry.estadoLabel}
-                        </span>
-                        <strong>{formatNumber(entry.cantidad)}</strong>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
+                ) : monthlyError ? (
+                  <div className="analytics-card__empty">{monthlyError}</div>
+                ) : !hasPieData ? (
+                  <div className="analytics-card__empty">
+                    Sin datos para mostrar.
+                  </div>
+                ) : (
+                  <>
+                    <div className="analytics-chart analytics-chart--pie">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Tooltip
+                            content={<PieStatusTooltip />}
+                            isAnimationActive={true}
+                            animationDuration={300}
+                            animationEasing="ease-out"
+                            offset={10}
+                          />
+                          <Pie
+                            data={pieData}
+                            dataKey="cantidad"
+                            nameKey="estadoLabel"
+                            innerRadius={52}
+                            outerRadius={88}
+                            paddingAngle={2}
+                          >
+                            {pieData.map((entry) => (
+                              <Cell key={entry.estado} fill={entry.color} />
+                            ))}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <ul className="analytics-legend">
+                      {pieData.map((entry) => (
+                        <li key={entry.estado}>
+                          <span
+                            className="analytics-legend__dot"
+                            style={{ backgroundColor: entry.color }}
+                          />
+                          <span className="analytics-legend__label">
+                            {entry.estadoLabel}
+                          </span>
+                          <strong>{formatNumber(entry.cantidad)}</strong>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
             </div>
           </article>
         </section>
@@ -717,7 +734,9 @@ export function Dashboard() {
             <header className="goals-card__header">
               <div>
                 <h3>Objetivos mensuales</h3>
-                <p>Cumplimiento del mes {monthlyData?.month ?? selectedMonth}</p>
+                <p>
+                  Cumplimiento del mes {monthlyData?.month ?? selectedMonth}
+                </p>
               </div>
               <button
                 type="button"
@@ -729,7 +748,9 @@ export function Dashboard() {
             </header>
 
             {loadingMonthly ? (
-              <div className="analytics-card__empty">Cargando objetivos...</div>
+              <div className="goals-stack goals-stack--loading">
+                <LoadingDots />
+              </div>
             ) : monthlyError ? (
               <div className="analytics-card__empty">{monthlyError}</div>
             ) : (
@@ -767,7 +788,9 @@ export function Dashboard() {
             </header>
 
             {loadingTopProducts ? (
-              <div className="analytics-card__empty">Cargando productos...</div>
+              <div className="top-products-list top-products-list--loading">
+                <LoadingDots />
+              </div>
             ) : topProductsError ? (
               <div className="analytics-card__empty">{topProductsError}</div>
             ) : topProducts.length === 0 ? (
@@ -793,7 +816,8 @@ export function Dashboard() {
                     <div className="top-product-item__info">
                       <h4>{product.titulo}</h4>
                       <p>
-                        {product.tipoPlato} • {formatCurrency(product.precioVenta)}
+                        {product.tipoPlato} •{" "}
+                        {formatCurrency(product.precioVenta)}
                       </p>
                     </div>
                     <div className="top-product-item__stats">
@@ -820,7 +844,9 @@ export function Dashboard() {
           >
             <form className="goals-form" onSubmit={handleSaveGoals}>
               {loadingGoalsForm ? (
-                <div className="analytics-card__empty">Cargando objetivos...</div>
+                <div className="analytics-card__empty">
+                  Cargando objetivos...
+                </div>
               ) : (
                 <>
                   <label className="goals-form__field">
