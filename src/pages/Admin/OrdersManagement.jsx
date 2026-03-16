@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { OrderCard } from "../../components/Admin/OrderCard/OrderCard";
 import { getPedidos, updatePedidoEstado } from "../../api/pedidos";
+import { LoadingLogo } from "../../components/Shared/LoadingLogo/LoadingLogo";
 
 const statusFilters = [
   { value: "all", label: "Todos" },
@@ -203,7 +204,9 @@ export function OrdersManagement() {
           </header>
 
           {loading ? (
-            <div className="empty-state">Cargando pedidos...</div>
+            <div className="empty-state">
+              <LoadingLogo label={null} />
+            </div>
           ) : error ? (
             <div className="empty-state">{error}</div>
           ) : filteredOrders.length === 0 ? (

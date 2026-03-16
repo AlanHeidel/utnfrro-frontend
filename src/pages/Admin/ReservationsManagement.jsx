@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { cancelReserva, getReservas } from "../../api/reservas";
+import { LoadingLogo } from "../../components/Shared/LoadingLogo/LoadingLogo";
 
 function formatDateTime(value) {
   if (!value) return "-";
@@ -226,7 +227,9 @@ export function ReservationsManagement() {
           </header>
 
           {loading ? (
-            <div className="empty-state">Cargando reservas...</div>
+            <div className="empty-state">
+              <LoadingLogo label={null} />
+            </div>
           ) : error ? (
             <div className="empty-state">{error}</div>
           ) : filteredReservas.length === 0 ? (

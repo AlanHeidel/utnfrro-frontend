@@ -3,6 +3,7 @@ import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { TableForm } from "../../components/Admin/Forms/TableForm/TableForm";
 import { AdminModal } from "../../components/Admin/Modal/AdminModal";
 import { useToast } from "../../hooks/useToast.jsx";
+import { LoadingLogo } from "../../components/Shared/LoadingLogo/LoadingLogo";
 import { finalizeReserva, getReservas } from "../../api/reservas";
 import {
   getMesas,
@@ -56,6 +57,7 @@ export function CustomersManagement() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [updatingTableId, setUpdatingTableId] = useState(null);
+  const [loadingTables, setLoadingTables] = useState(true);
 
   const openCreateForm = () => {
     setEditingProduct(null);
@@ -110,11 +112,14 @@ export function CustomersManagement() {
   useEffect(() => {
     let alive = true;
     const load = async () => {
+      if (alive) setLoadingTables(true);
       try {
         const data = await getMesas();
         if (alive) setTables(sortByNewestId(data.map(normalizeMesa)));
       } catch (_) {
         if (alive) setTables([]);
+      } finally {
+        if (alive) setLoadingTables(false);
       }
     };
     load();
@@ -302,7 +307,11 @@ export function CustomersManagement() {
             </div>
           </div>
 
-          {filteredTables.length === 0 ? (
+          {loadingTables ? (
+            <div className="empty-state">
+              <LoadingLogo label={null} />
+            </div>
+          ) : filteredTables.length === 0 ? (
             <div className="empty-state">
               No hay mesas con ese estado por el momento.
             </div>

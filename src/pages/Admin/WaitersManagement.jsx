@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { WaiterForm } from "../../components/Admin/Forms/WaiterForm/WaiterForm";
 import { AdminModal } from "../../components/Admin/Modal/AdminModal";
+import { LoadingLogo } from "../../components/Shared/LoadingLogo/LoadingLogo";
 import {
     getMozos,
     createMozo,
@@ -33,6 +34,7 @@ export function WaitersManagement() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [loadingMozos, setLoadingMozos] = useState(true);
 
     const openCreateForm = () => {
         setEditingProduct(null);
@@ -82,10 +84,12 @@ export function WaitersManagement() {
     useEffect(() => {
         let alive = true;
         const loadMozos = async () => {
+            if (alive) setLoadingMozos(true);
             try {
                 const data = await getMozos();
                 if (alive) setMozos(sortByNewestId(data.map(normalizeMozo)));
             } catch (_) { if (alive) setMozos([]); }
+            finally { if (alive) setLoadingMozos(false); }
         };
         loadMozos();
         return () => { alive = false; };
@@ -125,7 +129,11 @@ export function WaitersManagement() {
                         </div>
                     </div>
 
-                    {filteredMozos.length === 0 ? (
+                    {loadingMozos ? (
+                        <div className="empty-state">
+                            <LoadingLogo label={null} />
+                        </div>
+                    ) : filteredMozos.length === 0 ? (
                         <div className="empty-state">
                             No hay mozos con esas características por el momento.
                         </div>

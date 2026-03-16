@@ -3,6 +3,7 @@ import { TopBar } from "../../components/Admin/TopBar/TopBar";
 import { ProductForm } from "../../components/Admin/Forms/ProductForm/ProductForm";
 import { AdminModal } from "../../components/Admin/Modal/AdminModal";
 import { useToast } from "../../hooks/useToast.jsx";
+import { LoadingLogo } from "../../components/Shared/LoadingLogo/LoadingLogo";
 import {
   getPlatos,
   createPlato,
@@ -280,7 +281,9 @@ export function MenuManagement() {
           </div>
 
           {isLoading ? (
-            <div className="empty-state">Cargando productos del menú...</div>
+            <div className="empty-state">
+              <LoadingLogo label={null} />
+            </div>
           ) : loadError ? (
             <div className="empty-state">{loadError}</div>
           ) : filteredProducts.length === 0 ? (
