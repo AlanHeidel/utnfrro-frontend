@@ -590,7 +590,7 @@ export function Dashboard() {
                   </div>
                 ) : (
                   <div className="analytics-chart analytics-chart--area">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height={282} minWidth={0}>
                       <AreaChart
                         data={areaData}
                         margin={{ top: 10, right: 16, left: 0, bottom: 0 }}
@@ -684,7 +684,11 @@ export function Dashboard() {
                 ) : (
                   <>
                     <div className="analytics-chart analytics-chart--pie">
-                      <ResponsiveContainer width="100%" height="100%">
+                      <ResponsiveContainer
+                        width="100%"
+                        height={210}
+                        minWidth={0}
+                      >
                         <PieChart>
                           <Tooltip
                             content={<PieStatusTooltip />}

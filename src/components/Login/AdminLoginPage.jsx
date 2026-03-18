@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../context/auth.jsx";
+import { useAuth } from "../../hooks/useAuth.jsx";
 import { Eye, EyeOff, Lock, UserRound } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import "./LoginCard.css";

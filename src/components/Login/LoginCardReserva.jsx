@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../context/auth.jsx";
+import { useAuth } from "../../hooks/useAuth.jsx";
 import { Eye, EyeOff, Lock, Mail, UserRound } from "lucide-react";
 import { registerClient } from "../../api/auth";
 import "./LoginCard.css";
@@ -59,10 +59,7 @@ export function LoginCardReserva() {
       });
 
       try {
-        await login(
-          registerData.email.trim(),
-          registerData.password,
-        );
+        await login(registerData.email.trim(), registerData.password);
         window.location.replace("/reservas");
       } catch {
         setMode("login");

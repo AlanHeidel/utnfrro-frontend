@@ -13,66 +13,76 @@ import { ProtectedRoute } from "./components/Routes/ProtectedRoute.jsx";
 import { MainLayout } from "./Layouts/MainLayout.jsx";
 import { MenuLayout } from "./Layouts/MenuLayout.jsx";
 import { FiltersProvider } from "./context/filters.jsx";
-import { CartProvider } from "./context/cart.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 import { ToastProvider } from "./context/toast.jsx";
-import { AuthProvider } from "./context/auth.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 export function App() {
   return (
     <AuthProvider>
       <ToastProvider>
-        <CartProvider>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<Home />} />
-              <Route path="/nosotros" element={<About />} />
-              <Route path="/about" element={<Navigate to="/nosotros" replace />} />
-              <Route
-                path="/reservas"
-                element={
-                  <ProtectedRoute allowed={["cliente", "client"]}>
-                    <Reservas />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-            <Route path="/reservas/login" element={<LoginCardReserva />} />
-            <Route element={<MenuLayout />}>
-              <Route
-                path="/menu"
-                element={
-                  <ProtectedRoute allowed={["table-device"]}>
-                    <FiltersProvider>
-                      <Menu />
-                    </FiltersProvider>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/menu/pedidos"
-                element={
-                  <ProtectedRoute allowed={["table-device"]}>
-                    <TableOrders />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-            <Route path="/menu/login" element={<LoginCardMesa />} />
-            <Route path="/mesa/login" element={<Navigate to="/menu/login" replace />} />
-            {/* Login de admin: página separada */}
-            <Route path="/admin/login" element={<AdminLoginPage />} />
-            {/* Panel admin protegido: si no hay token admin, redirige al login */}
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="/nosotros" element={<About />} />
             <Route
-              path="/admin/*"
+              path="/about"
+              element={<Navigate to="/nosotros" replace />}
+            />
+            <Route
+              path="/reservas"
               element={
-                <ProtectedRoute allowed={["admin"]}>
-                  <Admin />
+                <ProtectedRoute allowed={["cliente", "client"]}>
+                  <Reservas />
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<div>404 Not Found</div>} />
-          </Routes>
-        </CartProvider>
+          </Route>
+          <Route path="/reservas/login" element={<LoginCardReserva />} />
+          <Route
+            element={
+              <CartProvider>
+                <MenuLayout />
+              </CartProvider>
+            }
+          >
+            <Route
+              path="/menu"
+              element={
+                <ProtectedRoute allowed={["table-device"]}>
+                  <FiltersProvider>
+                    <Menu />
+                  </FiltersProvider>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/menu/pedidos"
+              element={
+                <ProtectedRoute allowed={["table-device"]}>
+                  <TableOrders />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+          <Route path="/menu/login" element={<LoginCardMesa />} />
+          <Route
+            path="/mesa/login"
+            element={<Navigate to="/menu/login" replace />}
+          />
+          {/* Login de admin: página separada */}
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          {/* Panel admin protegido: si no hay token admin, redirige al login */}
+          <Route
+            path="/admin/*"
+            element={
+              <ProtectedRoute allowed={["admin"]}>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
       </ToastProvider>
     </AuthProvider>
   );

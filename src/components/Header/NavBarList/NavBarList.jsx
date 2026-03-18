@@ -1,6 +1,6 @@
 import "./NavBarList.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/auth.jsx";
+import { useAuth } from "../../../hooks/useAuth.jsx";
 
 export function NavBarList() {
   const { isAuthenticated, logout } = useAuth();

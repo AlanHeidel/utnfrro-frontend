@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import "./SideBar.css";
-import { useAuth } from "../../../context/auth.jsx";
+import { useAuth } from "../../../hooks/useAuth.jsx";
 
 // Iconos SVG
 const DashboardIcon = () => (
@@ -32,7 +32,13 @@ const ReservationsIcon = () => (
 );
 
 const TablesIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+  >
     <rect x="4" y="6" width="16" height="4" rx="1" />
     <path d="M7 10v8M17 10v8" />
   </svg>

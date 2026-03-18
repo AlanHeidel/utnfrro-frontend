@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../context/auth.jsx";
+import { useAuth } from "../../hooks/useAuth.jsx";
 import { jwtDecode } from "jwt-decode";
 
 function getTokenExpMs(token) {
@@ -41,11 +41,15 @@ export function ProtectedRoute({ children, allowed = [] }) {
   if (!isAuthenticated) {
     const expectedType = allowed[0];
     const loginPath = loginRouteByType[expectedType] ?? "/";
-    return <Navigate to={loginPath} replace state={{ from: location.pathname }} />;
+    return (
+      <Navigate to={loginPath} replace state={{ from: location.pathname }} />
+    );
   }
 
   if (isAdminTokenExpired) {
-    return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
+    return (
+      <Navigate to="/admin/login" replace state={{ from: location.pathname }} />
+    );
   }
 
   const isAllowed = allowed.length === 0 || allowed.includes(type);
