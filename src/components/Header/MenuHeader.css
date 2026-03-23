@@ -55,6 +55,22 @@
   gap: 25px;
 }
 
+.menu-actions .reserve-button.is-disabled,
+.menu-actions .reserve-button:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  transform: none;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.34);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.menu-actions .reserve-button.is-disabled:hover,
+.menu-actions .reserve-button:disabled:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: none;
+}
+
 .cart-list {
   position: fixed;
   top: 0;

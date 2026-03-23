@@ -1,5 +1,5 @@
 import "./MenuHeader.css";
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect, useId, useMemo } from "react";
 import { CartButton } from "./NavBarList/CartButton.jsx";
 import { CloseButton } from "./NavBarList/CloseButton.jsx";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,15 +7,36 @@ import { useCart } from "../../hooks/useCart.jsx";
 import { useToast } from "../../hooks/useToast.jsx";
 import { CartItem } from "../Cart/cartItem.jsx";
 import { createTablePaymentPreference } from "../../api/payments";
+import { createMozoCall } from "../../api/notifications";
+import { useAuth } from "../../hooks/useAuth.jsx";
+import { jwtDecode } from "jwt-decode";
+import { io } from "socket.io-client";
+
+const API_URL = import.meta.env.VITE_API_URL?.trim() ?? "";
+const SOCKET_URL = API_URL.replace(/\/api\/?$/i, "");
 
 export function MenuHeader() {
   const emptyCartColor = "rgba(32, 32, 32, 1)";
   const emptyCartIconId = useId().replaceAll(":", "");
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { token } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const { cart, getTotal, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCallingMozo, setIsCallingMozo] = useState(false);
+  const [mozoRequested, setMozoRequested] = useState(false);
+
+  const mesaId = useMemo(() => {
+    if (!token) return null;
+    try {
+      const claims = jwtDecode(token);
+      const id = Number(claims?.mesaId ?? null);
+      return Number.isFinite(id) && id > 0 ? id : null;
+    } catch {
+      return null;
+    }
+  }, [token]);
 
   useEffect(() => {
     if (isOpen) {
@@ -36,6 +57,33 @@ export function MenuHeader() {
       document.body.style.width = "";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!token) return undefined;
+
+    const socket = io(SOCKET_URL || undefined, {
+      auth: { token },
+      transports: ["websocket", "polling"],
+    });
+
+    const handleUpdated = (payload) => {
+      const payloadMesaId = Number(payload?.mesa?.id ?? payload?.mesaId ?? null);
+      if (mesaId && payloadMesaId && payloadMesaId !== mesaId) return;
+      const estado = String(payload?.estado ?? "").toLowerCase();
+      if (estado === "attended" || estado === "canceled") {
+        setMozoRequested(false);
+      } else if (estado === "pending") {
+        setMozoRequested(true);
+      }
+    };
+
+    socket.on("notification:updated", handleUpdated);
+
+    return () => {
+      socket.off("notification:updated", handleUpdated);
+      socket.disconnect();
+    };
+  }, [token, mesaId]);
 
   const handleSubmitOrder = async () => {
     if (cart.length === 0 || isSubmitting) return;
@@ -59,6 +107,23 @@ export function MenuHeader() {
     }
   };
 
+  const handleCallMozo = async () => {
+    if (mozoRequested || isCallingMozo) return;
+    setIsCallingMozo(true);
+    try {
+      const notification = await createMozoCall();
+      const estado = String(notification?.estado ?? "").toLowerCase();
+      if (estado === "pending") {
+        setMozoRequested(true);
+      }
+      showToast("Mozo solicitado correctamente", "success");
+    } catch {
+      showToast("No pudimos solicitar un mozo. Intenta de nuevo.", "error");
+    } finally {
+      setIsCallingMozo(false);
+    }
+  };
+
   return (
     <>
       <header className="menu-header">
@@ -67,6 +132,18 @@ export function MenuHeader() {
             <img src="/images/home-icon.png" alt="Logo del restaurante" />
           </Link>
           <div className="menu-actions">
+            <button
+              type="button"
+              className={`montserrat reserve-button ${mozoRequested ? "is-disabled" : ""}`}
+              onClick={handleCallMozo}
+              disabled={mozoRequested || isCallingMozo}
+            >
+              {mozoRequested
+                ? "Mozo solicitado"
+                : isCallingMozo
+                  ? "..."
+                  : "Solicitar mozo"}
+            </button>
             <Link to="/menu/pedidos" className="montserrat reserve-button">
               Ver pedidos
             </Link>

@@ -1,0 +1,84 @@
+.admin-notification-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 145px;
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 0.85rem 0.9rem;
+}
+
+.admin-notification-card.is-compact {
+  padding: 0.75rem 0.8rem;
+}
+
+.admin-notification-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.admin-notification-card__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.admin-notification-card__date {
+  margin: 0.15rem 0 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-notification-card__message {
+  margin: 0;
+  font-size: 15px;
+  color: #374151;
+}
+
+.admin-notification-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 5.6px 11.2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin-notification-chip--pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.admin-notification-chip--attended {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.admin-notification-chip--canceled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.admin-notification-card__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.admin-notification-card__btn-primary {
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+
+.admin-notification-card__actions .btn-link {
+  font-size: 0.8rem;
+}
